@@ -84,7 +84,7 @@ The main concept is that forms, inputs and validation is done very differently a
 
 This code results in a form with a submit button that will POST to /users when clicked. The submit button is disabled as long as the input is empty (required) or the value is not an email (isEmail). On validation error it will show the message: "This is not a valid email".
 
-#### This is what you can enjoy building
+#### This is an example of what you can enjoy building
 ```javascript
   /** @jsx React.DOM */
   var Formsy = require('formsy-react');
@@ -98,30 +98,19 @@ This code results in a form with a submit button that will POST to /users when c
     changeValue: function (event) {
       this.setValue(event.currentTarget.value);
     },
-
-    // Set a specific className based on the validation
-    // state of this component
-    setClassName: function () {
-      var className = 'input-wrapper';
-
-      // showRequired() is true when the value is empty and the
-      // required prop is passed to the input
-      if (this.showRequired()) {
-        className += ' required';
-
-      // showError() is true when the value typed is invalid
-      } else if (this.showError()) {
-        className += ' error';
-      }
-
-      return className;
-    },
     render: function () {
-      var className = this.setClassName();
 
-      // An error message is returned ONLY if there is an invalid value based
-      // on validation rule or the server has returned an error message
+      // Set a specific className based on the validation
+      // state of this component. showRequired() is true 
+      // when the value is empty and the required prop is 
+      // passed to the input. showError() is true when the 
+      // value typed is invalid
+      var className = this.showRequired() ? 'required' : this.showError() ? 'error' : null;
+
+      // An error message is returned ONLY if the component is invalid
+      // or the server has returned an error message
       var errorMessage = this.getErrorMessage();
+
       return (
         <div className={className}>
           <input type="text" onChange={this.changeValue} value={this.getValue()}/>
