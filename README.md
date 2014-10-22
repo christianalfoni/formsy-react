@@ -57,6 +57,7 @@ The main concept is that forms, inputs and validation is done very differently a
 
   1. Download from this REPO and use globally (Formsy) or with requirejs
   2. Install with `npm install formsy-react` and use with browserify etc.
+  3. Install with `bower install formsy-react`
 
 ## <a name="howtouse">How to use</a>
 
