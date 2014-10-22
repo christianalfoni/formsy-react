@@ -1,0 +1,8 @@
+{
+  "name": "formsy-react",
+  "version": "0.1.0",
+  "main": "src/main.js",
+  "dependencies": {
+    "react": "^0.11.2"
+  }
+}
