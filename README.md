@@ -236,7 +236,7 @@ An comma seperated list with validation rules. Take a look at **Formsy.addValida
 
 ```html
 <MyInputComponent name="fruit" validations="isIn:['apple', 'orange']"/>
-<MyInputComponent name="car" validations="mapsTo:{'bmw': true, 'vw': true'}"/>
+<MyInputComponent name="car" validations="mapsTo:{'bmw': true, 'vw': true}"/>
 ```
 Works just fine.
 
