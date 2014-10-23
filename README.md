@@ -1,7 +1,7 @@
 formsy-react
 ============
 
-A form input builder and validator for React JS
+A form input builder and validator for React JS (NOT YET RELEASED)
 
 - [Background](#background)
 - [What you can do](#whatyoucando)
@@ -14,7 +14,6 @@ A form input builder and validator for React JS
     - [url](#url)
     - [method](#method)
     - [contentType](#contenttype)
-    - [showCancel](#showcancel)
     - [hideSubmit](#hideSubmit)
     - [submitButtonClass](#submitButtonClass)
     - [cancelButtonClass](#cancelButtonClass)
@@ -131,7 +130,7 @@ Formsy.defaults({
   hideSubmit: true, // default: false
   showCancel: true, // default: false
   submitButtonClass: 'btn btn-success', // default: null
-  resetButtonClass: 'btn btn-default', // default: null
+  cancelButtonClass: 'btn btn-default', // default: null
   buttonWrapperClass: 'my-wrapper' // default: null
 });
 ```
@@ -165,12 +164,6 @@ Supports **json** (default) and **urlencoded** (x-www-form-urlencoded).
 
 **Note!** Response has to be **json**.
 
-#### <a name="showcancel">showCancel</a>
-```html
-<Formsy.Form url="/users" method="PUT" showCancel></Formsy.Form>
-```
-Shows the cancel button that runs the **onCancel** handler.
-
 #### <a name="hidesubmit">hideSubmit</a>
 ```html
 <Formsy.Form url="/users" method="PUT" hideSubmit></Formsy.Form>
@@ -185,15 +178,15 @@ Sets a class name on the submit button.
 
 #### <a name="cancelbuttonclass">cancelButtonClass</a>
 ```html
-<Formsy.Form url="/users" method="PUT" resetButtonClass="btn btn-default"></Formsy.Form>
+<Formsy.Form url="/users" method="PUT" cancelButtonClass="btn btn-default"></Formsy.Form>
 ```
-Sets a class name on the reset button.
+Sets a class name on the cancel button.
 
 #### <a name="buttonwrapperclass">buttonWrapperClass</a>
 ```html
 <Formsy.Form url="/users" method="PUT" buttonWrapperClass="my-wrapper"></Formsy.Form>
 ```
-Sets a class name on the container that wraps the **submit** and **reset** buttons.
+Sets a class name on the container that wraps the **submit** and **cancel** buttons.
 
 #### <a name="onsuccess">onSuccess(serverResponse)</a>
 ```html
@@ -213,6 +206,12 @@ Takes a function to run when the submit button has been clicked.
 ```
 Takes a function to run when either a success or error response is received from the server.
 
+#### <a name="oncancel">onCancel()</a>
+```html
+<Formsy.Form url="/users" onCancel={this.goBack}></Formsy.Form>
+```
+Will display a "cancel" button next to submit. On click it runs the function handler.
+
 #### <a name="onerror">onError(serverResponse)</a>
 ```html
 <Formsy.Form url="/users" onError={this.changeToFormErrorClass}></Formsy.Form>
@@ -230,9 +229,9 @@ The name is required to register the form input component in the form.
 #### <a name="validations">validations</a>
 ```html
 <MyInputComponent name="email" validations="isEmail"/>
-<MyInputComponent name="number" validations="isNumeric, isLength:5:12"/>
+<MyInputComponent name="number" validations="isNumeric,isLength:5:12"/>
 ```
-An comma seperated list with validation rules. Take a look at **Formsy.addValidationRule()** to see default rules. Use ":" to separate arguments passed to the validator. The arguments will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
+An comma seperated list with validation rules. Take a look at **Validators** to see default rules. Use ":" to separate arguments passed to the validator. The arguments will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
 
 ```html
 <MyInputComponent name="fruit" validations="isIn:['apple', 'orange']"/>
