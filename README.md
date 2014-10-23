@@ -38,7 +38,7 @@ A form input builder and validator for React JS (NOT YET RELEASED)
   - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
 ## <a name="background">Background</a>
-I wrote an article on forms and validation with React JS, [Nailing that validation with React JS](), the result of that was this extension. 
+I wrote an article on forms and validation with React JS, [Nailing that validation with React JS](http://christianalfoni.github.io/javascript/2014/10/22/nailing-that-validation-with-reactjs.html), the result of that was this extension. 
 
 The main concept is that forms, inputs and validation is done very differently across developers and projects. This extension to React JS aims to be that "sweet spot" between flexibility and reusability.
 
