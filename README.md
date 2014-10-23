@@ -1,7 +1,7 @@
 formsy-react
 ============
 
-A form input builder and validator for React JS (NOT YET RELEASED)
+A form input builder and validator for React JS
 
 - [Background](#background)
 - [What you can do](#whatyoucando)
