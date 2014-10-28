@@ -40,6 +40,7 @@ A form input builder and validator for React JS
   - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
 
+
 ## <a name="background">Background</a>
 I wrote an article on forms and validation with React JS, [Nailing that validation with React JS](http://christianalfoni.github.io/javascript/2014/10/22/nailing-that-validation-with-reactjs.html), the result of that was this extension. 
 
