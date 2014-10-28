@@ -64,6 +64,10 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="changes">Changes</a>
 
+**0.1.2**:
+  
+  - Fixed isValue check to empty string, needs to support false and 0
+
 **0.1.1**:
 
   - Added resetValue method
