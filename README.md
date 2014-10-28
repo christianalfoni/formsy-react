@@ -1,11 +1,12 @@
 formsy-react
 ============
 
-A form input builder and validator for React JS (NOT YET RELEASED)
+A form input builder and validator for React JS
 
 - [Background](#background)
 - [What you can do](#whatyoucando)
 - [Install](#install)
+- [Changes](#changes)
 - [How to use](#howtouse)
 - [API](#API)
   - [Formsy.defaults](#formsydefaults)
@@ -30,6 +31,7 @@ A form input builder and validator for React JS (NOT YET RELEASED)
     - [required](#required)
     - [getValue()](#getvalue)
     - [setValue()](#setvalue)
+    - [resetValue()](#resetvalue)
     - [getErrorMessage()](#geterrormessage)
     - [isValid()](#isvalid)
     - [isRequired()](#isrequired)
@@ -58,6 +60,13 @@ The main concept is that forms, inputs and validation is done very differently a
   1. Download from this REPO and use globally (Formsy) or with requirejs
   2. Install with `npm install formsy-react` and use with browserify etc.
   3. Install with `bower install formsy-react`
+
+## <a name="changes">Changes</a>
+
+**0.1.1**:
+
+  - Added resetValue method
+  - Changed value check of showRequired
 
 ## <a name="howtouse">How to use</a>
 
@@ -279,6 +288,24 @@ var MyInput = React.createClass({
 });
 ```
 Sets the value of your form input component. Notice that it does not have to be a text input. Anything can set a value on the component. Think calendars, checkboxes, autocomplete stuff etc.
+
+#### <a name="resetvalue">resetValue()</a>
+```javascript
+var MyInput = React.createClass({
+  changeValue: function (event) {
+    this.setValue(event.currentTarget.value);
+  },
+  render: function () {
+    return (
+      <div>
+        <input type="text" onChange={this.changeValue} value={this.getValue()}/>
+        <button onClick={this.resetValue}>Reset</button>
+      </div>
+    );
+  }
+});
+```
+Resets to empty value.
 
 #### <a name="geterrormessage">getErrorMessage()</a>
 ```javascript
