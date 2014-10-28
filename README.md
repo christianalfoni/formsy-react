@@ -65,6 +65,10 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="changes">Changes</a>
 
+**0.2.1**:
+  
+  - Cancel button displays if onCancel handler is defined
+
 **0.2.0**:
   
   - Implemented hasValue() method
@@ -152,7 +156,6 @@ So this is basically how you build your form elements. As you can see it is very
 Formsy.defaults({
   contentType: 'urlencoded', // default: 'json'
   hideSubmit: true, // default: false
-  showCancel: true, // default: false
   submitButtonClass: 'btn btn-success', // default: null
   cancelButtonClass: 'btn btn-default', // default: null
   buttonWrapperClass: 'my-wrapper' // default: null
