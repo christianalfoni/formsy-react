@@ -100,6 +100,13 @@ Formsy.Mixin = {
       this.props._attachToForm(this);
   },
 
+  // We have to make the validate method is kept when new props are added
+  componentWillReceiveProps: function (nextProps) {
+    nextProps._attachToForm = this.props._attachToForm;
+    nextProps._detachFromForm = this.props._detachFromForm;
+    nextProps._validate = this.props._validate;
+  },
+
   // Detach it when component unmounts
   componentWillUnmount: function () {
       this.props._detachFromForm(this);
