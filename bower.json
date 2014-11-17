@@ -1,6 +1,6 @@
 {
   "name": "formsy-react",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "src/main.js",
   "dependencies": {
     "react": "^0.11.2"
