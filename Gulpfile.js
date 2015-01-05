@@ -19,7 +19,7 @@ var runBrowserifyTask = function (options) {
     debug: options.debug, // Need that sourcemapping
     standalone: 'Formsy',
     // These options are just for Watchify
-    cache: {}, packageCache: {}, fullPaths: true
+    cache: {}, packageCache: {}, fullPaths: options.watch
   })
     .require(require.resolve('./src/main.js'), { entry: true })
     .transform(reactify) // Transform JSX 

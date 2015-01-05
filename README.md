@@ -15,15 +15,13 @@ A form input builder and validator for React JS
     - [url](#url)
     - [method](#method)
     - [contentType](#contenttype)
-    - [hideSubmit](#hideSubmit)
-    - [submitButtonClass](#submitButtonClass)
-    - [cancelButtonClass](#cancelButtonClass)
-    - [buttonWrapperClass](#buttonWrapperClass)
     - [onSuccess()](#onsuccess)
     - [onSubmit()](#onsubmit)
     - [onSubmitted()](#onsubmitted)
     - [onCancel()](#oncancel)
     - [onError()](#onerror)
+    - [onValid()](#onvalid)
+    - [onInvalid()](#oninvalid)
   - [Formsy.Mixin](#formsymixin)
     - [name](#name)
     - [validations](#validations)
@@ -53,7 +51,7 @@ The main concept is that forms, inputs and validation is done very differently a
 
   2. Add validation rules and use them with simple syntax
 
-  3. Use handlers for different states of your form. Ex. "onSubmit", "onError" etc. 
+  3. Use handlers for different states of your form. Ex. "onSubmit", "onError", "onValid" etc. 
 
   4. Server validation errors automatically binds to the correct form input component
 
@@ -64,6 +62,10 @@ The main concept is that forms, inputs and validation is done very differently a
   3. Install with `bower install formsy-react`
 
 ## <a name="changes">Changes</a>
+
+**0.3.0**:
+  - Deprecated everything related to buttons automatically added
+  - Added onValid and onInvalid handlers, use those to manipulate submit buttons etc.
 
 **0.2.3**:
   
@@ -105,12 +107,21 @@ The main concept is that forms, inputs and validation is done very differently a
     changeUrl: function () {
       location.href = '/success';
     },
+    enableButton: function () {
+      this.setState({
+        canSubmit: true
+      });
+    },
+    disableButton: function () {
+      this.setState({
+        canSubmit: false
+      });
+    },
     render: function () {
       return (
-        <Formsy.Form url="/users" onSuccess={this.changeUrl}>
-
+        <Formsy.Form url="/users" onSuccess={this.changeUrl} onValid={this.enableButton} onInvalid={this.disableButton}>
           <MyOwnInput name="email" validations="isEmail" validationError="This is not a valid email" required/>
-
+          <button type="submit" disabled={!this.state.canSubmit}>Submit</button>
         </Formsy.Form>
       );
     }
@@ -119,7 +130,7 @@ The main concept is that forms, inputs and validation is done very differently a
 
 This code results in a form with a submit button that will POST to /users when clicked. The submit button is disabled as long as the input is empty (required) or the value is not an email (isEmail). On validation error it will show the message: "This is not a valid email".
 
-#### This is an example of what you can enjoy building
+#### Building a form element
 ```javascript
   /** @jsx React.DOM */
   var Formsy = require('formsy-react');
@@ -163,10 +174,13 @@ So this is basically how you build your form elements. As you can see it is very
 ```javascript
 Formsy.defaults({
   contentType: 'urlencoded', // default: 'json'
+  headers: {} // default headers
+  /* DEPRECATED
   hideSubmit: true, // default: false
   submitButtonClass: 'btn btn-success', // default: null
   cancelButtonClass: 'btn btn-default', // default: null
   buttonWrapperClass: 'my-wrapper' // default: null
+  */
 });
 ```
 Use **defaults** to set general settings for all your forms.
@@ -199,30 +213,6 @@ Supports **json** (default) and **urlencoded** (x-www-form-urlencoded).
 
 **Note!** Response has to be **json**.
 
-#### <a name="hidesubmit">hideSubmit</a>
-```html
-<Formsy.Form url="/users" method="PUT" hideSubmit></Formsy.Form>
-```
-Hides the submit button. Submit is done by ENTER on an input.
-
-#### <a name="submitbuttonclass">submitButtonClass</a>
-```html
-<Formsy.Form url="/users" method="PUT" submitButtonClass="btn btn-success"></Formsy.Form>
-```
-Sets a class name on the submit button.
-
-#### <a name="cancelbuttonclass">cancelButtonClass</a>
-```html
-<Formsy.Form url="/users" method="PUT" cancelButtonClass="btn btn-default"></Formsy.Form>
-```
-Sets a class name on the cancel button.
-
-#### <a name="buttonwrapperclass">buttonWrapperClass</a>
-```html
-<Formsy.Form url="/users" method="PUT" buttonWrapperClass="my-wrapper"></Formsy.Form>
-```
-Sets a class name on the container that wraps the **submit** and **cancel** buttons.
-
 #### <a name="onsuccess">onSuccess(serverResponse)</a>
 ```html
 <Formsy.Form url="/users" onSuccess={this.changeUrl}></Formsy.Form>
@@ -252,6 +242,18 @@ Will display a "cancel" button next to submit. On click it runs the function han
 <Formsy.Form url="/users" onError={this.changeToFormErrorClass}></Formsy.Form>
 ```
 Takes a function to run when the server responds with an error http status code.
+
+#### <a name="onvalid">onValid()</a>
+```html
+<Formsy.Form url="/users" onValid={this.enableSubmitButton}></Formsy.Form>
+```
+Whenever the form becomes valid the "onValid" handler is called. Use it to change state of buttons or whatever your heart desires.
+
+#### <a name="oninvalid">onInvalid()</a>
+```html
+<Formsy.Form url="/users" onInvalid={this.disableSubmitButton}></Formsy.Form>
+```
+Whenever the form becomes invalid the "onInvalid" handler is called. Use it to for example revert "onValid" state.
 
 ### <a name="formsymixin">Formsy.Mixin</a>
 
@@ -342,7 +344,7 @@ var MyInput = React.createClass({
     return (
       <div>
         <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <button onClick={this.resetValue}>Reset</button>
+        <button onClick={this.resetValue()}>Reset</button>
       </div>
     );
   }
@@ -360,7 +362,7 @@ var MyInput = React.createClass({
     return (
       <div>
         <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage}</span>
+        <span>{this.getErrorMessage()}</span>
       </div>
     );
   }
@@ -380,7 +382,7 @@ var MyInput = React.createClass({
       <div>
         <span>{face}</span>
         <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage}</span>
+        <span>{this.getErrorMessage()}</span>
       </div>
     );
   }
@@ -399,7 +401,7 @@ var MyInput = React.createClass({
       <div>
         <span>{this.props.label} {this.isRequired() ? '*' : null}</span>
         <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage}</span>
+        <span>{this.getErrorMessage()}</span>
       </div>
     );
   }
@@ -418,7 +420,7 @@ var MyInput = React.createClass({
     return (
       <div className={className}>
         <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage}</span>
+        <span>{this.getErrorMessage()}</span>
       </div>
     );
   }
@@ -437,7 +439,7 @@ var MyInput = React.createClass({
     return (
       <div className={className}>
         <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage}</span>
+        <span>{this.getErrorMessage()}</span>
       </div>
     );
   }
