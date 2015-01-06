@@ -196,8 +196,12 @@ Formsy.Form = React.createClass({
   submit: function (event) {
     event.preventDefault();
 
+    // To support use cases where no async or request operation is needed.
+    // The "onSubmit" callback is called with the model e.g. {fieldName: "myValue"}
     if (!this.props.url) {
-      throw new Error('Formsy Form needs a url property to post the form');
+      this.updateModel();
+      this.props.onSubmit(this.model);
+      return;
     }
 
     this.updateModel();
