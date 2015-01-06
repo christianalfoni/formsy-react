@@ -197,10 +197,11 @@ Formsy.Form = React.createClass({
     event.preventDefault();
 
     // To support use cases where no async or request operation is needed.
-    // The "onSubmit" callback is called with the model e.g. {fieldName: "myValue"}
+    // The "onSubmit" callback is called with the model e.g. {fieldName: "myValue"},
+    // if wanting to reset the entire form to original state, the second param is a callback for this.
     if (!this.props.url) {
       this.updateModel();
-      this.props.onSubmit(this.model);
+      this.props.onSubmit(this.model, this.resetModel);
       return;
     }
 
@@ -227,6 +228,13 @@ Formsy.Form = React.createClass({
     Object.keys(this.inputs).forEach(function (name) {
       var component = this.inputs[name];
       this.model[name] = component.state._value;
+    }.bind(this));
+  },
+  
+  // Reset each key in the model to the original / initial value
+  resetModel: function() {
+    Object.keys(this.inputs).forEach(function (name) {
+      this.inputs[name].resetValue();
     }.bind(this));
   },
 
