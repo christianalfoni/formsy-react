@@ -497,6 +497,18 @@ Returns true if string only contains numbers
 ```
 Returns true if string is only letters
 
+**isWords**
+```html
+<MyInputComponent name="foo" validations="isWords"/>
+```
+Returns true if string is only letters, including spaces and tabs
+
+**isWordsSpecial**
+```html
+<MyInputComponent name="foo" validations="isWordsSpecial"/>
+```
+Returns true if string is only letters, including special letters (a-z,ú,ø,æ,å)
+
 **isLength:min**, **isLength:min:max**
 ```html
 <MyInputComponent name="foo" validations="isLength:8"/>
