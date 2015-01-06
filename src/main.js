@@ -16,6 +16,12 @@ var validationRules = {
   'isAlpha': function (value) {
     return value.match(/^[a-zA-Z]+$/);
   },
+  'isWords': function (value) {
+    return value.match(/^[a-zA-Z\s]+$/);
+  },
+  'isWordsSpecial': function (value) {
+    return value.match(/^[a-zA-Z\s\u00C0-\u017F]+$/);
+  },
   isLength: function (value, min, max) {
     if (max !== undefined) {
       return value.length >= min && value.length <= max;
