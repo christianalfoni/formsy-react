@@ -18,7 +18,6 @@ A form input builder and validator for React JS
     - [onSuccess()](#onsuccess)
     - [onSubmit()](#onsubmit)
     - [onSubmitted()](#onsubmitted)
-    - [onCancel()](#oncancel)
     - [onError()](#onerror)
     - [onValid()](#onvalid)
     - [onInvalid()](#oninvalid)
@@ -236,12 +235,6 @@ Takes a function to run when the submit button has been clicked. The first argum
 <Formsy.Form url="/users" onSubmitted={this.hideFormLoader}></Formsy.Form>
 ```
 Takes a function to run when either a success or error response is received from the server.
-
-#### <a name="oncancel">onCancel()</a>
-```html
-<Formsy.Form url="/users" onCancel={this.goBack}></Formsy.Form>
-```
-Will display a "cancel" button next to submit. On click it runs the function handler.
 
 #### <a name="onerror">onError(serverResponse)</a>
 ```html
