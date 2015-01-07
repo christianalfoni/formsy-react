@@ -63,6 +63,10 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="changes">Changes</a>
 
+**0.4.0**:
+  - Possibility to handle form data manually using "onSubmit"
+  - Added two more default rules. *isWords* and *isSpecialWords*
+
 **0.3.0**:
   - Deprecated everything related to buttons automatically added
   - Added onValid and onInvalid handlers, use those to manipulate submit buttons etc.
@@ -197,7 +201,7 @@ Sets a class name on the form itself.
 ```html
 <Formsy.Form url="/users"></Formsy.Form>
 ```
-Will either **POST** or **PUT** to the url specified when submitted.
+Will either **POST** or **PUT** to the url specified when submitted. If you do not pass a url the data for the form will be passed to the **onSubmit** handler.
 
 #### <a name="method">method</a>
 ```html
@@ -219,11 +223,13 @@ Supports **json** (default) and **urlencoded** (x-www-form-urlencoded).
 ```
 Takes a function to run when the server has responded with a success http status code.
 
-#### <a name="onsubmit">onSubmit()</a>
+#### <a name="onsubmit">onSubmit(data, resetForm)</a>
 ```html
 <Formsy.Form url="/users" onSubmit={this.showFormLoader}></Formsy.Form>
 ```
-Takes a function to run when the submit button has been clicked. 
+Takes a function to run when the submit button has been clicked. The first argument is the data of the form. The second argument will reset the form.
+
+**note!** When resetting the form the form elements needs to bind its current value using the *getValue* method. That will empty for example an input.
 
 #### <a name="onsubmitted">onSubmitted()</a>
 ```html
@@ -503,9 +509,9 @@ Returns true if string is only letters
 ```
 Returns true if string is only letters, including spaces and tabs
 
-**isWordsSpecial**
+**isSpecialWords**
 ```html
-<MyInputComponent name="foo" validations="isWordsSpecial"/>
+<MyInputComponent name="foo" validations="isSpecialWords"/>
 ```
 Returns true if string is only letters, including special letters (a-z,ú,ø,æ,å)
 
