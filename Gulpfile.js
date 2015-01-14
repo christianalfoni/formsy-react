@@ -73,18 +73,18 @@ gulp.task('deploy', function () {
 
   runBrowserifyTask({
     watch: false,
-    dest: './releases/' + package.version,
+    dest: './releases',
     uglify: true,
     debug: false,
-    name: 'formsy-react-' + package.version + '.min.js'
+    name: 'formsy-react.min.js'
   });
 
   runBrowserifyTask({
     watch: false,
-    dest: './releases/' + package.version,
+    dest: './releases',
     uglify: false,
     debug: false,
-    name: 'formsy-react-' + package.version + '.js'
+    name: 'formsy-react.js'
   });
 
 });

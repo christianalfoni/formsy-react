@@ -210,7 +210,7 @@ Formsy.Form = React.createClass({
     // if wanting to reset the entire form to original state, the second param is a callback for this.
     if (!this.props.url) {
       this.updateModel();
-      this.props.onSubmit(this.model, this.resetModel);
+      this.props.onSubmit(this.model, this.resetModel, this.updateInputsWithError);
       return;
     }
 
@@ -228,7 +228,7 @@ Formsy.Form = React.createClass({
         this.onSuccess(response);
         this.onSubmitted();
       }.bind(this))
-      .catch(this.updateInputsWithError);
+      .catch(this.failSubmit);
   },
 
   // Goes through all registered components and
@@ -239,9 +239,9 @@ Formsy.Form = React.createClass({
       this.model[name] = component.state._value;
     }.bind(this));
   },
-  
+
   // Reset each key in the model to the original / initial value
-  resetModel: function() {
+  resetModel: function () {
     Object.keys(this.inputs).forEach(function (name) {
       this.inputs[name].resetValue();
     }.bind(this));
@@ -254,15 +254,21 @@ Formsy.Form = React.createClass({
   updateInputsWithError: function (errors) {
     Object.keys(errors).forEach(function (name, index) {
       var component = this.inputs[name];
+
+      if (!component) {
+        throw new Error('You are trying to update an input that does not exists. Verify errors object with input names. ' + JSON.stringify(errors));
+      }
+
       var args = [{
         _isValid: false,
         _serverError: errors[name]
       }];
-      if (index === Object.keys(errors).length - 1) {
-        args.push(this.validateForm);
-      }
       component.setState.apply(component, args);
     }.bind(this));
+  },
+
+  failSubmit: function (errors) {
+    this.updateInputsWithError(errors);
     this.setState({
       isSubmitting: false
     });
@@ -289,6 +295,14 @@ Formsy.Form = React.createClass({
     }.bind(this));
   },
 
+  getCurrentValues: function () {
+    return Object.keys(this.inputs).reduce(function (data, name) {
+      var component = this.inputs[name];
+      data[name] = component.state._value;
+      return data;
+    }.bind(this), {});
+  },
+
   // Use the binded values and the actual input value to
   // validate the input and set its state. Then check the
   // state of the form itself
@@ -300,23 +314,7 @@ Formsy.Form = React.createClass({
 
     // Run through the validations, split them up and call
     // the validator IF there is a value or it is required
-    var isValid = true;
-    if (component.props.required || component.state._value !== '') {
-      component._validations.split(',').forEach(function (validation) {
-        var args = validation.split(':');
-        var validateMethod = args.shift();
-        args = args.map(function (arg) {
-          return JSON.parse(arg);
-        });
-        args = [component.state._value].concat(args);
-        if (!validationRules[validateMethod]) {
-          throw new Error('Formsy does not have the validation rule: ' + validateMethod);
-        }
-        if (!validationRules[validateMethod].apply(null, args)) {
-          isValid = false;
-        }
-      });
-    }
+    var isValid = this.runValidation(component);
 
     component.setState({
       _isValid: isValid,
@@ -325,24 +323,67 @@ Formsy.Form = React.createClass({
 
   },
 
+  runValidation: function (component) {
+    var isValid = true;
+    if (component.props.required || component.state._value !== '') {
+      component._validations.split(',').forEach(function (validation) {
+        var args = validation.split(':');
+        var validateMethod = args.shift();
+        args = args.map(function (arg) {
+          try {
+            return JSON.parse(arg);
+          } catch (e) {
+            return arg; // It is a string if it can not parse it
+          }
+        });
+        args = [component.state._value].concat(args);
+        if (!validationRules[validateMethod]) {
+          throw new Error('Formsy does not have the validation rule: ' + validateMethod);
+        }
+        if (!validationRules[validateMethod].apply(this.getCurrentValues(), args)) {
+          isValid = false;
+        }
+      }.bind(this));
+    }
+    return isValid;
+  },
+
   // Validate the form by going through all child input components
   // and check their state
   validateForm: function () {
     var allIsValid = true;
     var inputs = this.inputs;
+    var inputKeys = Object.keys(inputs);
 
-    Object.keys(inputs).forEach(function (name) {
-      if (!inputs[name].state._isValid) {
-        allIsValid = false;
-      }
-    });
+    // We need a callback as we are validating all inputs again. This will
+    // run when the last component has set its state
+    var onValidationComplete = function () {
+      inputKeys.forEach(function (name) {
+        if (!inputs[name].state._isValid) {
+          allIsValid = false;
+        }
+      }.bind(this));
 
-    this.setState({
-      isValid: allIsValid
-    });
+      this.setState({
+        isValid: allIsValid
+      });
 
-    allIsValid && this.props.onValid();
-    !allIsValid && this.props.onInvalid();
+      allIsValid && this.props.onValid();
+      !allIsValid && this.props.onInvalid();
+
+    }.bind(this);
+
+    // Run validation again in case affected by other inputs. The
+    // last component validated will run the onValidationComplete callback
+    inputKeys.forEach(function (name, index) {
+      var component = inputs[name];
+      var isValid = this.runValidation(component);
+      component.setState({
+        _isValid: isValid,
+        _serverError: null
+      }, index === inputKeys.length - 1 ? onValidationComplete : null);
+    }.bind(this));
+
   },
 
   // Method put on each input component to register

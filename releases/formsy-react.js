@@ -1,4 +1,4 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define(["react"],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Formsy=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/christianalfoni/Documents/dev/formsy-react/src/main.js":[function(require,module,exports){
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define(["react"],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Formsy=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 var React = global.React || require('react');
 var Formsy = {};
@@ -18,6 +18,12 @@ var validationRules = {
   'isAlpha': function (value) {
     return value.match(/^[a-zA-Z]+$/);
   },
+  'isWords': function (value) {
+    return value.match(/^[a-zA-Z\s]+$/);
+  },
+  'isSpecialWords': function (value) {
+    return value.match(/^[a-zA-Z\s\u00C0-\u017F]+$/);
+  },
   isLength: function (value, min, max) {
     if (max !== undefined) {
       return value.length >= min && value.length <= max;
@@ -28,18 +34,19 @@ var validationRules = {
     return value == eql;
   }
 };
-var toURLEncoded = function (element,key,list){
+
+var toURLEncoded = function (element, key, list) {
   var list = list || [];
-  if(typeof(element)=='object'){
+  if (typeof (element) == 'object') {
     for (var idx in element)
-      toURLEncoded(element[idx],key?key+'['+idx+']':idx,list);
+      toURLEncoded(element[idx], key ? key + '[' + idx + ']' : idx, list);
   } else {
-    list.push(key+'='+encodeURIComponent(element));
+    list.push(key + '=' + encodeURIComponent(element));
   }
   return list.join('&');
 };
 
-var request = function (method, url, data, contentType) {
+var request = function (method, url, data, contentType, headers) {
 
   var contentType = contentType === 'urlencoded' ? 'application/' + contentType.replace('urlencoded', 'x-www-form-urlencoded') : 'application/json';
   data = contentType === 'application/json' ? JSON.stringify(data) : toURLEncoded(data);
@@ -50,6 +57,12 @@ var request = function (method, url, data, contentType) {
       xhr.open(method, url, true);
       xhr.setRequestHeader('Accept', 'application/json');
       xhr.setRequestHeader('Content-Type', contentType);
+
+      // Add passed headers
+      Object.keys(headers).forEach(function (header) {
+        xhr.setRequestHeader(header, headers[header]);
+      });
+
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
 
@@ -80,40 +93,50 @@ Formsy.defaults = function (passedOptions) {
 
 Formsy.Mixin = {
   getInitialState: function () {
-      return {
-          _value: this.props.value ? this.props.value : '',
-          _isValid: true
-      };
+    return {
+      _value: this.props.value ? this.props.value : '',
+      _isValid: true
+    };
   },
   componentWillMount: function () {
 
-      if (!this.props.name) {
-        throw new Error('Form Input requires a name property when used');
-      }
+    if (!this.props.name) {
+      throw new Error('Form Input requires a name property when used');
+    }
 
-      if (!this.props._attachToForm) {
-        throw new Error('Form Mixin requires component to be nested in a Form');
-      }
+    if (!this.props._attachToForm) {
+      throw new Error('Form Mixin requires component to be nested in a Form');
+    }
 
-      if (this.props.required) {
-          this.props.validations = this.props.validations ? this.props.validations + ',' : '';
-          this.props.validations += 'isValue';
-      }
-      this.props._attachToForm(this);
+    // Add validations to the store itself as the props object can not be modified
+    this._validations = this.props.validations || '';
+
+    if (this.props.required) {
+      this._validations = this.props.validations ? this.props.validations + ',' : '';
+      this._validations += 'isValue';
+    }
+    this.props._attachToForm(this);
+  },
+
+  // We have to make the validate method is kept when new props are added
+  componentWillReceiveProps: function (nextProps) {
+    nextProps._attachToForm = this.props._attachToForm;
+    nextProps._detachFromForm = this.props._detachFromForm;
+    nextProps._validate = this.props._validate;
   },
 
   // Detach it when component unmounts
   componentWillUnmount: function () {
-      this.props._detachFromForm(this);
+    this.props._detachFromForm(this);
   },
 
   // We validate after the value has been set
   setValue: function (value) {
-      this.setState({
-          _value: value
-      }, function () {
-          this.props._validate(this);
-      }.bind(this));
+    this.setState({
+      _value: value
+    }, function () {
+      this.props._validate(this);
+    }.bind(this));
   },
   resetValue: function () {
     this.setState({
@@ -158,11 +181,14 @@ Formsy.Form = React.createClass({
   },
   getDefaultProps: function () {
     return {
+      headers: {},
       onSuccess: function () {},
       onError: function () {},
       onSubmit: function () {},
-      onSubmitted: function () {}
-    }
+      onSubmitted: function () {},
+      onValid: function () {},
+      onInvalid: function () {}
+    };
   },
 
   // Add a map to store the inputs of the form, a model to store
@@ -181,21 +207,30 @@ Formsy.Form = React.createClass({
   submit: function (event) {
     event.preventDefault();
 
+    // To support use cases where no async or request operation is needed.
+    // The "onSubmit" callback is called with the model e.g. {fieldName: "myValue"},
+    // if wanting to reset the entire form to original state, the second param is a callback for this.
     if (!this.props.url) {
-      throw new Error('Formsy Form needs a url property to post the form');
+      this.updateModel();
+      this.props.onSubmit(this.model, this.resetModel, this.updateInputsWithError);
+      return;
     }
 
     this.updateModel();
     this.setState({
       isSubmitting: true
     });
+
     this.props.onSubmit();
-    ajax[this.props.method || 'post'](this.props.url, this.model, this.props.contentType || options.contentType || 'json')
+
+    var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers;
+
+    ajax[this.props.method || 'post'](this.props.url, this.model, this.props.contentType || options.contentType || 'json', headers)
       .then(function (response) {
         this.onSuccess(response);
         this.onSubmitted();
       }.bind(this))
-      .catch(this.updateInputsWithError);
+      .catch(this.failSubmit);
   },
 
   // Goes through all registered components and
@@ -207,21 +242,35 @@ Formsy.Form = React.createClass({
     }.bind(this));
   },
 
+  // Reset each key in the model to the original / initial value
+  resetModel: function () {
+    Object.keys(this.inputs).forEach(function (name) {
+      this.inputs[name].resetValue();
+    }.bind(this));
+    this.validateForm();
+  },
+
   // Go through errors from server and grab the components
   // stored in the inputs map. Change their state to invalid
   // and set the serverError message
   updateInputsWithError: function (errors) {
     Object.keys(errors).forEach(function (name, index) {
       var component = this.inputs[name];
+
+      if (!component) {
+        throw new Error('You are trying to update an input that does not exists. Verify errors object with input names. ' + JSON.stringify(errors));
+      }
+
       var args = [{
         _isValid: false,
         _serverError: errors[name]
       }];
-      if (index === Object.keys(errors).length - 1) {
-        args.push(this.validateForm);
-      }
       component.setState.apply(component, args);
     }.bind(this));
+  },
+
+  failSubmit: function (errors) {
+    this.updateInputsWithError(errors);
     this.setState({
       isSubmitting: false
     });
@@ -235,17 +284,25 @@ Formsy.Form = React.createClass({
   registerInputs: function (children) {
     React.Children.forEach(children, function (child) {
 
-      if (child.props.name) {
+      if (child.props && child.props.name) {
         child.props._attachToForm = this.attachToForm;
         child.props._detachFromForm = this.detachFromForm;
         child.props._validate = this.validate;
       }
 
-      if (child.props.children) {
+      if (child.props && child.props.children) {
         this.registerInputs(child.props.children);
       }
 
     }.bind(this));
+  },
+
+  getCurrentValues: function () {
+    return Object.keys(this.inputs).reduce(function (data, name) {
+      var component = this.inputs[name];
+      data[name] = component.state._value;
+      return data;
+    }.bind(this), {});
   },
 
   // Use the binded values and the actual input value to
@@ -253,27 +310,13 @@ Formsy.Form = React.createClass({
   // state of the form itself
   validate: function (component) {
 
-    if (!component.props.validations) {
+    if (!component.props.required && !component._validations) {
       return;
     }
 
     // Run through the validations, split them up and call
     // the validator IF there is a value or it is required
-    var isValid = true;
-    if (component.props.required || component.state._value !== '') {
-      component.props.validations.split(',').forEach(function (validation) {
-        var args = validation.split(':');
-        var validateMethod = args.shift();
-        args = args.map(function (arg) { return JSON.parse(arg); });
-        args = [component.state._value].concat(args);
-        if (!validationRules[validateMethod]) {
-          throw new Error('Formsy does not have the validation rule: ' + validateMethod);
-        }
-        if (!validationRules[validateMethod].apply(null, args)) {
-          isValid = false;
-        }
-      });
-    }
+    var isValid = this.runValidation(component);
 
     component.setState({
       _isValid: isValid,
@@ -282,21 +325,67 @@ Formsy.Form = React.createClass({
 
   },
 
+  runValidation: function (component) {
+    var isValid = true;
+    if (component.props.required || component.state._value !== '') {
+      component._validations.split(',').forEach(function (validation) {
+        var args = validation.split(':');
+        var validateMethod = args.shift();
+        args = args.map(function (arg) {
+          try {
+            return JSON.parse(arg);
+          } catch (e) {
+            return arg; // It is a string if it can not parse it
+          }
+        });
+        args = [component.state._value].concat(args);
+        if (!validationRules[validateMethod]) {
+          throw new Error('Formsy does not have the validation rule: ' + validateMethod);
+        }
+        if (!validationRules[validateMethod].apply(this.getCurrentValues(), args)) {
+          isValid = false;
+        }
+      }.bind(this));
+    }
+    return isValid;
+  },
+
   // Validate the form by going through all child input components
   // and check their state
   validateForm: function () {
     var allIsValid = true;
     var inputs = this.inputs;
-    
-    Object.keys(inputs).forEach(function (name) {
-      if (!inputs[name].state._isValid) {
-        allIsValid = false;
-      }
-    });
+    var inputKeys = Object.keys(inputs);
 
-    this.setState({
-      isValid: allIsValid
-    });
+    // We need a callback as we are validating all inputs again. This will
+    // run when the last component has set its state
+    var onValidationComplete = function () {
+      inputKeys.forEach(function (name) {
+        if (!inputs[name].state._isValid) {
+          allIsValid = false;
+        }
+      }.bind(this));
+
+      this.setState({
+        isValid: allIsValid
+      });
+
+      allIsValid && this.props.onValid();
+      !allIsValid && this.props.onInvalid();
+
+    }.bind(this);
+
+    // Run validation again in case affected by other inputs. The
+    // last component validated will run the onValidationComplete callback
+    inputKeys.forEach(function (name, index) {
+      var component = inputs[name];
+      var isValid = this.runValidation(component);
+      component.setState({
+        _isValid: isValid,
+        _serverError: null
+      }, index === inputKeys.length - 1 ? onValidationComplete : null);
+    }.bind(this));
+
   },
 
   // Method put on each input component to register
@@ -314,30 +403,14 @@ Formsy.Form = React.createClass({
     delete this.model[component.props.name];
   },
   render: function () {
-    var submitButton = React.DOM.button({
-      className: this.props.submitButtonClass || options.submitButtonClass,
-      disabled: this.state.isSubmitting || !this.state.isValid
-    }, this.props.submitLabel || 'Submit');
-
-    var cancelButton = React.DOM.button({
-      onClick: this.props.onCancel,
-      disabled: this.state.isSubmitting,
-      className: this.props.resetButtonClass || options.resetButtonClass
-    }, this.props.cancelLabel || 'Cancel');
 
     return React.DOM.form({
-      onSubmit: this.submit,
-      className: this.props.className
-    }, 
-      this.props.children, 
-      React.DOM.div({
-        className: this.props.buttonWrapperClass || options.buttonWrapperClass
-      }, 
-        this.props.showCancel || options.showCancel ? cancelButton : null, 
-        this.props.hideSubmit || options.hideSubmit ? null : submitButton
-      )
+        onSubmit: this.submit,
+        className: this.props.className
+      },
+      this.props.children
     );
-    
+
   }
 });
 
@@ -346,6 +419,7 @@ if (!global.exports && !global.module && (!global.define || !global.define.amd))
 }
 
 module.exports = Formsy;
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"react":"react"}]},{},["/Users/christianalfoni/Documents/dev/formsy-react/src/main.js"])("/Users/christianalfoni/Documents/dev/formsy-react/src/main.js")
+},{"react":"react"}]},{},[1])(1)
 });

@@ -62,6 +62,11 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="changes">Changes</a>
 
+**0.5.0**
+  - Added [cross input validation](#formsyaddvalidationrule)
+  - Fixed bug where validation rule refers to a string
+  - Added "invalidateForm" function when manually submitting the form
+
 **0.4.1**
   - Fixed bug where form element is required, but no validations
 
@@ -198,11 +203,11 @@ Supports **json** (default) and **urlencoded** (x-www-form-urlencoded).
 ```
 Takes a function to run when the server has responded with a success http status code.
 
-#### <a name="onsubmit">onSubmit(data, resetForm)</a>
+#### <a name="onsubmit">onSubmit(data, resetForm, invalidateForm)</a>
 ```html
 <Formsy.Form url="/users" onSubmit={this.showFormLoader}></Formsy.Form>
 ```
-Takes a function to run when the submit button has been clicked. The first argument is the data of the form. The second argument will reset the form.
+Takes a function to run when the submit button has been clicked. The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. E.g. `{email: "This email is taken"}`.
 
 **note!** When resetting the form the form elements needs to bind its current value using the *getValue* method. That will empty for example an input.
 
@@ -440,6 +445,19 @@ Formsy.addValidationRule('isIn', function (value, array) {
 ```
 ```html
 <MyInputComponent name="fruit" validations="isIn:['apple', 'orange', 'pear']"/>
+```
+Cross input validation:
+```javascript
+Formsy.addValidationRule('isMoreThan', function (value, otherField) {
+  // The this context points to an object containing the values
+  // {childAge: "", parentAge: "5"}
+  // otherField argument is from the validations rule ("childAge")
+  return Number(value) > Number(this[otherField]);
+});
+```
+```html
+<MyInputComponent name="childAge"/>
+<MyInputComponent name="parentAge" validations="isMoreThan:childAge"/>
 ```
 ## Validators
 **isValue**
