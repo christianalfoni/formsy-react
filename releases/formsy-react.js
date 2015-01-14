@@ -327,7 +327,7 @@ Formsy.Form = React.createClass({
 
   runValidation: function (component) {
     var isValid = true;
-    if (component.props.required || component.state._value !== '') {
+    if (component._validations.length && (component.props.required || component.state._value !== '')) {
       component._validations.split(',').forEach(function (validation) {
         var args = validation.split(':');
         var validateMethod = args.shift();

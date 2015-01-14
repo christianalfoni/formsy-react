@@ -62,6 +62,9 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="changes">Changes</a>
 
+**0.5.1**
+  - Fixed bug with empty validations
+  
 **0.5.0**
   - Added [cross input validation](#formsyaddvalidationrule)
   - Fixed bug where validation rule refers to a string
