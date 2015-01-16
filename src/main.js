@@ -64,10 +64,15 @@ var request = function (method, url, data, contentType, headers) {
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
 
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve(xhr.responseText ? JSON.parse(xhr.responseText) : null);
-          } else {
-            reject(xhr.responseText ? JSON.parse(xhr.responseText) : null);
+          try {
+            var response = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(response);
+            } else {
+              reject(response);
+            }
+          } catch (e) {
+            reject(e);
           }
 
         }
