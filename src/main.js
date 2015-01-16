@@ -226,7 +226,7 @@ Formsy.Form = React.createClass({
 
     this.props.onSubmit();
 
-    var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers;
+    var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers || {};
 
     ajax[this.props.method || 'post'](this.props.url, this.model, this.props.contentType || options.contentType || 'json', headers)
       .then(function (response) {
