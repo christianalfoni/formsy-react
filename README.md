@@ -23,6 +23,7 @@ A form input builder and validator for React JS
     - [onInvalid()](#oninvalid)
   - [Formsy.Mixin](#formsymixin)
     - [name](#name)
+    - [value](#value)
     - [validations](#validations)
     - [validationError](#validationerror)
     - [required](#required)
@@ -245,6 +246,12 @@ Whenever the form becomes invalid the "onInvalid" handler is called. Use it to f
 <MyInputComponent name="email"/>
 ```
 The name is required to register the form input component in the form.
+
+#### <a name="value">value</a>
+```html
+<MyInputComponent name="email" value="My default value"/>
+```
+You should always use the **getValue()** method inside your formsy form element. To pass a default value, use the value attribute.
 
 #### <a name="validations">validations</a>
 ```html

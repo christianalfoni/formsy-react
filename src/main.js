@@ -64,10 +64,15 @@ var request = function (method, url, data, contentType, headers) {
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
 
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve(xhr.responseText ? JSON.parse(xhr.responseText) : null);
-          } else {
-            reject(xhr.responseText ? JSON.parse(xhr.responseText) : null);
+          try {
+            var response = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(response);
+            } else {
+              reject(response);
+            }
+          } catch (e) {
+            reject(e);
           }
 
         }
@@ -221,7 +226,7 @@ Formsy.Form = React.createClass({
 
     this.props.onSubmit();
 
-    var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers;
+    var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers || {};
 
     ajax[this.props.method || 'post'](this.props.url, this.model, this.props.contentType || options.contentType || 'json', headers)
       .then(function (response) {
