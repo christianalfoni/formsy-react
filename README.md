@@ -210,7 +210,7 @@ Takes a function to run when the server has responded with a success http status
 ```html
 <Formsy.Form url="/users" onSubmit={this.showFormLoader}></Formsy.Form>
 ```
-Takes a function to run when the submit button has been clicked. The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. E.g. `{email: "This email is taken"}`.
+Takes a function to run when the submit button has been clicked. The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. E.g. `{email: "This email is taken"}`. Resetting or invalidating the form will cause **setState** to run on the form element component.
 
 **note!** When resetting the form the form elements needs to bind its current value using the *getValue* method. That will empty for example an input.
 
@@ -297,7 +297,7 @@ var MyInput = React.createClass({
   }
 });
 ```
-Sets the value of your form input component. Notice that it does not have to be a text input. Anything can set a value on the component. Think calendars, checkboxes, autocomplete stuff etc.
+Sets the value of your form input component. Notice that it does not have to be a text input. Anything can set a value on the component. Think calendars, checkboxes, autocomplete stuff etc. Running this method will trigger a **setState()** on the component and do a render.
 
 #### <a name="hasvalue">hasValue()</a>
 ```javascript
@@ -333,7 +333,7 @@ var MyInput = React.createClass({
   }
 });
 ```
-Resets to empty value.
+Resets to empty value. This will run a **setState()** on the component and do a render.
 
 #### <a name="geterrormessage">getErrorMessage()</a>
 ```javascript
