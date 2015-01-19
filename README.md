@@ -63,6 +63,9 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="changes">Changes</a>
 
+**0.5.2**
+  - Fixed bug with handlers in ajax requests (Thanks @smokku)
+
 **0.5.1**
   - Fixed bug with empty validations
   
