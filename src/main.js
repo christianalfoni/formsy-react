@@ -230,8 +230,8 @@ Formsy.Form = React.createClass({
 
     ajax[this.props.method || 'post'](this.props.url, this.model, this.props.contentType || options.contentType || 'json', headers)
       .then(function (response) {
-        this.onSuccess(response);
-        this.onSubmitted();
+        this.props.onSuccess(response);
+        this.props.onSubmitted();
       }.bind(this))
       .catch(this.failSubmit);
   },
