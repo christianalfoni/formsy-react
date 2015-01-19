@@ -66,10 +66,15 @@ var request = function (method, url, data, contentType, headers) {
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
 
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve(xhr.responseText ? JSON.parse(xhr.responseText) : null);
-          } else {
-            reject(xhr.responseText ? JSON.parse(xhr.responseText) : null);
+          try {
+            var response = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(response);
+            } else {
+              reject(response);
+            }
+          } catch (e) {
+            reject(e);
           }
 
         }
@@ -95,7 +100,8 @@ Formsy.Mixin = {
   getInitialState: function () {
     return {
       _value: this.props.value ? this.props.value : '',
-      _isValid: true
+      _isValid: true,
+      _isPristine: true
     };
   },
   componentWillMount: function () {
@@ -133,14 +139,16 @@ Formsy.Mixin = {
   // We validate after the value has been set
   setValue: function (value) {
     this.setState({
-      _value: value
+      _value: value,
+      _isPristine: false
     }, function () {
       this.props._validate(this);
     }.bind(this));
   },
   resetValue: function () {
     this.setState({
-      _value: ''
+      _value: '',
+      _isPristine: true
     }, function () {
       this.props._validate(this);
     });
@@ -156,6 +164,9 @@ Formsy.Mixin = {
   },
   isValid: function () {
     return this.state._isValid;
+  },
+  isPristine: function () {
+    return this.state._isPristine;
   },
   isRequired: function () {
     return this.props.required;
@@ -207,6 +218,11 @@ Formsy.Form = React.createClass({
   submit: function (event) {
     event.preventDefault();
 
+    // Trigger form as not pristine.
+    // If any inputs have not been touched yet this will make them dirty
+    // so validation becomes visible (if based on isPristine)
+    this.setFormPristine(false);
+
     // To support use cases where no async or request operation is needed.
     // The "onSubmit" callback is called with the model e.g. {fieldName: "myValue"},
     // if wanting to reset the entire form to original state, the second param is a callback for this.
@@ -223,12 +239,12 @@ Formsy.Form = React.createClass({
 
     this.props.onSubmit();
 
-    var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers;
+    var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers || {};
 
     ajax[this.props.method || 'post'](this.props.url, this.model, this.props.contentType || options.contentType || 'json', headers)
       .then(function (response) {
-        this.onSuccess(response);
-        this.onSubmitted();
+        this.props.onSuccess(response);
+        this.props.onSubmitted();
       }.bind(this))
       .catch(this.failSubmit);
   },
@@ -303,6 +319,20 @@ Formsy.Form = React.createClass({
       data[name] = component.state._value;
       return data;
     }.bind(this), {});
+  },
+
+  setFormPristine: function(isPristine) {
+    var inputs = this.inputs;
+    var inputKeys = Object.keys(inputs);
+
+    // Iterate through each component and set it as pristine
+    // or "dirty".
+    inputKeys.forEach(function (name, index) {
+      var component = inputs[name];
+      component.setState({
+        _isPristine: isPristine
+      });
+    }.bind(this));
   },
 
   // Use the binded values and the actual input value to

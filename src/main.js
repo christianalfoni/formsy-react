@@ -98,7 +98,8 @@ Formsy.Mixin = {
   getInitialState: function () {
     return {
       _value: this.props.value ? this.props.value : '',
-      _isValid: true
+      _isValid: true,
+      _isPristine: true
     };
   },
   componentWillMount: function () {
@@ -136,14 +137,16 @@ Formsy.Mixin = {
   // We validate after the value has been set
   setValue: function (value) {
     this.setState({
-      _value: value
+      _value: value,
+      _isPristine: false
     }, function () {
       this.props._validate(this);
     }.bind(this));
   },
   resetValue: function () {
     this.setState({
-      _value: ''
+      _value: '',
+      _isPristine: true
     }, function () {
       this.props._validate(this);
     });
@@ -159,6 +162,9 @@ Formsy.Mixin = {
   },
   isValid: function () {
     return this.state._isValid;
+  },
+  isPristine: function () {
+    return this.state._isPristine;
   },
   isRequired: function () {
     return this.props.required;
@@ -209,6 +215,11 @@ Formsy.Form = React.createClass({
   // Update model, submit to url prop and send the model
   submit: function (event) {
     event.preventDefault();
+
+    // Trigger form as not pristine.
+    // If any inputs have not been touched yet this will make them dirty
+    // so validation becomes visible (if based on isPristine)
+    this.setFormPristine(false);
 
     // To support use cases where no async or request operation is needed.
     // The "onSubmit" callback is called with the model e.g. {fieldName: "myValue"},
@@ -306,6 +317,20 @@ Formsy.Form = React.createClass({
       data[name] = component.state._value;
       return data;
     }.bind(this), {});
+  },
+
+  setFormPristine: function(isPristine) {
+    var inputs = this.inputs;
+    var inputKeys = Object.keys(inputs);
+
+    // Iterate through each component and set it as pristine
+    // or "dirty".
+    inputKeys.forEach(function (name, index) {
+      var component = inputs[name];
+      component.setState({
+        _isPristine: isPristine
+      });
+    }.bind(this));
   },
 
   // Use the binded values and the actual input value to
