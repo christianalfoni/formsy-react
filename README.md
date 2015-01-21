@@ -68,7 +68,7 @@ The main concept is that forms, inputs and validation is done very differently a
 **0.6.0**
   - **onSubmit()** now has the same signature regardless of passing url attribute or not
   - **isPristine()** is a new method to handle "touched" form elements (thanks @FoxxMD)
-  - Mapping attribute to pass a function that maps input values to new structure. The new structure is either passed to *onSubmit* or to the server when using a url attribute (thanks for feedback @MattAitchison)
+  - Mapping attributes to pass a function that maps input values to new structure. The new structure is either passed to *onSubmit* and/or to the server when using a url attribute (thanks for feedback @MattAitchison)
   - Added default "equalsField" validation rule
   - Lots of tests!
 
