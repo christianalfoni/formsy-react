@@ -1,4 +1,4 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define(["react"],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Formsy=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 var React = global.React || require('react');
 var Formsy = {};
@@ -169,10 +169,10 @@ Formsy.Mixin = {
     return this.state._isPristine;
   },
   isRequired: function () {
-    return this.props.required;
+    return !!this.props.required;
   },
   showRequired: function () {
-    return this.props.required && this.state._value === '';
+    return this.isRequired() && this.state._value === '';
   },
   showError: function () {
     return !this.showRequired() && !this.state._isValid;
@@ -183,7 +183,7 @@ Formsy.addValidationRule = function (name, func) {
   validationRules[name] = func;
 };
 
-Formsy.Form = React.createClass({
+Formsy.Form = React.createClass({displayName: "Form",
   getInitialState: function () {
     return {
       isValid: true,
@@ -228,7 +228,7 @@ Formsy.Form = React.createClass({
     // if wanting to reset the entire form to original state, the second param is a callback for this.
     if (!this.props.url) {
       this.updateModel();
-      this.props.onSubmit(this.model, this.resetModel, this.updateInputsWithError);
+      this.props.onSubmit(this.mapModel(), this.resetModel, this.updateInputsWithError);
       return;
     }
 
@@ -237,16 +237,21 @@ Formsy.Form = React.createClass({
       isSubmitting: true
     });
 
-    this.props.onSubmit();
+    this.props.onSubmit(this.mapModel(), this.resetModel, this.updateInputsWithError);
 
     var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers || {};
 
-    ajax[this.props.method || 'post'](this.props.url, this.model, this.props.contentType || options.contentType || 'json', headers)
+    var method = this.props.method && ajax[this.props.method.toLowerCase()] ? this.props.method.toLowerCase() : 'post';
+    ajax[method](this.props.url, this.mapModel(), this.props.contentType || options.contentType || 'json', headers)
       .then(function (response) {
         this.props.onSuccess(response);
         this.props.onSubmitted();
       }.bind(this))
       .catch(this.failSubmit);
+  },
+
+  mapModel: function () {
+    return this.props.mapping ? this.props.mapping(this.model) : this.model;
   },
 
   // Goes through all registered components and
@@ -451,5 +456,4 @@ if (!global.exports && !global.module && (!global.define || !global.define.amd))
 module.exports = Formsy;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"react":"react"}]},{},[1])(1)
-});
+},{"react":"react"}]},{},[1]);

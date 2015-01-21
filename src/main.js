@@ -30,6 +30,9 @@ var validationRules = {
   },
   equals: function (value, eql) {
     return value == eql;
+  },
+  equalsField: function (value, field) {
+    return value === this[field];
   }
 };
 
@@ -167,10 +170,10 @@ Formsy.Mixin = {
     return this.state._isPristine;
   },
   isRequired: function () {
-    return this.props.required;
+    return !!this.props.required;
   },
   showRequired: function () {
-    return this.props.required && this.state._value === '';
+    return this.isRequired() && this.state._value === '';
   },
   showError: function () {
     return !this.showRequired() && !this.state._isValid;
@@ -226,7 +229,7 @@ Formsy.Form = React.createClass({
     // if wanting to reset the entire form to original state, the second param is a callback for this.
     if (!this.props.url) {
       this.updateModel();
-      this.props.onSubmit(this.model, this.resetModel, this.updateInputsWithError);
+      this.props.onSubmit(this.mapModel(), this.resetModel, this.updateInputsWithError);
       return;
     }
 
@@ -235,16 +238,21 @@ Formsy.Form = React.createClass({
       isSubmitting: true
     });
 
-    this.props.onSubmit();
+    this.props.onSubmit(this.mapModel(), this.resetModel, this.updateInputsWithError);
 
     var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers || {};
 
-    ajax[this.props.method || 'post'](this.props.url, this.model, this.props.contentType || options.contentType || 'json', headers)
+    var method = this.props.method && ajax[this.props.method.toLowerCase()] ? this.props.method.toLowerCase() : 'post';
+    ajax[method](this.props.url, this.mapModel(), this.props.contentType || options.contentType || 'json', headers)
       .then(function (response) {
         this.props.onSuccess(response);
         this.props.onSubmitted();
       }.bind(this))
       .catch(this.failSubmit);
+  },
+
+  mapModel: function () {
+    return this.props.mapping ? this.props.mapping(this.model) : this.model;
   },
 
   // Goes through all registered components and

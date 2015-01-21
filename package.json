@@ -1,6 +1,6 @@
 {
   "name": "formsy-react",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "A form input builder and validator for React JS",
   "main": "src/main.js",
   "scripts": {
@@ -9,17 +9,23 @@
   "author": "Christian Alfoni",
   "license": "MIT",
   "devDependencies": {
-    "browserify": "^5.11.2",
-    "gulp": "^3.8.8",
+    "browserify": "^6.2.0",
+    "glob": "^4.0.6",
+    "gulp": "^3.8.9",
     "gulp-if": "^1.2.4",
-    "gulp-notify": "^1.6.0",
-    "gulp-shell": "^0.2.9",
+    "gulp-jasmine2-phantomjs": "^0.1.1",
+    "gulp-livereload": "^3.4.0",
+    "gulp-notify": "^1.4.2",
+    "gulp-shell": "^0.2.10",
     "gulp-streamify": "0.0.5",
-    "gulp-uglify": "^1.0.1",
-    "gulp-util": "^3.0.1",
-    "react": "^0.11.2",
-    "reactify": "^0.14.0",
-    "vinyl-source-stream": "^1.0.0",
-    "watchify": "^1.0.2"
+    "gulp-uglify": "^0.3.1",
+    "gulp-util": "^3.0.0",
+    "phantomjs": "^1.9.12",
+    "reactify": "^0.15.2",
+    "vinyl-source-stream": "^0.1.1",
+    "watchify": "^2.1.1"
+  },
+  "dependencies": {
+    "react": "^0.12.2"
   }
 }

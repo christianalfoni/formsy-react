@@ -15,6 +15,7 @@ A form input builder and validator for React JS
     - [url](#url)
     - [method](#method)
     - [contentType](#contenttype)
+    - [mapping](#mapping)
     - [onSuccess()](#onsuccess)
     - [onSubmit()](#onsubmit)
     - [onSubmitted()](#onsubmitted)
@@ -36,6 +37,7 @@ A form input builder and validator for React JS
     - [isRequired()](#isrequired)
     - [showRequired()](#showrequired)
     - [showError()](#showerror)
+    - [isPristine()](#ispristine)
   - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
 
@@ -62,6 +64,13 @@ The main concept is that forms, inputs and validation is done very differently a
   3. Install with `bower install formsy-react`
 
 ## <a name="changes">Changes</a>
+
+**0.6.0**
+  - **onSubmit()** now has the same signature regardless of passing url attribute or not
+  - **isPristine()** is a new method to handle "touched" form elements (thanks @FoxxMD)
+  - Mapping attribute to pass a function that maps input values to new structure. The new structure is either passed to *onSubmit* or to the server when using a url attribute (thanks for feedback @MattAitchison)
+  - Added default "equalsField" validation rule
+  - Lots of tests!
 
 **0.5.2**
   - Fixed bug with handlers in ajax requests (Thanks @smokku)
@@ -214,9 +223,11 @@ Takes a function to run when the server has responded with a success http status
 ```html
 <Formsy.Form url="/users" onSubmit={this.showFormLoader}></Formsy.Form>
 ```
-Takes a function to run when the submit button has been clicked. The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. E.g. `{email: "This email is taken"}`. Resetting or invalidating the form will cause **setState** to run on the form element component.
+Takes a function to run when the submit button has been clicked. 
 
-**note!** When resetting the form the form elements needs to bind its current value using the *getValue* method. That will empty for example an input.
+The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. E.g. `{email: "This email is taken"}`. Resetting or invalidating the form will cause **setState** to run on the form element component.
+
+**note!** If you do not pass a url attribute this handler is where you would manually do your ajax request.
 
 #### <a name="onsubmitted">onSubmitted()</a>
 ```html
@@ -297,6 +308,7 @@ Gets the current value of the form input component.
 #### <a name="setvalue">setValue(value)</a>
 ```javascript
 var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
   },
@@ -312,6 +324,7 @@ Sets the value of your form input component. Notice that it does not have to be 
 #### <a name="hasvalue">hasValue()</a>
 ```javascript
 var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
   },
@@ -330,6 +343,7 @@ The hasValue() method helps you identify if there actually is a value or not. Th
 #### <a name="resetvalue">resetValue()</a>
 ```javascript
 var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
   },
@@ -348,6 +362,7 @@ Resets to empty value. This will run a **setState()** on the component and do a 
 #### <a name="geterrormessage">getErrorMessage()</a>
 ```javascript
 var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
   },
@@ -366,6 +381,7 @@ Will return the server error mapped to the form input component or return the va
 #### <a name="isvalid">isValid()</a>
 ```javascript
 var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
   },
@@ -386,6 +402,7 @@ Returns the valid state of the form input component.
 #### <a name="isrequired">isRequired()</a>
 ```javascript
 var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
   },
@@ -405,6 +422,7 @@ Returns true if the required property has been passed.
 #### <a name="showrequired">showRequired()</a>
 ```javascript
 var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
   },
@@ -424,6 +442,7 @@ Lets you check if the form input component should indicate if it is a required f
 #### <a name="showerror">showError()</a>
 ```javascript
 var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
   },
@@ -439,6 +458,28 @@ var MyInput = React.createClass({
 });
 ```
 Lets you check if the form input component should indicate if there is an error. This happens if there is a form input component value and it is invalid or if a server error is received.
+
+#### <a name="ispristine">isPristine()</a>
+```javascript
+var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
+  changeValue: function (event) {
+    this.setValue(event.currentTarget.value);
+  },
+  render: function () {
+    return (
+      <div>
+        <input type="text" onChange={this.changeValue} value={this.getValue()}/>
+        <span>{this.isPristine() ? 'You have not touched this yet' : ''}</span>
+      </div>
+    );
+  }
+});
+```
+By default all formsy input elements are pristine, which means they are not "touched". As soon as the **setValue** method is run it will no longer be pristine.
+
+**note!** When the form is reset, using the resetForm callback function on **onSubmit** the inputs are not reset to pristine.
+
 
 ### <a name="formsyaddvalidationrule">Formsy.addValidationRule(name, ruleFunc)</a>
 An example:
@@ -527,6 +568,18 @@ Returns true if the value length is the equal or more than minimum and equal or 
 <MyInputComponent name="foo" validations="equals:4"/>
 ```
 Return true if the value from input component matches value passed (==).
+
+**equalsField:fieldName**
+```html
+<MyInputComponent name="password"/>
+<MyInputComponent name="repeated_password" validations="equalsField:password"/>
+```
+Return true if the value from input component matches value passed (==).
+
+## Run tests
+- Run `gulp`
+- Run a server in `build` folder
+- Go to `localhost/testrunner.html` (live reload)
 
 License
 -------
