@@ -213,6 +213,27 @@ Supports **json** (default) and **urlencoded** (x-www-form-urlencoded).
 
 **Note!** Response has to be **json**.
 
+#### <a name="mapping">mapping</a>
+```javascript
+var MyForm = React.createClass({
+  mapInputs: function (inputs) {
+    return {
+      'field1': inputs.foo,
+      'field2': inputs.bar
+    };
+  },
+  render: function () {
+    return (
+      <Formsy.Form url="/users" mapping={this.mapInputs}>
+        <MyInput name="foo"/>
+        <MyInput name="bar"/>
+      </Formsy.Form>
+    );
+  }
+})
+```
+Use mapping to change the data structure of your input elements. This structure is passed to the onSubmit handler and/or to the server on submitting, depending on how you submit the form.
+
 #### <a name="onsuccess">onSuccess(serverResponse)</a>
 ```html
 <Formsy.Form url="/users" onSuccess={this.changeUrl}></Formsy.Form>
