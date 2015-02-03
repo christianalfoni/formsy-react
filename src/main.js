@@ -199,7 +199,8 @@ Formsy.Form = React.createClass({
       onSubmit: function () {},
       onSubmitted: function () {},
       onValid: function () {},
-      onInvalid: function () {}
+      onInvalid: function () {},
+      onChange: function () {}
     };
   },
 
@@ -341,12 +342,26 @@ Formsy.Form = React.createClass({
     }.bind(this));
   },
 
+  // Going around state and props to minimize rerender
+  onChangeHandlerTimer: null,
+
+  // Used to trigger onChange events with form data
+  onChangeHandler: function() {   
+    if(this.onChangeHandlerTimer) clearTimeout(this.onChangeHandlerTimer);
+
+    this.onChangeHandlerTimer = setTimeout(function(){
+      this.updateModel();
+      this.props.onChange(this.mapModel());
+    }.bind(this),0);   
+  },
+
   // Use the binded values and the actual input value to
   // validate the input and set its state. Then check the
   // state of the form itself
   validate: function (component) {
 
     if (!component.props.required && !component._validations) {
+      this.onChangeHandler();
       return;
     }
 
@@ -358,7 +373,6 @@ Formsy.Form = React.createClass({
       _isValid: isValid,
       _serverError: null
     }, this.validateForm);
-
   },
 
   runValidation: function (component) {
@@ -396,6 +410,7 @@ Formsy.Form = React.createClass({
     // We need a callback as we are validating all inputs again. This will
     // run when the last component has set its state
     var onValidationComplete = function () {
+
       inputKeys.forEach(function (name) {
         if (!inputs[name].state._isValid) {
           allIsValid = false;
@@ -409,6 +424,9 @@ Formsy.Form = React.createClass({
       allIsValid && this.props.onValid();
       !allIsValid && this.props.onInvalid();
 
+      // Trigger change handler
+      this.onChangeHandler(); 
+
     }.bind(this);
 
     // Run validation again in case affected by other inputs. The
@@ -420,8 +438,7 @@ Formsy.Form = React.createClass({
         _isValid: isValid,
         _serverError: null
       }, index === inputKeys.length - 1 ? onValidationComplete : null);
-    }.bind(this));
-
+    }.bind(this));   
   },
 
   // Method put on each input component to register
