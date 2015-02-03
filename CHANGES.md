@@ -1,3 +1,14 @@
+**0.4.1**
+  - Fixed bug where form element is required, but no validations
+
+**0.4.0**:
+  - Possibility to handle form data manually using "onSubmit"
+  - Added two more default rules. *isWords* and *isSpecialWords*
+
+**0.3.0**:
+  - Deprecated everything related to buttons automatically added
+  - Added onValid and onInvalid handlers, use those to manipulate submit buttons etc.
+
 **0.2.3**:
   
   - Fixed bug where child does not have props property

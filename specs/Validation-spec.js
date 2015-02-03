@@ -78,4 +78,60 @@ describe('Validation', function() {
 
   });
 
+  it('RULE: isNumeric', function () {
+    
+    var isValid = jasmine.createSpy('valid');
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      updateValue: function (event) {
+        this.setValue(event.target.value);
+      },
+      render: function () {
+        if (this.isValid()) {
+          isValid();
+        }
+        return <input value={this.getValue()} onChange={this.updateValue}/>
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" value="foo" validations="isNumeric"/>
+      </Formsy.Form>
+    );
+
+    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: '123'}});
+    expect(isValid).toHaveBeenCalled();
+
+  });
+
+  it('RULE: isNumeric (actual number)', function () {
+    
+    var isValid = jasmine.createSpy('valid');
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      updateValue: function (event) {
+        this.setValue(Number(event.target.value));
+      },
+      render: function () {
+        if (this.isValid()) {
+          isValid();
+        }
+        return <input value={this.getValue()} onChange={this.updateValue}/>
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" value="foo" validations="isNumeric"/>
+      </Formsy.Form>
+    );
+
+    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: '123'}});
+    expect(isValid).toHaveBeenCalled();
+
+  });
+
 });

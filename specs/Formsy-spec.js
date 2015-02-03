@@ -1,21 +1,284 @@
 var Formsy = require('./../src/main.js');
 
-describe('Formsy', function() {
+describe('Formsy', function () {
 
   describe('Setting up a form', function () {
-    
-    it('should render a form into the document', function() {
-      var form = TestUtils.renderIntoDocument(
-        <Formsy.Form></Formsy.Form>
-      );
+
+    it('should render a form into the document', function () {
+      var form = TestUtils.renderIntoDocument( <Formsy.Form></Formsy.Form>);
       expect(form.getDOMNode().tagName).toEqual('FORM');
     });
 
     it('should set a class name if passed', function () {
-      var form = TestUtils.renderIntoDocument(
-        <Formsy.Form className="foo"></Formsy.Form>
-      );
+      var form = TestUtils.renderIntoDocument( <Formsy.Form className="foo"></Formsy.Form>);
       expect(form.getDOMNode().className).toEqual('foo');
+    });
+
+    it('should allow for inputs being added dynamically', function (done) {
+
+      var inputs = [];
+      var forceUpdate = null;
+      var model = null;
+      var TestInput = React.createClass({
+        mixins: [Formsy.Mixin],
+        render: function () {
+          return <div/>
+        }
+      });
+      var TestForm = React.createClass({
+        componentWillMount: function () {
+          forceUpdate = this.forceUpdate.bind(this);
+        },
+        onSubmit: function (formModel) {
+          model = formModel;
+        },
+        render: function () {
+          return ( 
+            <Formsy.Form onSubmit={this.onSubmit}> 
+              {inputs}
+            </Formsy.Form>);
+        }
+      });
+      var form = TestUtils.renderIntoDocument( 
+        <TestForm/> 
+      );
+
+      // Wait before adding the input
+      setTimeout(function () {
+
+        inputs.push(TestInput({
+          name: 'test'
+        }));
+
+        forceUpdate(function () {
+
+          // Wait for next event loop, as that does the form
+          setTimeout(function () {
+            TestUtils.Simulate.submit(form.getDOMNode());
+            expect(model.test).toBeDefined();
+            done();
+          }, 0);
+
+        });
+
+      }, 10);
+
+    });
+
+    it('should allow dynamically added inputs to update the form-model', function (done) {
+
+      var inputs = [];
+      var forceUpdate = null;
+      var model = null;
+      var TestInput = React.createClass({
+        mixins: [Formsy.Mixin],
+        changeValue: function (event) {
+          this.setValue(event.target.value);
+        },
+        render: function () {
+          return <input value={this.getValue()} onChange={this.changeValue}/>
+        }
+      });
+      var TestForm = React.createClass({
+        componentWillMount: function () {
+          forceUpdate = this.forceUpdate.bind(this);
+        },
+        onSubmit: function (formModel) {
+          model = formModel;
+        },
+        render: function () {
+          return ( 
+            <Formsy.Form onSubmit={this.onSubmit}> 
+              {inputs}
+            </Formsy.Form>);
+        }
+      });
+      var form = TestUtils.renderIntoDocument( 
+        <TestForm/> 
+      );
+
+      // Wait before adding the input
+      setTimeout(function () {
+
+        inputs.push(TestInput({
+          name: 'test'
+        }));
+
+        forceUpdate(function () {
+
+          // Wait for next event loop, as that does the form
+          setTimeout(function () {
+            TestUtils.Simulate.change(TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT'), {target: {value: 'foo'}});
+            TestUtils.Simulate.submit(form.getDOMNode());
+            expect(model.test).toBe('foo');
+            done();
+          }, 0);
+
+        });
+
+      }, 10);
+
+    });
+
+    it('should invalidate a valid form if dynamically inserted input is invalid', function (done) {
+
+      var forceUpdate = null;
+      var isInvalid = false;
+      var TestInput = React.createClass({
+        mixins: [Formsy.Mixin],
+        changeValue: function (event) {
+          this.setValue(event.target.value);
+        },
+        render: function () {
+          return <input value={this.getValue()} onChange={this.changeValue}/>
+        }
+      });
+
+
+      var inputs = [TestInput({
+        name: 'test',
+        validations: 'isEmail',
+        value: 'foo@bar.com'
+      })];
+
+      var TestForm = React.createClass({
+        componentWillMount: function () {
+          forceUpdate = this.forceUpdate.bind(this);
+        },
+        setInvalid: function () {
+          isInvalid = true;
+        },
+        render: function () {
+          return ( 
+            <Formsy.Form onInvalid={this.setInvalid}> 
+              {inputs}
+            </Formsy.Form>);
+        }
+      });
+      var form = TestUtils.renderIntoDocument( 
+        <TestForm/> 
+      );
+
+      expect(isInvalid).toBe(false);
+
+      // Wait before adding the input
+      setTimeout(function () {
+
+        
+        inputs.push(TestInput({
+          name: 'test2',
+          validations: 'isEmail',
+          value: 'foo@bar'
+        }));
+
+
+        forceUpdate(function () {
+
+          // Wait for next event loop, as that does the form
+          setTimeout(function () {
+            TestUtils.Simulate.submit(form.getDOMNode());
+            expect(isInvalid).toBe(true);
+            done();
+          }, 0);
+
+        });
+
+      }, 10);
+
+    });
+
+    it('should not trigger onChange when form is mounted', function () {
+      var hasChanged = jasmine.createSpy('onChange');
+      var TestForm = React.createClass({
+        onChange: function () {
+          hasChanged();
+        },
+        render: function () {
+          return <Formsy.Form onChange={this.onChange}></Formsy.Form>;
+        }
+      });
+      var form = TestUtils.renderIntoDocument(<TestForm/>);
+      expect(hasChanged).not.toHaveBeenCalled();
+    });
+
+    it('should trigger onChange when form element is changed', function () {
+      var hasChanged = jasmine.createSpy('onChange');
+      var MyInput = React.createClass({
+        mixins: [Formsy.Mixin],
+        onChange: function (event) {
+          this.setValue(event.target.value);
+        },
+        render: function () {
+          return <input value={this.getValue()} onChange={this.onChange}/>
+        }
+      });
+      var TestForm = React.createClass({
+        onChange: function () {
+          hasChanged();
+        },
+        render: function () {
+          return (
+            <Formsy.Form onChange={this.onChange}>
+              <MyInput name="foo"/>
+            </Formsy.Form>
+          );
+        }
+      });
+      var form = TestUtils.renderIntoDocument(<TestForm/>);
+      TestUtils.Simulate.change(TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT'), {target: {value: 'bar'}});
+      expect(hasChanged).toHaveBeenCalled();
+    });
+
+    it('should trigger onChange when new input is added to form', function (done) {
+      var hasChanged = jasmine.createSpy('onChange');
+      var inputs = [];
+      var forceUpdate = null;
+      var TestInput = React.createClass({
+        mixins: [Formsy.Mixin],
+        changeValue: function (event) {
+          this.setValue(event.target.value);
+        },
+        render: function () {
+          return <input value={this.getValue()} onChange={this.changeValue}/>
+        }
+      });
+      var TestForm = React.createClass({
+        componentWillMount: function () {
+          forceUpdate = this.forceUpdate.bind(this);
+        },
+        onChange: function () {
+          hasChanged();
+        },
+        render: function () {
+          return ( 
+            <Formsy.Form onChange={this.onChange}> 
+              {inputs}
+            </Formsy.Form>);
+        }
+      });
+      var form = TestUtils.renderIntoDocument( 
+        <TestForm/> 
+      );
+
+      // Wait before adding the input
+      setTimeout(function () {
+
+        inputs.push(TestInput({
+          name: 'test'
+        }));
+
+        forceUpdate(function () {
+
+          // Wait for next event loop, as that does the form
+          setTimeout(function () {
+            expect(hasChanged).toHaveBeenCalled();
+            done();
+          }, 0);
+
+        });
+
+      }, 10);
+
     });
 
   });

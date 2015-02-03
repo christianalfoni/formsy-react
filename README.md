@@ -22,6 +22,7 @@ A form input builder and validator for React JS
     - [onError()](#onerror)
     - [onValid()](#onvalid)
     - [onInvalid()](#oninvalid)
+    - [onChange()](#onchange)
   - [Formsy.Mixin](#formsymixin)
     - [name](#name)
     - [value](#value)
@@ -49,13 +50,15 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="whatyoucando">What you can do</a>
 
-  1. Build any kind of form input components. Not just traditional inputs, but anything you want and get that validation for free
+  1. Build any kind of form element components. Not just traditional inputs, but anything you want and get that validation for free
 
   2. Add validation rules and use them with simple syntax
 
   3. Use handlers for different states of your form. Ex. "onSubmit", "onError", "onValid" etc. 
 
   4. Server validation errors automatically binds to the correct form input component
+
+  5. You can dynamically add form elements to your form and they will register/unregister to the form
 
 ## <a name="install">Install</a>
 
@@ -64,6 +67,12 @@ The main concept is that forms, inputs and validation is done very differently a
   3. Install with `bower install formsy-react`
 
 ## <a name="changes">Changes</a>
+
+**0.7.0**
+  - Dynamic form elements. Add them at any point and they will be registered with the form
+  - **onChange()** handler is called whenever an form element has changed its value or a new form element is added to the form
+  - isNumeric validator now also handles actual numbers, not only strings
+  - Some more tests
 
 **0.6.0**
   - **onSubmit()** now has the same signature regardless of passing url attribute or not
@@ -82,17 +91,6 @@ The main concept is that forms, inputs and validation is done very differently a
   - Added [cross input validation](#formsyaddvalidationrule)
   - Fixed bug where validation rule refers to a string
   - Added "invalidateForm" function when manually submitting the form
-
-**0.4.1**
-  - Fixed bug where form element is required, but no validations
-
-**0.4.0**:
-  - Possibility to handle form data manually using "onSubmit"
-  - Added two more default rules. *isWords* and *isSpecialWords*
-
-**0.3.0**:
-  - Deprecated everything related to buttons automatically added
-  - Added onValid and onInvalid handlers, use those to manipulate submit buttons etc.
 
 [Older changes](CHANGES.md)
 
@@ -130,7 +128,7 @@ The main concept is that forms, inputs and validation is done very differently a
 
 This code results in a form with a submit button that will POST to /users when clicked. The submit button is disabled as long as the input is empty (required) or the value is not an email (isEmail). On validation error it will show the message: "This is not a valid email".
 
-#### Building a form element
+#### Building a form element (required)
 ```javascript
   /** @jsx React.DOM */
   var Formsy = require('formsy-react');
@@ -166,7 +164,7 @@ This code results in a form with a submit button that will POST to /users when c
     }
   });
 ```
-So this is basically how you build your form elements. As you can see it is very flexible, you just have a small API to help you identify the state of the component and set its value.
+The form element component is what gives the form validation functionality to whatever you want to put inside this wrapper. You do not have to use traditional inputs, it can be anything you want and the value of the form element can also be anything you want. As you can see it is very flexible, you just have a small API to help you identify the state of the component and set its value.
 
 ## <a name="API">API</a>
 
@@ -273,6 +271,12 @@ Whenever the form becomes valid the "onValid" handler is called. Use it to chang
 <Formsy.Form url="/users" onInvalid={this.disableSubmitButton}></Formsy.Form>
 ```
 Whenever the form becomes invalid the "onInvalid" handler is called. Use it to for example revert "onValid" state.
+
+#### <a name="onchange">onChange(currentValues)</a>
+```html
+<Formsy.Form url="/users" onChange={this.saveCurrentValuesToLocalStorage}></Formsy.Form>
+```
+"onChange" triggers when setValue is called on your form elements. It is also triggered when dynamic form elements have been added to the form. The "currentValues" is an object where the key is the name of the input and the value is the current value.
 
 ### <a name="formsymixin">Formsy.Mixin</a>
 

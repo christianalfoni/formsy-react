@@ -11,7 +11,11 @@ var validationRules = {
     return value === true;
   },
   'isNumeric': function (value) {
-    return value.match(/^-?[0-9]+$/)
+    if (typeof value === 'number') {
+      return true;
+    } else {
+      return value.match(/^-?[0-9]+$/);
+    }
   },
   'isAlpha': function (value) {
     return value.match(/^[a-zA-Z]+$/);
@@ -87,6 +91,21 @@ var request = function (method, url, data, contentType, headers) {
   });
 
 };
+
+var arraysDiffer = function (arrayA, arrayB) {
+  var isDifferent = false;
+  if (arrayA.length !== arrayB.length) {
+    isDifferent = true;
+  } else {
+    arrayA.forEach(function (item, index) {
+      if (item !== arrayB[index]) {
+        isDifferent = true;
+      }
+    });
+  }
+  return isDifferent;
+};
+
 var ajax = {
   post: request.bind(null, 'POST'),
   put: request.bind(null, 'PUT')
@@ -107,22 +126,31 @@ Formsy.Mixin = {
   },
   componentWillMount: function () {
 
+    var configure = function () {
+      // Add validations to the store itself as the props object can not be modified
+      this._validations = this.props.validations || '';
+
+      if (this.props.required) {
+        this._validations = this.props.validations ? this.props.validations + ',' : '';
+        this._validations += 'isValue';
+      }
+      this.props._attachToForm(this);
+    }.bind(this);
+
     if (!this.props.name) {
       throw new Error('Form Input requires a name property when used');
     }
 
     if (!this.props._attachToForm) {
-      throw new Error('Form Mixin requires component to be nested in a Form');
+      return setTimeout(function () {
+        if (!this.props._attachToForm) {
+          throw new Error('Form Mixin requires component to be nested in a Form');
+        }
+        configure();
+      }.bind(this), 0);
     }
+    configure();
 
-    // Add validations to the store itself as the props object can not be modified
-    this._validations = this.props.validations || '';
-
-    if (this.props.required) {
-      this._validations = this.props.validations ? this.props.validations + ',' : '';
-      this._validations += 'isValue';
-    }
-    this.props._attachToForm(this);
   },
 
   // We have to make the validate method is kept when new props are added
@@ -188,7 +216,8 @@ Formsy.Form = React.createClass({
   getInitialState: function () {
     return {
       isValid: true,
-      isSubmitting: false
+      isSubmitting: false,
+      canChange: false
     };
   },
   getDefaultProps: function () {
@@ -199,7 +228,8 @@ Formsy.Form = React.createClass({
       onSubmit: function () {},
       onSubmitted: function () {},
       onValid: function () {},
-      onInvalid: function () {}
+      onInvalid: function () {},
+      onChange: function () {}
     };
   },
 
@@ -213,6 +243,21 @@ Formsy.Form = React.createClass({
 
   componentDidMount: function () {
     this.validateForm();
+  },
+
+  componentWillUpdate: function () {
+    var inputKeys = Object.keys(this.inputs);
+
+    // The updated children array is not available here for some reason,
+    // we need to wait for next event loop
+    setTimeout(function () {
+      this.registerInputs(this.props.children);
+
+      var newInputKeys = Object.keys(this.inputs);
+      if (arraysDiffer(inputKeys, newInputKeys)) {
+        this.validateForm();
+      }
+    }.bind(this), 0);
   },
 
   // Update model, submit to url prop and send the model
@@ -327,7 +372,7 @@ Formsy.Form = React.createClass({
     }.bind(this), {});
   },
 
-  setFormPristine: function(isPristine) {
+  setFormPristine: function (isPristine) {
     var inputs = this.inputs;
     var inputKeys = Object.keys(inputs);
 
@@ -345,6 +390,9 @@ Formsy.Form = React.createClass({
   // validate the input and set its state. Then check the
   // state of the form itself
   validate: function (component) {
+
+    // Trigger onChange
+    this.state.canChange && this.props.onChange && this.props.onChange(this.getCurrentValues());
 
     if (!component.props.required && !component._validations) {
       return;
@@ -409,6 +457,9 @@ Formsy.Form = React.createClass({
       allIsValid && this.props.onValid();
       !allIsValid && this.props.onInvalid();
 
+      // Tell the form that it can start to trigger change events
+      this.setState({canChange: true});
+
     }.bind(this);
 
     // Run validation again in case affected by other inputs. The
@@ -421,6 +472,11 @@ Formsy.Form = React.createClass({
         _serverError: null
       }, index === inputKeys.length - 1 ? onValidationComplete : null);
     }.bind(this));
+
+    // If there are no inputs, it is ready to trigger change events
+    if (!inputKeys.length) {
+      this.setState({canChange: true});
+    }
 
   },
 
