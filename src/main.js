@@ -351,13 +351,13 @@ Formsy.Form = React.createClass({
   registerInputs: function (children) {
     React.Children.forEach(children, function (child) {
 
-      if (child.props && child.props.name) {
+      if (child && child.props && child.props.name) {
         child.props._attachToForm = this.attachToForm;
         child.props._detachFromForm = this.detachFromForm;
         child.props._validate = this.validate;
       }
 
-      if (child.props && child.props.children) {
+      if (child && child.props && child.props.children) {
         this.registerInputs(child.props.children);
       }
 
