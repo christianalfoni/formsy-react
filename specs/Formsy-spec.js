@@ -156,6 +156,58 @@ describe('Formsy', function () {
 
     });
 
+    it('should allow a dynamically updated input to update the form-model', function (done) {
+
+      var forceUpdate = null;
+      var model = null;
+      var TestInput = React.createClass({
+        mixins: [Formsy.Mixin],
+        changeValue: function (event) {
+          this.setValue(event.target.value);
+        },
+        render: function () {
+          return <input value={this.getValue()} onChange={this.changeValue}/>
+        }
+      });
+
+      var input;
+      var TestForm = React.createClass({
+        componentWillMount: function () {
+          forceUpdate = this.forceUpdate.bind(this);
+        },
+        onSubmit: function (formModel) {
+          model = formModel;
+        },
+        render: function () {
+          input = <TestInput name='test' value={ this.props.value } />;
+
+          return (
+            <Formsy.Form onSubmit={this.onSubmit}>
+              {input}
+            </Formsy.Form>);
+        }
+      });
+      var form = TestUtils.renderIntoDocument(<TestForm value='foo'/>);
+
+      // Wait before changing the input
+      setTimeout(function () {
+        form.setProps({value: 'bar'});
+
+        forceUpdate(function () {
+          // Wait for next event loop, as that does the form
+          setTimeout(function () {
+            TestUtils.Simulate.submit(form.getDOMNode());
+            expect(model.test).toBe('bar');
+            done();
+          }, 0);
+
+        });
+
+      }, 10);
+
+    });
+
+
     it('should invalidate a valid form if dynamically inserted input is invalid', function (done) {
 
       var forceUpdate = null;

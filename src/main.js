@@ -160,6 +160,15 @@ Formsy.Mixin = {
     nextProps._validate = this.props._validate;
   },
 
+  componentDidUpdate: function(prevProps, prevState) {
+    if (this.state._isPristine) {
+      if (this.props.value !== prevProps.value && this.state._value === prevProps.value) {
+        this.state._value = this.props.value || '';
+        this.props._attachToForm(this);
+      }
+    }
+  },
+
   // Detach it when component unmounts
   componentWillUnmount: function () {
     this.props._detachFromForm(this);
