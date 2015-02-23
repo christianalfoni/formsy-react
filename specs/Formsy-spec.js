@@ -14,6 +14,42 @@ describe('Formsy', function () {
       expect(form.getDOMNode().className).toEqual('foo');
     });
 
+    it('should allow for null/undefined children', function (done) {
+      var TestInput = React.createClass({
+        mixins: [Formsy.Mixin],
+        changeValue: function (event) {
+          this.setValue(event.target.value);
+        },
+        render: function () {
+          return <input value={this.getValue()} onChange={this.changeValue}/>
+        }
+      });
+
+      var model = null;
+      var TestForm = React.createClass({
+        onSubmit: function (formModel) {
+          model = formModel;
+        },
+        render: function () {
+          return (
+            <Formsy.Form onSubmit={ this.onSubmit }>
+              <h1>Test</h1>
+              { null }
+              { undefined }
+              <TestInput name='name' value={ 'foo' } />
+            </Formsy.Form>
+          );
+        }
+      });
+
+      var form = TestUtils.renderIntoDocument(<TestForm/>);
+      setTimeout(function () {
+        TestUtils.Simulate.submit(form.getDOMNode());
+        expect(model).toEqual({name: 'foo'});
+        done();
+      }, 10);
+    });
+
     it('should allow for inputs being added dynamically', function (done) {
 
       var inputs = [];
