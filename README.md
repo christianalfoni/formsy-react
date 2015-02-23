@@ -68,6 +68,10 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="changes">Changes</a>
 
+**0.7.1**
+  - Fixed bug where external update of value on pristine form element did not update the form model (Thanks @sdemjanenko)
+  - Fixed bug where children are null/undefined (Thanks @sdemjanenko)
+
 **0.7.0**
   - Dynamic form elements. Add them at any point and they will be registered with the form
   - **onChange()** handler is called whenever an form element has changed its value or a new form element is added to the form

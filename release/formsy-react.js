@@ -162,6 +162,18 @@ Formsy.Mixin = {
     nextProps._validate = this.props._validate;
   },
 
+  componentDidUpdate: function(prevProps, prevState) {
+
+    // If the input is untouched and something outside changes the value
+    // update the FORM model by re-attaching to the form
+    if (this.state._isPristine) {
+      if (this.props.value !== prevProps.value && this.state._value === prevProps.value) {
+        this.state._value = this.props.value || '';
+        this.props._attachToForm(this);
+      }
+    }
+  },
+
   // Detach it when component unmounts
   componentWillUnmount: function () {
     this.props._detachFromForm(this);
@@ -353,13 +365,13 @@ Formsy.Form = React.createClass({displayName: "Form",
   registerInputs: function (children) {
     React.Children.forEach(children, function (child) {
 
-      if (child.props && child.props.name) {
+      if (child && child.props && child.props.name) {
         child.props._attachToForm = this.attachToForm;
         child.props._detachFromForm = this.detachFromForm;
         child.props._validate = this.validate;
       }
 
-      if (child.props && child.props.children) {
+      if (child && child.props && child.props.children) {
         this.registerInputs(child.props.children);
       }
 

@@ -249,29 +249,23 @@ describe('Formsy', function () {
 
       expect(isInvalid).toBe(false);
 
-      // Wait before adding the input
-      setTimeout(function () {
-
-        
-        inputs.push(TestInput({
-          name: 'test2',
-          validations: 'isEmail',
-          value: 'foo@bar'
-        }));
+      inputs.push(TestInput({
+        name: 'test2',
+        validations: 'isEmail',
+        value: 'foo@bar'
+      }));
 
 
-        forceUpdate(function () {
+      forceUpdate(function () {
 
-          // Wait for next event loop, as that does the form
-          setTimeout(function () {
-            TestUtils.Simulate.submit(form.getDOMNode());
-            expect(isInvalid).toBe(true);
-            done();
-          }, 0);
+        // Wait for next event loop, as that does the form
+        setTimeout(function () {
+          TestUtils.Simulate.submit(form.getDOMNode());
+          expect(isInvalid).toBe(true);
+          done();
+        }, 0);
 
-        });
-
-      }, 10);
+      });
 
     });
 
@@ -349,23 +343,19 @@ describe('Formsy', function () {
       );
 
       // Wait before adding the input
-      setTimeout(function () {
+      inputs.push(TestInput({
+        name: 'test'
+      }));
 
-        inputs.push(TestInput({
-          name: 'test'
-        }));
+      forceUpdate(function () {
 
-        forceUpdate(function () {
+        // Wait for next event loop, as that does the form
+        setTimeout(function () {
+          expect(hasChanged).toHaveBeenCalled();
+          done();
+        }, 0);
 
-          // Wait for next event loop, as that does the form
-          setTimeout(function () {
-            expect(hasChanged).toHaveBeenCalled();
-            done();
-          }, 0);
-
-        });
-
-      }, 10);
+      });
 
     });
 
