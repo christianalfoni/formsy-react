@@ -63,6 +63,9 @@ var request = function (method, url, data, contentType, headers) {
       xhr.setRequestHeader('Accept', 'application/json');
       xhr.setRequestHeader('Content-Type', contentType);
 
+      var csrfTokenSelector = document.querySelector('meta[name="csrf-token"]');
+      if (!! csrfTokenSelector && !! csrfTokenSelector.content) xhr.setRequestHeader('X-CSRF-Token', csrfTokenSelector.content);
+
       // Add passed headers
       Object.keys(headers).forEach(function (header) {
         xhr.setRequestHeader(header, headers[header]);
