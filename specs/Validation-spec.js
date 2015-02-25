@@ -3,7 +3,7 @@ var Formsy = require('./../src/main.js');
 describe('Validation', function() {
 
   it('should trigger an onValid handler, if passed, when form is valid', function () {
-    
+
     var onValid = jasmine.createSpy('valid');
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -27,7 +27,7 @@ describe('Validation', function() {
   });
 
   it('should trigger an onInvalid handler, if passed, when form is invalid', function () {
-    
+
     var onInvalid = jasmine.createSpy('invalid');
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -51,7 +51,7 @@ describe('Validation', function() {
   });
 
   it('RULE: isEmail', function () {
-    
+
     var isValid = jasmine.createSpy('valid');
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -79,7 +79,7 @@ describe('Validation', function() {
   });
 
   it('RULE: isNumeric', function () {
-    
+
     var isValid = jasmine.createSpy('valid');
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -107,7 +107,7 @@ describe('Validation', function() {
   });
 
   it('RULE: isNumeric (actual number)', function () {
-    
+
     var isValid = jasmine.createSpy('valid');
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -130,6 +130,34 @@ describe('Validation', function() {
     var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: '123'}});
+    expect(isValid).toHaveBeenCalled();
+
+  });
+
+  it('RULE: isNumeric (string representation of a float)', function () {
+
+    var isValid = jasmine.createSpy('valid');
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      updateValue: function (event) {
+        this.setValue(event.target.value);
+      },
+      render: function () {
+        if (this.isValid()) {
+          isValid();
+        }
+        return <input value={this.getValue()} onChange={this.updateValue}/>
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" value="foo" validations="isNumeric"/>
+      </Formsy.Form>
+    );
+
+    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: '1.5'}});
     expect(isValid).toHaveBeenCalled();
 
   });
