@@ -14,7 +14,12 @@ var validationRules = {
     if (typeof value === 'number') {
       return true;
     } else {
-      return value.match(/[-+]?(\d*[.])?\d+/);
+      matchResults = value.match(/[-+]?(\d*[.])?\d+/);
+      if (!! matchResults) {
+        return matchResults[0] == value;
+      } else {
+        return false;
+      }
     }
   },
   'isAlpha': function (value) {
