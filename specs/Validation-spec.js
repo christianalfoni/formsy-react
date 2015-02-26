@@ -162,4 +162,32 @@ describe('Validation', function() {
 
   });
 
+  it('RULE: isNumeric is false (string representation of an invalid float)', function () {
+
+    var isValid = jasmine.createSpy('valid');
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      updateValue: function (event) {
+        this.setValue(event.target.value);
+      },
+      render: function () {
+        if (this.isValid()) {
+          isValid();
+        }
+        return <input value={this.getValue()} onChange={this.updateValue}/>
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" value="foo" validations="isNumeric"/>
+      </Formsy.Form>
+    );
+
+    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: '1.'}});
+    expect(isValid).not.toHaveBeenCalled();
+
+  });
+
 });
