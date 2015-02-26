@@ -14,7 +14,7 @@ var validationRules = {
     if (typeof value === 'number') {
       return true;
     } else {
-      return value.match(/^-?[0-9]+$/);
+      return value.match(/[-+]?(\d*[.])?\d+/);
     }
   },
   'isAlpha': function (value) {
