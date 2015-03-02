@@ -127,13 +127,7 @@ Formsy.Mixin = {
   componentWillMount: function () {
 
     var configure = function () {
-      // Add validations to the store itself as the props object can not be modified
-      this._validations = this.props.validations || '';
-
-      if (this.props.required) {
-        this._validations = this.props.validations ? this.props.validations + ',' : '';
-        this._validations += 'isValue';
-      }
+      this.setValidations();
       this.props._attachToForm(this);
     }.bind(this);
 
@@ -158,6 +152,7 @@ Formsy.Mixin = {
     nextProps._attachToForm = this.props._attachToForm;
     nextProps._detachFromForm = this.props._detachFromForm;
     nextProps._validate = this.props._validate;
+    this.setValidations();
   },
 
   componentDidUpdate: function(prevProps, prevState) {
@@ -175,6 +170,16 @@ Formsy.Mixin = {
   // Detach it when component unmounts
   componentWillUnmount: function () {
     this.props._detachFromForm(this);
+  },
+
+  setValidations: function() {
+    // Add validations to the store itself as the props object can not be modified
+    this._validations = this.props.validations || '';
+
+    if (this.props.required) {
+      this._validations = this.props.validations ? this.props.validations + ',' : '';
+      this._validations += 'isValue';
+    }
   },
 
   // We validate after the value has been set
