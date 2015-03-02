@@ -127,7 +127,7 @@ Formsy.Mixin = {
   componentWillMount: function () {
 
     var configure = function () {
-      this.setValidations();
+      this.setValidations(this.props.validations, this.props.required);
       this.props._attachToForm(this);
     }.bind(this);
 
@@ -152,7 +152,7 @@ Formsy.Mixin = {
     nextProps._attachToForm = this.props._attachToForm;
     nextProps._detachFromForm = this.props._detachFromForm;
     nextProps._validate = this.props._validate;
-    this.setValidations();
+    this.setValidations(nextProps.validations, nextProps.required);
   },
 
   componentDidUpdate: function(prevProps, prevState) {
@@ -172,12 +172,12 @@ Formsy.Mixin = {
     this.props._detachFromForm(this);
   },
 
-  setValidations: function() {
+  setValidations: function(validations, required) {
     // Add validations to the store itself as the props object can not be modified
-    this._validations = this.props.validations || '';
+    this._validations = validations || '';
 
-    if (this.props.required) {
-      this._validations = this.props.validations ? this.props.validations + ',' : '';
+    if (required) {
+      this._validations = validations ? validations + ',' : '';
       this._validations += 'isValue';
     }
   },
