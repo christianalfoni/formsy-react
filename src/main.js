@@ -449,6 +449,7 @@ Formsy.Form = React.createClass({
   // Validate the form by going through all child input components
   // and check their state
   validateForm: function () {
+    if (!this.isMounted()) return;
     var allIsValid = true;
     var inputs = this.inputs;
     var inputKeys = Object.keys(inputs);
