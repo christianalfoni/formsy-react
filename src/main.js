@@ -151,6 +151,7 @@ Formsy.Mixin = {
 
     if (!this.props._attachToForm) {
       return setTimeout(function () {
+        if (!this.isMounted()) return;
         if (!this.props._attachToForm) {
           throw new Error('Form Mixin requires component to be nested in a Form');
         }
@@ -271,6 +272,7 @@ Formsy.Form = React.createClass({
     // The updated children array is not available here for some reason,
     // we need to wait for next event loop
     setTimeout(function () {
+      if (!this.isMounted()) return;
       this.registerInputs(this.props.children);
 
       var newInputKeys = Object.keys(this.inputs);
