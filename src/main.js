@@ -173,7 +173,7 @@ Formsy.Mixin = {
     // If the input is untouched and something outside changes the value
     // update the FORM model by re-attaching to the form
     if (this.state._isPristine) {
-      if (this.props.value !== prevProps.value && this.state._value === prevProps.value) {
+      if (this.props.value !== prevProps.value) {
         this.state._value = this.props.value || '';
         this.props._attachToForm(this);
       }
