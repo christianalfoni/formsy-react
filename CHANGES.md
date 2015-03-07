@@ -1,3 +1,21 @@
+**0.6.0**
+  - **onSubmit()** now has the same signature regardless of passing url attribute or not
+  - **isPristine()** is a new method to handle "touched" form elements (thanks @FoxxMD)
+  - Mapping attributes to pass a function that maps input values to new structure. The new structure is either passed to *onSubmit* and/or to the server when using a url attribute (thanks for feedback @MattAitchison)
+  - Added default "equalsField" validation rule
+  - Lots of tests!
+
+**0.5.2**
+  - Fixed bug with handlers in ajax requests (Thanks @smokku)
+
+**0.5.1**
+  - Fixed bug with empty validations
+  
+**0.5.0**
+  - Added [cross input validation](#formsyaddvalidationrule)
+  - Fixed bug where validation rule refers to a string
+  - Added "invalidateForm" function when manually submitting the form
+  
 **0.4.1**
   - Fixed bug where form element is required, but no validations
 

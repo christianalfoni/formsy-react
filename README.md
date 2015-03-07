@@ -39,6 +39,7 @@ A form input builder and validator for React JS
     - [showRequired()](#showrequired)
     - [showError()](#showerror)
     - [isPristine()](#ispristine)
+    - [isFormDisabled()](#isformdisabled)
   - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
 
@@ -68,6 +69,14 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="changes">Changes</a>
 
+**0.8.0**
+  - Fixed bug where dynamic form elements gave "not mounted" error (Thanks @sdemjanenko)
+  - React is now a peer dependency (Thanks @snario)
+  - Dynamically updated values should now work with initial "undefined" value (Thanks @sdemjanenko)
+  - Validations are now dynamic. Change the prop and existing values are re-validated (thanks @bryannaegele)
+  - You can now set a "disabled" prop on the form and check "isFormDisabled()" in form elements
+  - Refactored some code and written a couple of tests
+
 **0.7.2**:
   - isNumber validation now supports float (Thanks @hahahana)
   - Form XHR calls now includes CSRF headers, if exists (Thanks @hahahana)
@@ -81,24 +90,6 @@ The main concept is that forms, inputs and validation is done very differently a
   - **onChange()** handler is called whenever an form element has changed its value or a new form element is added to the form
   - isNumeric validator now also handles actual numbers, not only strings
   - Some more tests
-
-**0.6.0**
-  - **onSubmit()** now has the same signature regardless of passing url attribute or not
-  - **isPristine()** is a new method to handle "touched" form elements (thanks @FoxxMD)
-  - Mapping attributes to pass a function that maps input values to new structure. The new structure is either passed to *onSubmit* and/or to the server when using a url attribute (thanks for feedback @MattAitchison)
-  - Added default "equalsField" validation rule
-  - Lots of tests!
-
-**0.5.2**
-  - Fixed bug with handlers in ajax requests (Thanks @smokku)
-
-**0.5.1**
-  - Fixed bug with empty validations
-  
-**0.5.0**
-  - Added [cross input validation](#formsyaddvalidationrule)
-  - Fixed bug where validation rule refers to a string
-  - Added "invalidateForm" function when manually submitting the form
 
 [Older changes](CHANGES.md)
 
@@ -513,6 +504,22 @@ By default all formsy input elements are pristine, which means they are not "tou
 
 **note!** When the form is reset, using the resetForm callback function on **onSubmit** the inputs are not reset to pristine.
 
+#### <a name="ispristine">isFormDisabled()</a>
+```javascript
+var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
+  render: function () {
+    return (
+      <div>
+        <input type="text" value={this.getValue()} disabled={this.isFormDisabled()}/>
+      </div>
+    );
+  }
+});
+
+React.render(<Formy.Form disabled={true}/>);
+```
+You can now disable the form itself with a prop and use **isFormDisabled()** inside form elements to verify this prop.
 
 ### <a name="formsyaddvalidationrule">Formsy.addValidationRule(name, ruleFunc)</a>
 An example:
@@ -611,8 +618,8 @@ Return true if the value from input component matches value passed (==).
 
 ## Run tests
 - Run `gulp`
-- Run a server in `build` folder
-- Go to `localhost/testrunner.html` (live reload)
+- Run a server in `build` folder, e.g. on port 3000
+- Go to `localhost:3000/testrunner.html` (live reload)
 
 License
 -------

@@ -361,4 +361,46 @@ describe('Formsy', function () {
 
   });
 
+  describe('Update a form', function () {
+
+    it('should allow elements to check if the form is disabled', function (done) {
+
+      var TestInput = React.createClass({
+        mixins: [Formsy.Mixin],
+        render: function () {
+          return <input value={this.getValue()}/>
+        }
+      });
+      var TestForm = React.createClass({
+        getInitialState: function () {
+          return {disabled: true};
+        },
+        enableForm: function () {
+          this.setState({
+            disabled: false
+          });
+        },
+        render: function () {
+          return ( 
+            <Formsy.Form onChange={this.onChange} disabled={this.state.disabled}> 
+              <TestInput name="foo"/>
+            </Formsy.Form>);
+        }
+      });
+      var form = TestUtils.renderIntoDocument( 
+        <TestForm/> 
+      );
+
+      var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+      expect(input.isFormDisabled()).toBe(true);
+      form.enableForm();
+      setTimeout(function () {
+        expect(input.isFormDisabled()).toBe(false);
+        done();
+      }, 0);
+
+    });
+
+  });
+
 });

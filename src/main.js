@@ -1,239 +1,14 @@
 var React = global.React || require('react');
 var Formsy = {};
-var validationRules = {
-  'isValue': function (value) {
-    return value !== '';
-  },
-  'isEmail': function (value) {
-    return value.match(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i);
-  },
-  'isTrue': function (value) {
-    return value === true;
-  },
-  'isNumeric': function (value) {
-    if (typeof value === 'number') {
-      return true;
-    } else {
-      matchResults = value.match(/[-+]?(\d*[.])?\d+/);
-      if (!! matchResults) {
-        return matchResults[0] == value;
-      } else {
-        return false;
-      }
-    }
-  },
-  'isAlpha': function (value) {
-    return value.match(/^[a-zA-Z]+$/);
-  },
-  'isWords': function (value) {
-    return value.match(/^[a-zA-Z\s]+$/);
-  },
-  'isSpecialWords': function (value) {
-    return value.match(/^[a-zA-Z\s\u00C0-\u017F]+$/);
-  },
-  isLength: function (value, min, max) {
-    if (max !== undefined) {
-      return value.length >= min && value.length <= max;
-    }
-    return value.length >= min;
-  },
-  equals: function (value, eql) {
-    return value == eql;
-  },
-  equalsField: function (value, field) {
-    return value === this[field];
-  }
-};
-
-var toURLEncoded = function (element, key, list) {
-  var list = list || [];
-  if (typeof (element) == 'object') {
-    for (var idx in element)
-      toURLEncoded(element[idx], key ? key + '[' + idx + ']' : idx, list);
-  } else {
-    list.push(key + '=' + encodeURIComponent(element));
-  }
-  return list.join('&');
-};
-
-var csrfTokenSelector = document.querySelector('meta[name="csrf-token"]');
-var request = function (method, url, data, contentType, headers) {
-
-  var contentType = contentType === 'urlencoded' ? 'application/' + contentType.replace('urlencoded', 'x-www-form-urlencoded') : 'application/json';
-  data = contentType === 'application/json' ? JSON.stringify(data) : toURLEncoded(data);
-
-  return new Promise(function (resolve, reject) {
-    try {
-      var xhr = new XMLHttpRequest();
-      xhr.open(method, url, true);
-      xhr.setRequestHeader('Accept', 'application/json');
-      xhr.setRequestHeader('Content-Type', contentType);
-
-      if (!!csrfTokenSelector && !!csrfTokenSelector.content) {
-        xhr.setRequestHeader('X-CSRF-Token', csrfTokenSelector.content);
-      }
-
-      // Add passed headers
-      Object.keys(headers).forEach(function (header) {
-        xhr.setRequestHeader(header, headers[header]);
-      });
-
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-
-          try {
-            var response = xhr.responseText ? JSON.parse(xhr.responseText) : null;
-            if (xhr.status >= 200 && xhr.status < 300) {
-              resolve(response);
-            } else {
-              reject(response);
-            }
-          } catch (e) {
-            reject(e);
-          }
-
-        }
-      };
-      xhr.send(data);
-    } catch (e) {
-      reject(e);
-    }
-  });
-
-};
-
-var arraysDiffer = function (arrayA, arrayB) {
-  var isDifferent = false;
-  if (arrayA.length !== arrayB.length) {
-    isDifferent = true;
-  } else {
-    arrayA.forEach(function (item, index) {
-      if (item !== arrayB[index]) {
-        isDifferent = true;
-      }
-    });
-  }
-  return isDifferent;
-};
-
-var ajax = {
-  post: request.bind(null, 'POST'),
-  put: request.bind(null, 'PUT')
-};
+var validationRules = require('./validationRules.js');
+var utils = require('./utils.js');
+var Mixin = require('./Mixin.js');
 var options = {};
+
+Formsy.Mixin = Mixin;
 
 Formsy.defaults = function (passedOptions) {
   options = passedOptions;
-};
-
-Formsy.Mixin = {
-  getInitialState: function () {
-    return {
-      _value: this.props.value ? this.props.value : '',
-      _isValid: true,
-      _isPristine: true
-    };
-  },
-  componentWillMount: function () {
-
-    var configure = function () {
-      this.setValidations(this.props.validations, this.props.required);
-      this.props._attachToForm(this);
-    }.bind(this);
-
-    if (!this.props.name) {
-      throw new Error('Form Input requires a name property when used');
-    }
-
-    if (!this.props._attachToForm) {
-      return setTimeout(function () {
-        if (!this.isMounted()) return;
-        if (!this.props._attachToForm) {
-          throw new Error('Form Mixin requires component to be nested in a Form');
-        }
-        configure();
-      }.bind(this), 0);
-    }
-    configure();
-
-  },
-
-  // We have to make the validate method is kept when new props are added
-  componentWillReceiveProps: function (nextProps) {
-    nextProps._attachToForm = this.props._attachToForm;
-    nextProps._detachFromForm = this.props._detachFromForm;
-    nextProps._validate = this.props._validate;
-    this.setValidations(nextProps.validations, nextProps.required);
-  },
-
-  componentDidUpdate: function(prevProps, prevState) {
-
-    // If the input is untouched and something outside changes the value
-    // update the FORM model by re-attaching to the form
-    if (this.state._isPristine) {
-      if (this.props.value !== prevProps.value && this.state._value === prevProps.value) {
-        this.state._value = this.props.value || '';
-        this.props._attachToForm(this);
-      }
-    }
-  },
-
-  // Detach it when component unmounts
-  componentWillUnmount: function () {
-    this.props._detachFromForm(this);
-  },
-
-  setValidations: function(validations, required) {
-    // Add validations to the store itself as the props object can not be modified
-    this._validations = validations || '';
-
-    if (required) {
-      this._validations = validations ? validations + ',' : '';
-      this._validations += 'isValue';
-    }
-  },
-
-  // We validate after the value has been set
-  setValue: function (value) {
-    this.setState({
-      _value: value,
-      _isPristine: false
-    }, function () {
-      this.props._validate(this);
-    }.bind(this));
-  },
-  resetValue: function () {
-    this.setState({
-      _value: '',
-      _isPristine: true
-    }, function () {
-      this.props._validate(this);
-    });
-  },
-  getValue: function () {
-    return this.state._value;
-  },
-  hasValue: function () {
-    return this.state._value !== '';
-  },
-  getErrorMessage: function () {
-    return this.isValid() || this.showRequired() ? null : this.state._serverError || this.props.validationError;
-  },
-  isValid: function () {
-    return this.state._isValid;
-  },
-  isPristine: function () {
-    return this.state._isPristine;
-  },
-  isRequired: function () {
-    return !!this.props.required;
-  },
-  showRequired: function () {
-    return this.isRequired() && this.state._value === '';
-  },
-  showError: function () {
-    return !this.showRequired() && !this.state._isValid;
-  }
 };
 
 Formsy.addValidationRule = function (name, func) {
@@ -279,13 +54,20 @@ Formsy.Form = React.createClass({
     // The updated children array is not available here for some reason,
     // we need to wait for next event loop
     setTimeout(function () {
-      if (!this.isMounted()) return;
-      this.registerInputs(this.props.children);
 
-      var newInputKeys = Object.keys(this.inputs);
-      if (arraysDiffer(inputKeys, newInputKeys)) {
-        this.validateForm();
+      // The component might have been unmounted on an
+      // update
+      if (this.isMounted()) {
+
+        this.registerInputs(this.props.children);
+
+        var newInputKeys = Object.keys(this.inputs);
+        if (utils.arraysDiffer(inputKeys, newInputKeys)) {
+          this.validateForm();
+        }
+
       }
+
     }.bind(this), 0);
   },
 
@@ -316,8 +98,8 @@ Formsy.Form = React.createClass({
 
     var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers || {};
 
-    var method = this.props.method && ajax[this.props.method.toLowerCase()] ? this.props.method.toLowerCase() : 'post';
-    ajax[method](this.props.url, this.mapModel(), this.props.contentType || options.contentType || 'json', headers)
+    var method = this.props.method && utils.ajax[this.props.method.toLowerCase()] ? this.props.method.toLowerCase() : 'post';
+    utils.ajax[method](this.props.url, this.mapModel(), this.props.contentType || options.contentType || 'json', headers)
       .then(function (response) {
         this.props.onSuccess(response);
         this.props.onSubmitted();
@@ -384,6 +166,7 @@ Formsy.Form = React.createClass({
         child.props._attachToForm = this.attachToForm;
         child.props._detachFromForm = this.detachFromForm;
         child.props._validate = this.validate;
+        child.props._isFormDisabled = this.isFormDisabled;
       }
 
       if (child && child.props && child.props.children) {
@@ -391,6 +174,10 @@ Formsy.Form = React.createClass({
       }
 
     }.bind(this));
+  },
+
+  isFormDisabled: function () {
+    return this.props.disabled;
   },
 
   getCurrentValues: function () {
@@ -421,7 +208,7 @@ Formsy.Form = React.createClass({
   validate: function (component) {
 
     // Trigger onChange
-    if(this.state.canChange) {
+    if (this.state.canChange) {
       this.props.onChange(this.getCurrentValues());
     }
 
@@ -485,14 +272,16 @@ Formsy.Form = React.createClass({
         isValid: allIsValid
       });
 
-      if(allIsValid) {
+      if (allIsValid) {
         this.props.onValid();
       } else {
         this.props.onInvalid();
       }
 
       // Tell the form that it can start to trigger change events
-      this.setState({canChange: true});
+      this.setState({
+        canChange: true
+      });
 
     }.bind(this);
 
@@ -507,12 +296,12 @@ Formsy.Form = React.createClass({
       }, index === inputKeys.length - 1 ? onValidationComplete : null);
     }.bind(this));
 
-    // If there are no inputs, it is ready to trigger change events
-    if (!inputKeys.length) {
-      // but make sure the component is mounted
-      if(this.isMounted()){
-        this.setState({canChange: true});
-      }
+    // If there are no inputs, set state where form is ready to trigger
+    // change event. New inputs might be added later
+    if (!inputKeys.length && this.isMounted()) {
+      this.setState({
+        canChange: true
+      });
     }
   },
 
