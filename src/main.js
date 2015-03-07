@@ -135,13 +135,7 @@ Formsy.Mixin = {
   componentWillMount: function () {
 
     var configure = function () {
-      // Add validations to the store itself as the props object can not be modified
-      this._validations = this.props.validations || '';
-
-      if (this.props.required) {
-        this._validations = this.props.validations ? this.props.validations + ',' : '';
-        this._validations += 'isValue';
-      }
+      this.setValidations(this.props.validations, this.props.required);
       this.props._attachToForm(this);
     }.bind(this);
 
@@ -167,6 +161,7 @@ Formsy.Mixin = {
     nextProps._attachToForm = this.props._attachToForm;
     nextProps._detachFromForm = this.props._detachFromForm;
     nextProps._validate = this.props._validate;
+    this.setValidations(nextProps.validations, nextProps.required);
   },
 
   componentDidUpdate: function(prevProps, prevState) {
@@ -184,6 +179,16 @@ Formsy.Mixin = {
   // Detach it when component unmounts
   componentWillUnmount: function () {
     this.props._detachFromForm(this);
+  },
+
+  setValidations: function(validations, required) {
+    // Add validations to the store itself as the props object can not be modified
+    this._validations = validations || '';
+
+    if (required) {
+      this._validations = validations ? validations + ',' : '';
+      this._validations += 'isValue';
+    }
   },
 
   // We validate after the value has been set
@@ -414,7 +419,9 @@ Formsy.Form = React.createClass({
   validate: function (component) {
 
     // Trigger onChange
-    this.state.canChange && this.props.onChange && this.props.onChange(this.getCurrentValues());
+    if(this.state.canChange) {
+      this.props.onChange(this.getCurrentValues());
+    }
 
     if (!component.props.required && !component._validations) {
       return;
@@ -476,8 +483,11 @@ Formsy.Form = React.createClass({
         isValid: allIsValid
       });
 
-      allIsValid && this.props.onValid();
-      !allIsValid && this.props.onInvalid();
+      if(allIsValid) {
+        this.props.onValid();
+      } else {
+        this.props.onInvalid();
+      }
 
       // Tell the form that it can start to trigger change events
       this.setState({canChange: true});
@@ -497,9 +507,11 @@ Formsy.Form = React.createClass({
 
     // If there are no inputs, it is ready to trigger change events
     if (!inputKeys.length) {
-      this.setState({canChange: true});
+      // but make sure the component is mounted
+      if(this.isMounted()){
+        this.setState({canChange: true});
+      }
     }
-
   },
 
   // Method put on each input component to register
