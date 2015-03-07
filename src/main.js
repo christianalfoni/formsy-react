@@ -56,6 +56,7 @@ var toURLEncoded = function (element, key, list) {
   return list.join('&');
 };
 
+var csrfTokenSelector = document.querySelector('meta[name="csrf-token"]');
 var request = function (method, url, data, contentType, headers) {
 
   var contentType = contentType === 'urlencoded' ? 'application/' + contentType.replace('urlencoded', 'x-www-form-urlencoded') : 'application/json';
@@ -68,8 +69,9 @@ var request = function (method, url, data, contentType, headers) {
       xhr.setRequestHeader('Accept', 'application/json');
       xhr.setRequestHeader('Content-Type', contentType);
 
-      var csrfTokenSelector = document.querySelector('meta[name="csrf-token"]');
-      if (!! csrfTokenSelector && !! csrfTokenSelector.content) xhr.setRequestHeader('X-CSRF-Token', csrfTokenSelector.content);
+      if (!!csrfTokenSelector && !!csrfTokenSelector.content) {
+        xhr.setRequestHeader('X-CSRF-Token', csrfTokenSelector.content);
+      }
 
       // Add passed headers
       Object.keys(headers).forEach(function (header) {

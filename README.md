@@ -68,6 +68,10 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="changes">Changes</a>
 
+**0.7.2**:
+  - isNumber validation now supports float (Thanks @hahahana)
+  - Form XHR calls now includes CSRF headers, if exists (Thanks @hahahana)
+
 **0.7.1**
   - Fixed bug where external update of value on pristine form element did not update the form model (Thanks @sdemjanenko)
   - Fixed bug where children are null/undefined (Thanks @sdemjanenko)
