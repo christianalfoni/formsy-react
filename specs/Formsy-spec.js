@@ -403,4 +403,49 @@ describe('Formsy', function () {
 
   });
 
+  describe("value === false", function() {
+    var onSubmit;
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      getDefaultProps: function() {
+        return {
+          type: "text",
+        };
+      },
+      changeValue: function() {
+        this.setValue(e.target[this.props.type === "checkbox" ? "checked" : "value"]);
+      },
+      render: function () {
+        return <input type={ this.props.type } value={ this.getValue() } onChange={ this.changeValue }/>
+      }
+    });
+
+    var TestForm = React.createClass({
+      render: function () {
+        return (
+          <Formsy.Form onSubmit={ function(arg1) { onSubmit(arg1); } }>
+            <TestInput name="foo" value={ this.props.value } type="checkbox" />
+            <button type="submit">Save</button>
+          </Formsy.Form>
+        );
+      }
+    });
+
+    beforeEach(function() {
+      onSubmit = jasmine.createSpy("onSubmit");
+    });
+
+    it("should call onSubmit correctly", function() {
+      var form = TestUtils.renderIntoDocument(<TestForm value={ false }/>);
+      TestUtils.Simulate.submit(form.getDOMNode());
+      expect(onSubmit).toHaveBeenCalledWith({foo: false});
+    });
+
+    it("should allow dynamic changes to false", function() {
+      var form = TestUtils.renderIntoDocument(<TestForm value={ true }/>);
+      form.setProps({value: false});
+      TestUtils.Simulate.submit(form.getDOMNode());
+      expect(onSubmit).toHaveBeenCalledWith({foo: false});
+    });
+  });
 });

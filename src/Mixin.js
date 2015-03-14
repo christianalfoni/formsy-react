@@ -1,7 +1,7 @@
 module.exports = {
   getInitialState: function () {
     return {
-      _value: this.props.value ? this.props.value : '',
+      _value: this.props.value !== undefined ? this.props.value : '',
       _isValid: true,
       _isPristine: true
     };
@@ -59,7 +59,7 @@ module.exports = {
     // the value, set the value again running a validation
 
     if (prevProps.validations !== this.props.validations || isValueChanged()) {
-      this.setValue(this.props.value || '');
+      this.setValue(this.props.value === undefined ? '' : this.props.value);
     }
   },
 
