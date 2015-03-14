@@ -242,7 +242,7 @@ describe('Element', function() {
     }, 0);
   });
 
-  it('should return true or false when calling isPrestine() depending on input has been "touched" or not', function () {
+  it('should return true or false when calling isPristine() depending on input has been "touched" or not', function () {
     
     var isPristine = null;
     var TestInput = React.createClass({
