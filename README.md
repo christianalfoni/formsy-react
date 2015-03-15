@@ -125,7 +125,7 @@ The main concept is that forms, inputs and validation is done very differently a
   });
 ```
 
-This code results in a form with a submit button that will POST to /users when clicked. The submit button is disabled as long as the input is empty (required) or the value is not an email (isEmail). On validation error it will show the message: "This is not a valid email".
+This code results in a form with a submit button that will POST to /users when clicked. The submit button is disabled as long as the input is empty ([required](#required)) or the value is not an email ([isEmail](#validators)). On validation error it will show the message: "This is not a valid email".
 
 #### Building a form element (required)
 ```javascript
@@ -194,7 +194,7 @@ Sets a class name on the form itself.
 ```html
 <Formsy.Form url="/users"></Formsy.Form>
 ```
-Will either **POST** or **PUT** to the url specified when submitted. If you do not pass a url the data for the form will be passed to the **onSubmit** handler.
+Will either **POST** or **PUT** to the url specified when submitted. If you do not pass a url the data for the form will be passed to the [**onSubmit**](#onsubmitdata-resetform-invalidateform) handler.
 
 #### <a name="method">method</a>
 ```html
@@ -289,14 +289,14 @@ The name is required to register the form input component in the form.
 ```html
 <MyInputComponent name="email" value="My default value"/>
 ```
-You should always use the **getValue()** method inside your formsy form element. To pass a default value, use the value attribute.
+You should always use the [**getValue()**](#getvalue) method inside your formsy form element. To pass a default value, use the value attribute.
 
 #### <a name="validations">validations</a>
 ```html
 <MyInputComponent name="email" validations="isEmail"/>
 <MyInputComponent name="number" validations="isNumeric,isLength:5:12"/>
 ```
-An comma seperated list with validation rules. Take a look at **Validators** to see default rules. Use ":" to separate arguments passed to the validator. The arguments will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
+An comma seperated list with validation rules. Take a look at [**Validators**](#validators) to see default rules. Use ":" to separate arguments passed to the validator. The arguments will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
 
 ```html
 <MyInputComponent name="fruit" validations="isIn:['apple', 'orange']"/>
@@ -500,9 +500,9 @@ var MyInput = React.createClass({
   }
 });
 ```
-By default all formsy input elements are pristine, which means they are not "touched". As soon as the **setValue** method is run it will no longer be pristine.
+By default all formsy input elements are pristine, which means they are not "touched". As soon as the [**setValue**](#setvaluevalue) method is run it will no longer be pristine.
 
-**note!** When the form is reset, using the resetForm callback function on **onSubmit** the inputs are not reset to pristine.
+**note!** When the form is reset, using the resetForm callback function on [**onSubmit**](#onsubmitdata-resetform-invalidateform) the inputs are not reset to pristine.
 
 #### <a name="ispristine">isFormDisabled()</a>
 ```javascript
