@@ -12,7 +12,7 @@ module.exports = {
     if (typeof value === 'number') {
       return true;
     } else {
-      matchResults = value.match(/[-+]?(\d*[.])?\d+/);
+      var matchResults = value.match(/[-+]?(\d*[.])?\d+/);
       if (!! matchResults) {
         return matchResults[0] == value;
       } else {
