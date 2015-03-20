@@ -403,4 +403,65 @@ describe('Formsy', function () {
 
   });
 
+  describe('.isChanged()', function() {
+    var onChange;
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      changeValue: function (event) {
+        this.setValue(event.target.value);
+      },
+      render: function () {
+        return <input value={ this.getValue() } onChange={ this.changeValue } />
+      }
+    });
+
+    var TestForm = React.createClass({
+      getDefaultProps: function() {
+        return {
+          inputs: [],
+        };
+      },
+      render: function () {
+        var builtInputs = [];
+        var inputs = this.props.inputs;
+        for (var i=0; i < inputs.length; i++) {
+          var input = inputs[i];
+          builtInputs.push(<TestInput { ...input } key={ input.name } />);
+        }
+        return <Formsy.Form ref='formsy' onChange={ onChange }>
+          { builtInputs }
+          { this.props.children }
+        </Formsy.Form>;
+      }
+    });
+
+    beforeEach(function() {
+      onChange = jasmine.createSpy("onChange");
+    });
+
+    it('initially returns false', function() {
+      var form = TestUtils.renderIntoDocument(<TestForm inputs={ [{name: 'one', value: 'foo'}] }/>);
+      expect(form.refs.formsy.isChanged()).toEqual(false);
+      expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('returns true when changed', function() {
+      var form = TestUtils.renderIntoDocument(<TestForm inputs={ [{name: 'one', value: 'foo'}] }/>);
+      var input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
+      TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'bar'}});
+      expect(form.refs.formsy.isChanged()).toEqual(true);
+      expect(onChange).toHaveBeenCalledWith({one: 'bar'}, true);
+    });
+
+    it('returns false if changes are undone', function() {
+      var form = TestUtils.renderIntoDocument(<TestForm inputs={ [{name: 'one', value: 'foo'}] }/>);
+      var input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
+      TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'bar'}});
+      expect(onChange).toHaveBeenCalledWith({one: 'bar'}, true);
+      TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'foo'}});
+      expect(form.refs.formsy.isChanged()).toEqual(false);
+      expect(onChange).toHaveBeenCalledWith({one: 'foo'}, false);
+    });
+  });
+
 });

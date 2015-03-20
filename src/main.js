@@ -1,4 +1,5 @@
 var React = global.React || require('react');
+var deepEqual = require('deep-equal');
 var Formsy = {};
 var validationRules = require('./validationRules.js');
 var utils = require('./utils.js');
@@ -128,6 +129,10 @@ Formsy.Form = React.createClass({
     this.validateForm();
   },
 
+  isChanged: function() {
+    return !deepEqual(this.getPristineValues(), this.getCurrentValues());
+  },
+
   // Go through errors from server and grab the components
   // stored in the inputs map. Change their state to invalid
   // and set the serverError message
@@ -188,6 +193,14 @@ Formsy.Form = React.createClass({
     }.bind(this), {});
   },
 
+  getPristineValues: function() {
+    return Object.keys(this.inputs).reduce(function (data, name) {
+      var component = this.inputs[name];
+      data[name] = component.props.value;
+      return data;
+    }.bind(this), {});
+  },
+
   setFormPristine: function (isPristine) {
     var inputs = this.inputs;
     var inputKeys = Object.keys(inputs);
@@ -209,7 +222,7 @@ Formsy.Form = React.createClass({
 
     // Trigger onChange
     if (this.state.canChange) {
-      this.props.onChange(this.getCurrentValues());
+      this.props.onChange(this.getCurrentValues(), this.isChanged());
     }
 
     if (!component.props.required && !component._validations) {
