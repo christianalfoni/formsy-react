@@ -1,4 +1,4 @@
-var csrfTokenSelector = document.querySelector('meta[name="csrf-token"]');
+var csrfTokenSelector = typeof document != 'undefined' ? document.querySelector('meta[name="csrf-token"]') : null;
 
 var toURLEncoded = function (element, key, list) {
   var list = list || [];
