@@ -1,3 +1,25 @@
+**0.8.0**
+  - Fixed bug where dynamic form elements gave "not mounted" error (Thanks @sdemjanenko)
+  - React is now a peer dependency (Thanks @snario)
+  - Dynamically updated values should now work with initial "undefined" value (Thanks @sdemjanenko)
+  - Validations are now dynamic. Change the prop and existing values are re-validated (thanks @bryannaegele)
+  - You can now set a "disabled" prop on the form and check "isFormDisabled()" in form elements
+  - Refactored some code and written a couple of tests
+
+**0.7.2**:
+  - isNumber validation now supports float (Thanks @hahahana)
+  - Form XHR calls now includes CSRF headers, if exists (Thanks @hahahana)
+
+**0.7.1**
+  - Fixed bug where external update of value on pristine form element did not update the form model (Thanks @sdemjanenko)
+  - Fixed bug where children are null/undefined (Thanks @sdemjanenko)
+
+**0.7.0**
+  - Dynamic form elements. Add them at any point and they will be registered with the form
+  - **onChange()** handler is called whenever an form element has changed its value or a new form element is added to the form
+  - isNumeric validator now also handles actual numbers, not only strings
+  - Some more tests
+  
 **0.6.0**
   - **onSubmit()** now has the same signature regardless of passing url attribute or not
   - **isPristine()** is a new method to handle "touched" form elements (thanks @FoxxMD)
