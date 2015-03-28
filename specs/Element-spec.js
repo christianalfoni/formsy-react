@@ -26,7 +26,7 @@ describe('Element', function() {
 
   });
 
-  it('should return true or false when calling hasValue() depending on value existance', function () {
+  it('should set back to pristine value when running reset', function () {
     
     var reset = null;
     var TestInput = React.createClass({
@@ -48,8 +48,9 @@ describe('Element', function() {
     );
 
     var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    TestUtils.Simulate.change(input, {target: {value: 'foobar'}});
     reset();
-    expect(input.getDOMNode().value).toBe('');
+    expect(input.getDOMNode().value).toBe('foo');
 
   });
 
@@ -306,7 +307,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     }, 0);
   });  
 
-it('should be able to dynamically change validations', function (done) {
+  it('should be able to dynamically change validations', function (done) {
 
     var isInvalid = false;
     var TestInput = React.createClass({
@@ -346,5 +347,33 @@ it('should be able to dynamically change validations', function (done) {
       done();
     }, 0);
   });  
+
+  it('should be able to test a values validity', function () {
+
+    var isInvalid = false;
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var TestForm = React.createClass({
+      render: function () {
+        return (
+          <Formsy.Form>
+            <TestInput name="A" validations="isEmail"/>
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <TestForm/>
+    );
+
+    var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    expect(input.isValidValue('foo@bar.com')).toBe(true);
+    expect(input.isValidValue('foo@bar')).toBe(false);
+
+  }); 
 
 });

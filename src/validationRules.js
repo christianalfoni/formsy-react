@@ -39,6 +39,6 @@ module.exports = {
     return value == eql;
   },
   equalsField: function (value, field) {
-    return value === this[field];
+    return value == this[field];
   }
 };

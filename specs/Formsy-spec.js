@@ -438,6 +438,120 @@ describe('Formsy', function () {
 
     });
 
+    it('should be possible to pass error state of elements by changing an errors attribute', function (done) {
+
+      var TestInput = React.createClass({
+        mixins: [Formsy.Mixin],
+        render: function () {
+          return <input value={this.getValue()}/>;
+        }
+      });
+      var TestForm = React.createClass({
+        getInitialState: function () {
+          return {
+            validationErrors: {
+              foo: 'bar'
+            }
+          };
+        },
+        onChange: function (values) {
+          if (values.foo) {
+            this.setState({
+              validationErrors: {}
+            });
+          } else {
+            this.setState({
+              validationErrors: {foo: 'bar'}
+            });
+          }
+        },
+        render: function () {
+          return ( 
+            <Formsy.Form onChange={this.onChange} validationErrors={this.state.validationErrors}> 
+              <TestInput name="foo"/>
+            </Formsy.Form>);
+        }
+      });
+      var form = TestUtils.renderIntoDocument( 
+        <TestForm/> 
+      );
+
+      // Wait for update
+      setTimeout(function () {
+        var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+        expect(input.getErrorMessage()).toBe('bar');
+        input.setValue('gotValue');
+
+        // Wait for update
+        setTimeout(function () {
+          expect(input.getErrorMessage()).toBe(null);
+          done();
+        }, 0);
+      }, 0);
+
+    });
+
+
+    it('should trigger an onValidSubmit when submitting a valid form', function () {
+
+        var isCalled = false;
+        var TestInput = React.createClass({
+          mixins: [Formsy.Mixin],
+          render: function () {
+            return <input value={this.getValue()}/>;
+          }
+        });
+        var TestForm = React.createClass({
+          onValidSubmit: function () {
+            isCalled = true;
+          },
+          render: function () {
+            return ( 
+              <Formsy.Form onValidSubmit={this.onValidSubmit}> 
+                <TestInput name="foo" validations="isEmail" value="foo@bar.com"/>
+              </Formsy.Form>);
+          }
+        });
+        var form = TestUtils.renderIntoDocument( 
+          <TestForm/> 
+        );
+
+        var TestForm = TestUtils.findRenderedComponentWithType(form, TestForm);
+        TestUtils.Simulate.submit(TestForm.getDOMNode());  
+        expect(isCalled).toBe(true);
+
+    });
+
+    it('should trigger an onInvalidSubmit when submitting an invalid form', function () {
+
+        var isCalled = false;
+        var TestInput = React.createClass({
+          mixins: [Formsy.Mixin],
+          render: function () {
+            return <input value={this.getValue()}/>;
+          }
+        });
+        var TestForm = React.createClass({
+          onInvalidSubmit: function () {
+            isCalled = true;
+          },
+          render: function () {
+            return ( 
+              <Formsy.Form onInvalidSubmit={this.onInvalidSubmit}> 
+                <TestInput name="foo" validations="isEmail" value="foo@bar"/>
+              </Formsy.Form>);
+          }
+        });
+        var form = TestUtils.renderIntoDocument( 
+          <TestForm/> 
+        );
+
+        var TestForm = TestUtils.findRenderedComponentWithType(form, TestForm);
+        TestUtils.Simulate.submit(TestForm.getDOMNode());  
+        expect(isCalled).toBe(true);
+
+    });
+
   });
 
   describe("value === false", function() {
