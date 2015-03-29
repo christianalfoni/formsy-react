@@ -152,7 +152,7 @@ describe('Formsy', function () {
 
         });
 
-      }, 10);
+      }, 0);
 
     });
 

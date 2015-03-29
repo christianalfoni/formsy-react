@@ -31,6 +31,8 @@ Formsy.Form = React.createClass({displayName: "Form",
       onSuccess: function () {},
       onError: function () {},
       onSubmit: function () {},
+      onValidSubmit: function () {},
+      onInvalidSubmit: function () {},
       onSubmitted: function () {},
       onValid: function () {},
       onInvalid: function () {},
@@ -63,6 +65,10 @@ Formsy.Form = React.createClass({displayName: "Form",
 
         this.registerInputs(this.props.children);
 
+       if (this.props.validationErrors) {
+          this.setInputValidationErrors(this.props.validationErrors);
+        }
+
         var newInputKeys = Object.keys(this.inputs);
         if (utils.arraysDiffer(inputKeys, newInputKeys)) {
           this.validateForm();
@@ -87,7 +93,9 @@ Formsy.Form = React.createClass({displayName: "Form",
     // if wanting to reset the entire form to original state, the second param is a callback for this.
     if (!this.props.url) {
       this.updateModel();
-      this.props.onSubmit(this.mapModel(), this.resetModel, this.updateInputsWithError);
+      var model = this.mapModel();
+      this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
+      this.state.isValid ? this.props.onValidSubmit(model, this.resetModel) : this.props.onInvalidSubmit(model, this.resetModel);
       return;
     }
 
@@ -130,6 +138,17 @@ Formsy.Form = React.createClass({displayName: "Form",
     this.validateForm();
   },
 
+  setInputValidationErrors: function (errors) {
+     Object.keys(this.inputs).forEach(function (name, index) {
+      var component = this.inputs[name];
+      var args = [{
+        _isValid: !(name in errors),
+        _serverError: errors[name]
+      }];
+      component.setState.apply(component, args);
+    }.bind(this));   
+  },
+
   // Go through errors from server and grab the components
   // stored in the inputs map. Change their state to invalid
   // and set the serverError message
@@ -169,6 +188,7 @@ Formsy.Form = React.createClass({displayName: "Form",
         child.props._detachFromForm = this.detachFromForm;
         child.props._validate = this.validate;
         child.props._isFormDisabled = this.isFormDisabled;
+        child.props._isValidValue = this.runValidation;
       }
 
       if (child && child.props && child.props.children) {
@@ -229,10 +249,14 @@ Formsy.Form = React.createClass({displayName: "Form",
 
   },
 
-  runValidation: function (component) {
+  // Checks validation on current value or a passed value
+  runValidation: function (component, value) {
+
     var isValid = true;
-    if (component._validations.length && (component.props.required || component.state._value !== '')) {
-      component._validations.split(',').forEach(function (validation) {
+    
+    value = arguments.length === 2 ? value : component.state._value;
+    if (component._validations.length && (component.props.required || value !== '')) {
+      component._validations.split(/\,(?![^{\[]*[}\]])/g).forEach(function (validation) {
         var args = validation.split(':');
         var validateMethod = args.shift();
         args = args.map(function (arg) {
@@ -242,7 +266,7 @@ Formsy.Form = React.createClass({displayName: "Form",
             return arg; // It is a string if it can not parse it
           }
         });
-        args = [component.state._value].concat(args);
+        args = [value].concat(args);
         if (!validationRules[validateMethod]) {
           throw new Error('Formsy does not have the validation rule: ' + validateMethod);
         }
@@ -339,14 +363,18 @@ if (!global.exports && !global.module && (!global.define || !global.define.amd))
 
 module.exports = Formsy;
 
+
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./Mixin.js":2,"./utils.js":3,"./validationRules.js":4,"react":"react"}],2:[function(require,module,exports){
 module.exports = {
   getInitialState: function () {
+    var value = 'value' in this.props ? this.props.value : '';
     return {
-      _value: this.props.value ? this.props.value : '',
+      _value: value,
       _isValid: true,
-      _isPristine: true
+      _isPristine: true,
+      _pristineValue: value
     };
   },
   componentWillMount: function () {
@@ -402,7 +430,8 @@ module.exports = {
     // the value, set the value again running a validation
 
     if (prevProps.validations !== this.props.validations || isValueChanged()) {
-      this.setValue(this.props.value || '');
+      var value = 'value' in this.props ? this.props.value : '';
+      this.setValue(value);
     }
   },
 
@@ -434,7 +463,7 @@ module.exports = {
   },
   resetValue: function () {
     this.setState({
-      _value: '',
+      _value: this.state._pristineValue,
       _isPristine: true
     }, function () {
       this.props._validate(this);
@@ -466,11 +495,16 @@ module.exports = {
   },
   showError: function () {
     return !this.showRequired() && !this.state._isValid;
+  },
+  isValidValue: function (value) {
+    return this.props._isValidValue.call(null, this, value);
   }
 };
 
+
+
 },{}],3:[function(require,module,exports){
-var csrfTokenSelector = document.querySelector('meta[name="csrf-token"]');
+var csrfTokenSelector = typeof document != 'undefined' ? document.querySelector('meta[name="csrf-token"]') : null;
 
 var toURLEncoded = function (element, key, list) {
   var list = list || [];
@@ -547,6 +581,8 @@ module.exports = {
   }
 };
 
+
+
 },{}],4:[function(require,module,exports){
 module.exports = {
   'isValue': function (value) {
@@ -562,7 +598,7 @@ module.exports = {
     if (typeof value === 'number') {
       return true;
     } else {
-      matchResults = value.match(/[-+]?(\d*[.])?\d+/);
+      var matchResults = value.match(/[-+]?(\d*[.])?\d+/);
       if (!! matchResults) {
         return matchResults[0] == value;
       } else {
@@ -589,8 +625,10 @@ module.exports = {
     return value == eql;
   },
   equalsField: function (value, field) {
-    return value === this[field];
+    return value == this[field];
   }
 };
+
+
 
 },{}]},{},[1]);

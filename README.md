@@ -16,6 +16,7 @@ A form input builder and validator for React JS
     - [method](#method)
     - [contentType](#contenttype)
     - [mapping](#mapping)
+    - [validationErrors](#validationerrors)
     - [onSuccess()](#onsuccess)
     - [onSubmit()](#onsubmit)
     - [onSubmitted()](#onsubmitted)
@@ -35,6 +36,7 @@ A form input builder and validator for React JS
     - [resetValue()](#resetvalue)
     - [getErrorMessage()](#geterrormessage)
     - [isValid()](#isvalid)
+    - [isValidValue()](#isvalidvalue)
     - [isRequired()](#isrequired)
     - [showRequired()](#showrequired)
     - [showError()](#showerror)
@@ -210,6 +212,39 @@ var MyForm = React.createClass({
 })
 ```
 Use mapping to change the data structure of your input elements. This structure is passed to the onSubmit handler and/or to the server on submitting, depending on how you submit the form.
+
+#### <a name="validationerrors">validationErrors</a>
+You can manually pass down errors to your form. In combination with `onChange` you are able to validate using an external validator.
+
+```js
+var Form = React.createClass({
+  getInitialState: function () {
+    return {
+      validationErrors: {}
+    };
+  },
+  validateForm: function (values) {
+    if (!values.foo) {
+      this.setState({
+        validationErrors: {
+          foo: 'Has no value'
+        }
+      });
+    } else {
+      this.setState({
+        validationErrors: {}
+      });
+    }
+  },
+  render: function () {
+    return (
+      <Formsy.Form onChange={this.validateForm} validationErrors={this.state.validationErrors}>
+        <MyFormElement name="foo"/>
+      </Formsy.Form>
+    );
+  }
+});
+```
 
 #### <a name="onsuccess">onSuccess(serverResponse)</a>
 ```html
@@ -402,6 +437,33 @@ var MyInput = React.createClass({
 });
 ```
 Returns the valid state of the form input component.
+
+#### <a name="isvalidvalue">isValidValue()</a>
+You can pre-verify a value against the passed validators to the form element.
+
+```javascript
+var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
+  changeValue: function (event) {
+    if (this.isValidValue(event.target.value)) {
+      this.setValue(event.target.value);
+    }
+  },
+  render: function () {
+    return <input type="text" onChange={this.changeValue} value={this.getValue()}/>;
+  }
+});
+
+var MyForm = React.createClass({
+  render: function () {
+    return (
+      <Formsy.Form>
+        <MyInput name="foo" validations="isEmail"/>
+      </Formsy.Form>
+    );
+  }
+});
+```
 
 #### <a name="isrequired">isRequired()</a>
 ```javascript
