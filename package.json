@@ -3,12 +3,13 @@
   "version": "0.9.0",
   "description": "A form input builder and validator for React JS",
   "repository": {
-  "type": "git",
-  "url": "https://github.com/christianalfoni/formsy-react.git"
+    "type": "git",
+    "url": "https://github.com/christianalfoni/formsy-react.git"
   },
   "main": "src/main.js",
   "scripts": {
-    "test": "./node_modules/.bin/jasmine-node ./specs"
+    "test": "./node_modules/.bin/jasmine-node ./specs",
+    "examples": "webpack-dev-server --config examples/webpack.config.js --content-base examples"
   },
   "author": "Christian Alfoni",
   "license": "MIT",
@@ -24,10 +25,13 @@
     "gulp-streamify": "0.0.5",
     "gulp-uglify": "^0.3.1",
     "gulp-util": "^3.0.0",
+    "jsx-loader": "^0.12.2",
     "phantomjs": "^1.9.12",
     "reactify": "^1.1.0",
     "vinyl-source-stream": "^0.1.1",
-    "watchify": "^2.1.1"
+    "watchify": "^2.1.1",
+    "webpack": "^1.7.3",
+    "webpack-dev-server": "^1.7.0"
   },
   "peerDependencies": {
     "react": "^0.12.2 || ^0.13.1"
