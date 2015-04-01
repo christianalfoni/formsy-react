@@ -232,14 +232,15 @@ Formsy.Form = React.createClass({
       this.props.onChange(this.getCurrentValues());
     }
 
-    if (!component.props.required && !component._validations && !component.checkValidity) {
-      return;
+    var isValid = true;
+    if (component.validate) {
+      isValid = component.validate();
+    } else if (component.props.required || component._validations) {
+      isValid = this.runValidation(component);
     }
 
     // Run through the validations, split them up and call
     // the validator IF there is a value or it is required
-    var isValid = this.runValidation(component);
-
     component.setState({
       _isValid: isValid,
       _serverError: null
