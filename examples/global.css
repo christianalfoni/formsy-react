@@ -1,0 +1,62 @@
+body {
+  font-family: "Helvetica Neue", Arial;
+  font-weight: 200;
+}
+
+h1, h2, h3 {
+  font-weight: 100;
+}
+
+a {
+  color: hsl(200, 50%, 50%);
+}
+
+a.active {
+  color: hsl(20, 50%, 50%);
+}
+
+.breadcrumbs a {
+  text-decoration: none;
+}
+
+form {
+  padding: 15px;
+  border: 1px solid black;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.form-group input {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #FFF;
+  background-image: none;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.validation-error {
+  color: red;
+  margin-top: 5px;
+  display: inline-block;
+}
+
+button {
+  padding: 10px 15px;
+  border-radius: 4px;
+}

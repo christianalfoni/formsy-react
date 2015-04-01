@@ -77,6 +77,8 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="howtouse">How to use</a>
 
+See `examples` folder for live examples.
+
 #### Formsy gives you a form straight out of the box
 
 ```javascript
