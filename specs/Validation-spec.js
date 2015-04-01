@@ -50,7 +50,7 @@ describe('Validation', function() {
 
   });
 
-  it('should use provided checkValidity function', function () {
+  it('should use provided validate function', function () {
 
     var isValid = jasmine.createSpy('valid');
     var TestInput = React.createClass({
@@ -64,7 +64,7 @@ describe('Validation', function() {
         }
         return <input value={this.getValue()} onChange={this.updateValue}/>
       },
-      checkValidity: function () {
+      validate: function () {
         return this.getValue() === "checkValidity";
       }
     });
@@ -75,7 +75,6 @@ describe('Validation', function() {
     );
 
     var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
-    expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 'checkValidity'}});
     expect(isValid).toHaveBeenCalled();
 

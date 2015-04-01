@@ -233,7 +233,7 @@ Formsy.Form = React.createClass({
     }
 
     var isValid = true;
-    if (component.validate) {
+    if (component.validate && typeof component.validate === 'function') {
       isValid = component.validate();
     } else if (component.props.required || component._validations) {
       isValid = this.runValidation(component);
