@@ -232,7 +232,7 @@ Formsy.Form = React.createClass({
       this.props.onChange(this.getCurrentValues());
     }
 
-    if (!component.props.required && !component._validations) {
+    if (!component.props.required && !component._validations && !component.checkValidity) {
       return;
     }
 
@@ -273,6 +273,11 @@ Formsy.Form = React.createClass({
         }
       }.bind(this));
     }
+    if (typeof component.checkValidity === "function") {
+      // the component defines an explicit checkValidity function
+      isValid = component.checkValidity()
+    }
+
     return isValid;
   },
 

@@ -50,6 +50,37 @@ describe('Validation', function() {
 
   });
 
+  it('should use provided checkValidity function', function () {
+
+    var isValid = jasmine.createSpy('valid');
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      updateValue: function (event) {
+        this.setValue(event.target.value);
+      },
+      render: function () {
+        if (this.isValid()) {
+          isValid();
+        }
+        return <input value={this.getValue()} onChange={this.updateValue}/>
+      },
+      checkValidity: function () {
+        return this.getValue() === "checkValidity";
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" value="checkInvalidity"/>
+      </Formsy.Form>
+    );
+
+    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 'checkValidity'}});
+    expect(isValid).toHaveBeenCalled();
+
+  });
+
   it('RULE: isEmail', function () {
 
     var isValid = jasmine.createSpy('valid');
