@@ -226,7 +226,7 @@ Formsy.Form = React.createClass({
   // validate the input and set its state. Then check the
   // state of the form itself
   validate: function (component) {
-
+    
     // Trigger onChange
     if (this.state.canChange) {
       this.props.onChange(this.getCurrentValues());
@@ -252,9 +252,8 @@ Formsy.Form = React.createClass({
   runValidation: function (component, value) {
 
     var isValid = true;
-    
     value = arguments.length === 2 ? value : component.state._value;
-    if (component._validations.length && (component.props.required || value !== '')) {
+    if (component._validations.length) {
       component._validations.split(/\,(?![^{\[]*[}\]])/g).forEach(function (validation) {
         var args = validation.split(':');
         var validateMethod = args.shift();
@@ -274,11 +273,10 @@ Formsy.Form = React.createClass({
         }
       }.bind(this));
     }
-    if (typeof component.checkValidity === "function") {
-      // the component defines an explicit checkValidity function
-      isValid = component.checkValidity()
+    if (typeof component.validate === "function") {
+      // the component defines an explicit validate function
+      isValid = component.validate()
     }
-
     return isValid;
   },
 
