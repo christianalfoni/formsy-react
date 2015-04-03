@@ -42,6 +42,7 @@ A form input builder and validator for React JS
     - [showError()](#showerror)
     - [isPristine()](#ispristine)
     - [isFormDisabled()](#isformdisabled)
+    - [validate](#validate)
   - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
 
@@ -564,6 +565,29 @@ var MyInput = React.createClass({
 React.render(<Formy.Form disabled={true}/>);
 ```
 You can now disable the form itself with a prop and use **isFormDisabled()** inside form elements to verify this prop.
+
+#### <a name="validate">validate</a>
+```javascript
+var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
+  changeValue: function (event) {
+    this.setValue(event.target.value);
+  },
+  validate: function () {
+    return !!this.getValue();
+  },
+  render: function () {
+    return (
+      <div>
+        <input type="text" value={this.getValue()} onChange={this.changeValue}/>
+      </div>
+    );
+  }
+});
+
+React.render(<Formy.Form disabled={true}/>);
+```
+You can create custom validation inside a form element. The validate method defined will be run when you set new values to the form element. It will also be run when the form validates itself. This is an alternative to passing in validation rules as props.
 
 ### <a name="formsyaddvalidationrule">Formsy.addValidationRule(name, ruleFunc)</a>
 An example:
