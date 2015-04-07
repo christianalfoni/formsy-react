@@ -72,7 +72,7 @@ The main concept is that forms, inputs and validation is done very differently a
 
 ## <a name="changes">Changes</a>
 
-[Check out releases](releases)
+[Check out releases](https://github.com/christianalfoni/formsy-react/releases)
 
 [Older changes](CHANGES.md)
 
