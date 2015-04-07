@@ -326,7 +326,6 @@ it('should allow an undefined value to be updated to a value', function (done) {
         });
       },
       setInvalid: function () {
-        console.log('Running it!');
         isInvalid = true;
       },
       render: function () {

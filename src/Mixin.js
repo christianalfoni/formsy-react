@@ -37,6 +37,8 @@ module.exports = {
     nextProps._attachToForm = this.props._attachToForm;
     nextProps._detachFromForm = this.props._detachFromForm;
     nextProps._validate = this.props._validate;
+    nextProps._isValidValue = this.props._isValidValue;
+    nextProps._isFormDisabled = this.props._isFormDisabled;
     this.setValidations(nextProps.validations, nextProps.required);
   },
 

@@ -228,20 +228,21 @@ Formsy.Form = React.createClass({displayName: "Form",
   // validate the input and set its state. Then check the
   // state of the form itself
   validate: function (component) {
-
+    
     // Trigger onChange
     if (this.state.canChange) {
       this.props.onChange(this.getCurrentValues());
     }
 
-    if (!component.props.required && !component._validations) {
-      return;
+    var isValid = true;
+    if (component.validate && typeof component.validate === 'function') {
+      isValid = component.validate();
+    } else if (component.props.required || component._validations) {
+      isValid = this.runValidation(component);
     }
 
     // Run through the validations, split them up and call
     // the validator IF there is a value or it is required
-    var isValid = this.runValidation(component);
-
     component.setState({
       _isValid: isValid,
       _serverError: null
@@ -253,9 +254,8 @@ Formsy.Form = React.createClass({displayName: "Form",
   runValidation: function (component, value) {
 
     var isValid = true;
-    
     value = arguments.length === 2 ? value : component.state._value;
-    if (component._validations.length && (component.props.required || value !== '')) {
+    if (component._validations.length) {
       component._validations.split(/\,(?![^{\[]*[}\]])/g).forEach(function (validation) {
         var args = validation.split(':');
         var validateMethod = args.shift();
@@ -274,6 +274,10 @@ Formsy.Form = React.createClass({displayName: "Form",
           isValid = false;
         }
       }.bind(this));
+    }
+    if (typeof component.validate === "function") {
+      // the component defines an explicit validate function
+      isValid = component.validate()
     }
     return isValid;
   },
@@ -406,6 +410,8 @@ module.exports = {
     nextProps._attachToForm = this.props._attachToForm;
     nextProps._detachFromForm = this.props._detachFromForm;
     nextProps._validate = this.props._validate;
+    nextProps._isValidValue = this.props._isValidValue;
+    nextProps._isFormDisabled = this.props._isFormDisabled;
     this.setValidations(nextProps.validations, nextProps.required);
   },
 
