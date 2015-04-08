@@ -65,7 +65,7 @@ Formsy.Form = React.createClass({displayName: "Form",
 
         this.registerInputs(this.props.children);
 
-       if (this.props.validationErrors) {
+        if (this.props.validationErrors) {
           this.setInputValidationErrors(this.props.validationErrors);
         }
 
@@ -88,23 +88,23 @@ Formsy.Form = React.createClass({displayName: "Form",
     // so validation becomes visible (if based on isPristine)
     this.setFormPristine(false);
 
-    // To support use cases where no async or request operation is needed.
+    this.updateModel();
+    var model = this.mapModel();
+
     // The "onSubmit" callback is called with the model e.g. {fieldName: "myValue"},
     // if wanting to reset the entire form to original state, the second param is a callback for this.
+    this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
+    this.state.isValid ?
+      this.props.onValidSubmit(model, this.resetModel, this.updateInputsWithError) :
+      this.props.onInvalidSubmit(model, this.resetModel, this.updateInputsWithError);
+
     if (!this.props.url) {
-      this.updateModel();
-      var model = this.mapModel();
-      this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
-      this.state.isValid ? this.props.onValidSubmit(model, this.resetModel) : this.props.onInvalidSubmit(model, this.resetModel);
       return;
     }
 
-    this.updateModel();
     this.setState({
       isSubmitting: true
     });
-
-    this.props.onSubmit(this.mapModel(), this.resetModel, this.updateInputsWithError);
 
     var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers || {};
 
