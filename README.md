@@ -19,6 +19,8 @@ A form input builder and validator for React JS
     - [validationErrors](#validationerrors)
     - [onSuccess()](#onsuccess)
     - [onSubmit()](#onsubmit)
+    - [onValidSubmit()](#onvalidsubmit)
+    - [onInvalidSubmit()](#oninvalidsubmit)
     - [onSubmitted()](#onsubmitted)
     - [onError()](#onerror)
     - [onValid()](#onvalid)
@@ -259,11 +261,23 @@ Takes a function to run when the server has responded with a success http status
 ```html
 <Formsy.Form url="/users" onSubmit={this.showFormLoader}></Formsy.Form>
 ```
-Takes a function to run when the submit button has been clicked. 
+Takes a function to run always when the submit button has been clicked. 
 
 The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. E.g. `{email: "This email is taken"}`. Resetting or invalidating the form will cause **setState** to run on the form element component.
 
 **note!** If you do not pass a url attribute this handler is where you would manually do your ajax request.
+
+#### <a name="onvalidsubmit">onValidSubmit(data, resetForm, invalidateForm)</a>
+```html
+<Formsy.Form url="/users" onValidSubmit={this.submitForm}></Formsy.Form>
+```
+Takes a function to run when the submit button has been clicked and form state is valid.
+
+#### <a name="oninvalidsubmit">onInvalidSubmit(data, resetForm, invalidateForm)</a>
+```html
+<Formsy.Form url="/users" onInvalidSubmit={this.showWarning}></Formsy.Form>
+```
+Takes a function to run when the submit button has been clicked and form state is not valid.
 
 #### <a name="onsubmitted">onSubmitted()</a>
 ```html
