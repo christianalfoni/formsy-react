@@ -25,17 +25,20 @@ form {
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .form-group label {
   display: inline-block;
   max-width: 100%;
-  margin-bottom: 5px;
+  margin-top: 5px;
   font-weight: 700;
 }
 
-.form-group input {
+.form-group input[type='text'],
+.form-group input[type='email'],
+.form-group input[type='number'],
+.form-group input[type='password'] {
   display: block;
   width: 100%;
   height: 34px;
@@ -52,7 +55,7 @@ form {
 
 .validation-error {
   color: red;
-  margin-top: 5px;
+  margin: 5px 0;
   display: inline-block;
 }
 
