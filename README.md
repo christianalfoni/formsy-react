@@ -28,6 +28,8 @@ In development you will get a warning about Formsy overriding `props`. This is d
     - [onError()](#onerror)
     - [onValid()](#onvalid)
     - [onInvalid()](#oninvalid)
+    - [onValidSubmit()](#onvalidsubmit)
+    - [onInvalidSubmit()](#onvinalidsubmit)
     - [onChange()](#onchange)
   - [Formsy.Mixin](#formsymixin)
     - [name](#name)
@@ -293,6 +295,18 @@ Whenever the form becomes valid the "onValid" handler is called. Use it to chang
 <Formsy.Form url="/users" onInvalid={this.disableSubmitButton}></Formsy.Form>
 ```
 Whenever the form becomes invalid the "onInvalid" handler is called. Use it to for example revert "onValid" state.
+
+#### <a name="onvalidsubmit">onValidSubmit(model, resetForm, invalidateForm)</a>
+```html
+<Formsy.Form url="/users" onValidSubmit={this.sendToServer}></Formsy.Form>
+```
+Triggers when form is submitted with a valid state. The arguments are the same as on `onSubmit`.
+
+#### <a name="oninvalidsubmit">onInvalidSubmit(model, resetForm, invalidateForm)</a>
+```html
+<Formsy.Form url="/users" onInvalidSubmit={this.notifyFormError}></Formsy.Form>
+```
+Triggers when form is submitted with an invalid state. The arguments are the same as on `onSubmit`.
 
 #### <a name="onchange">onChange(currentValues)</a>
 ```html
