@@ -3,6 +3,9 @@ formsy-react
 
 A form input builder and validator for React JS
 
+## Running with React 0.13.x
+In development you will get a warning about Formsy overriding `props`. This is due to a change in the React API. A new solution has been developed for next Formsy release, though it will not be available until React 0.14.0 is ready. So please just ignore the warning for now and when React 0.14.0 is here, they will be gone!
+
 - [Background](#background)
 - [What you can do](#whatyoucando)
 - [Install](#install)
