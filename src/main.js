@@ -93,7 +93,7 @@ Formsy.Form = React.createClass({
       this.updateModel();
       var model = this.mapModel();
       this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
-      this.state.isValid ? this.props.onValidSubmit(model, this.resetModel, this.updateInputsWithError) : this.props.onInvalidSubmit(model, this.resetModel, this.updateInputsWithError);
+      this.state.isValid ? this.props.onValidSubmit(model, this.resetModel) : this.props.onInvalidSubmit(model, this.resetModel);
       return;
     }
 
@@ -273,6 +273,10 @@ Formsy.Form = React.createClass({
           return '';
         } 
 
+        if (validationResults.errors.length) {
+          return validationResults.errors[0];
+        }
+
         if (this.props.validationErrors && this.props.validationErrors[component.props.name]) {
           return this.props.validationErrors[component.props.name];
         }
@@ -293,6 +297,7 @@ Formsy.Form = React.createClass({
   runRules: function (value, currentValues, validations) {
 
     var results = {
+      errors: [],
       failed: [],
       success: []
     };
@@ -307,10 +312,28 @@ Formsy.Form = React.createClass({
           throw new Error('Formsy does not have the validation rule: ' + validationMethod);
         }
 
-        if (typeof validations[validationMethod] === 'function' && !validations[validationMethod](currentValues, value)) {
-          return results.failed.push(validationMethod);
-        } else if (typeof validations[validationMethod] !== 'function' && !validationRules[validationMethod](currentValues, value, validations[validationMethod])) {
-          return results.failed.push(validationMethod);
+       if (typeof validations[validationMethod] === 'function') {
+          var validation = validations[validationMethod](currentValues, value);
+          if (typeof validation === 'string') {
+            results.errors.push(validation);
+            results.failed.push(validationMethod);
+          } else if (!validation) {
+            results.failed.push(validationMethod);
+          }
+          return;
+
+        } else if (typeof validations[validationMethod] !== 'function') {
+          var validation = validationRules[validationMethod](currentValues, value, validations[validationMethod]);
+          if (typeof validation === 'string') {
+            results.errors.push(validation);
+            results.failed.push(validationMethod);
+          } else if (!validation) {
+            results.failed.push(validationMethod);   
+          } else {
+            results.success.push(validationMethod);
+          }
+          return;
+
         }
 
         return results.success.push(validationMethod);
@@ -322,6 +345,53 @@ Formsy.Form = React.createClass({
     
   },
 
+/*
+
+ var results = {
+      errors: [],
+      failed: [],
+      success: []
+    };
+    if (Object.keys(validations).length) {
+      Object.keys(validations).forEach(function (validationMethod) {
+
+        if (validationRules[validationMethod] && typeof validations[validationMethod] === 'function') {
+          throw new Error('Formsy does not allow you to override default validations: ' + validationMethod);
+        }
+
+        if (!validationRules[validationMethod] && typeof validations[validationMethod] !== 'function') {
+          throw new Error('Formsy does not have the validation rule: ' + validationMethod);
+        }
+
+        if (typeof validations[validationMethod] === 'function') {
+          var validation = validations[validationMethod](currentValues, value);
+          if (typeof validation === 'string') {
+            results.errors.push(validation);
+            results.failed.push(validationMethod);
+          } else if (!validation) {
+            results.failed.push(validationMethod);
+          }
+          return;
+
+        } else if (typeof validations[validationMethod] !== 'function') {
+          var validation = validationRules[validationMethod](currentValues, value, validations[validationMethod]);
+          if (typeof validation === 'string') {
+            results.errors.push(validation);
+            results.failed.push(validationMethod);
+          } else if (!validation) {
+            results.failed.push(validationMethod);   
+          }
+          return;
+
+        }
+
+        return results.success.push(validationMethod);
+
+      });
+    }
+
+    return results;
+*/
   // Validate the form by going through all child input components
   // and check their state
   validateForm: function () {
