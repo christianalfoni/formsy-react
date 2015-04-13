@@ -36,6 +36,7 @@ In development you will get a warning about Formsy overriding `props`. This is d
     - [value](#value)
     - [validations](#validations)
     - [validationError](#validationerror)
+    - [validationErrors](#elementvalidationerrors)
     - [required](#required)
     - [getValue()](#getvalue)
     - [setValue()](#setvalue)
@@ -331,7 +332,18 @@ You should always use the [**getValue()**](#getvalue) method inside your formsy 
 #### <a name="validations">validations</a>
 ```html
 <MyInputComponent name="email" validations="isEmail"/>
-<MyInputComponent name="number" validations="isNumeric,isLength:5:12"/>
+<MyInputComponent name="number" validations="isNumeric,isLength:5"/>
+<MyInputComponent name="number" validations={{
+  isNumeric: true,
+  isLength: 5
+}}/>
+<MyInputComponent name="number" validations={{
+  myCustomIsFiveValidation: function (values, value) {
+    values; // Other current values in form {foo: 'bar', 'number': 5}
+    value; // 5
+    return 5 === value;
+  }
+}}/>
 ```
 An comma seperated list with validation rules. Take a look at [**Validators**](#validators) to see default rules. Use ":" to separate arguments passed to the validator. The arguments will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
 
@@ -347,11 +359,33 @@ Works just fine.
 ```
 The message that will show when the form input component is invalid.
 
+#### <a name="validationerrors">validationErrors</a>
+```html
+<MyInputComponent 
+  name="email" 
+  validations={{
+    isEmail: true,
+    maxLength: 50
+  }} 
+  validationErrors={{
+    isEmail: 'You have to type valid email',
+    maxLength: 'You can not type in more than 50 characters'
+  }}
+/>
+```
+The message that will show when the form input component is invalid. You can combine this with `validationError`. Keys not found in `validationErrors` defaults to the general error message.
+
 #### <a name="required">required</a>
 ```html
 <MyInputComponent name="email" validations="isEmail" validationError="This is not an email" required/>
 ```
-A property that tells the form that the form input component value is required.
+
+A property that tells the form that the form input component value is required. By default it uses `isEmptyString`, but you can define your own definition of what defined a required state.
+
+```html
+<MyInputComponent name="email" required="isFalse"/>
+```
+Would be typical for a checkbox type of form element.
 
 #### <a name="getvalue">getValue()</a>
 ```javascript
