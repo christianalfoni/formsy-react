@@ -144,7 +144,7 @@ Formsy.Form = React.createClass({
         _serverError: errors[name]
       }];
       component.setState.apply(component, args);
-    }.bind(this));   
+    }.bind(this));
   },
 
   // Go through errors from server and grab the components
@@ -226,7 +226,7 @@ Formsy.Form = React.createClass({
   // validate the input and set its state. Then check the
   // state of the form itself
   validate: function (component) {
-    
+
     // Trigger onChange
     if (this.state.canChange) {
       this.props.onChange(this.getCurrentValues());
@@ -296,14 +296,16 @@ Formsy.Form = React.createClass({
         }
       }.bind(this));
 
-      this.setState({
-        isValid: allIsValid
-      });
+      if (allIsValid !== this.state.isValid) {
+        this.setState({
+          isValid: allIsValid
+        });
 
-      if (allIsValid) {
-        this.props.onValid();
-      } else {
-        this.props.onInvalid();
+        if (allIsValid) {
+          this.props.onValid();
+        } else {
+          this.props.onInvalid();
+        }
       }
 
       // Tell the form that it can start to trigger change events

@@ -26,7 +26,7 @@ describe('Validation', function() {
 
   });
 
-  it('should trigger an onInvalid handler, if passed, when form is invalid', function () {
+  it('should not trigger an onInvalid handler, if passed, when form is already invalid', function () {
 
     var onInvalid = jasmine.createSpy('invalid');
     var TestInput = React.createClass({
@@ -39,12 +39,40 @@ describe('Validation', function() {
       }
     });
     var form = TestUtils.renderIntoDocument(
-      <Formsy.Form onValid={onInvalid}>
+      <Formsy.Form onInvalid={onInvalid}>
         <TestInput name="foo" value="foo"/>
       </Formsy.Form>
     );
 
     var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    TestUtils.Simulate.change(input, {target: {value: ''}});
+    expect(onInvalid).not.toHaveBeenCalled();
+
+  });
+
+  it('should trigger an onInvalid handler, if passed, when form becomes invalid', function () {
+
+    var onValid = jasmine.createSpy('valid');
+    var onInvalid = jasmine.createSpy('invalid');
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      updateValue: function (event) {
+        this.setValue(event.target.value);
+      },
+      render: function () {
+        return <input value={this.getValue()} onChange={this.updateValue}/>
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <Formsy.Form onValid={onValid} onInvalid={onInvalid}>
+        <TestInput name="foo" required/>
+      </Formsy.Form>
+    );
+
+    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    TestUtils.Simulate.change(input, {target: {value: 'foo'}});
+    expect(onValid).toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: ''}});
     expect(onInvalid).toHaveBeenCalled();
 
