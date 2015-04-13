@@ -141,10 +141,10 @@ module.exports = {
     return this.state._isPristine;
   },
   isRequired: function () {
-    return this.state._isRequired;
+    return !!this.props.required;
   },
   showRequired: function () {
-    return this.isRequired();
+    return this.state._isRequired;
   },
   showError: function () {
     return !this.showRequired() && !this.isValid();

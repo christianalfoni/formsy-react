@@ -17,15 +17,9 @@ In development you will get a warning about Formsy overriding `props`. This is d
   - [Formsy.defaults](#formsydefaults)
   - [Formsy.Form](#formsyform)
     - [className](#classname)
-    - [url](#url)
-    - [method](#method)
-    - [contentType](#contenttype)
     - [mapping](#mapping)
     - [validationErrors](#validationerrors)
-    - [onSuccess()](#onsuccess)
     - [onSubmit()](#onsubmit)
-    - [onSubmitted()](#onsubmitted)
-    - [onError()](#onerror)
     - [onValid()](#onvalid)
     - [onInvalid()](#oninvalid)
     - [onValidSubmit()](#onvalidsubmit)
@@ -40,7 +34,7 @@ In development you will get a warning about Formsy overriding `props`. This is d
     - [required](#required)
     - [getValue()](#getvalue)
     - [setValue()](#setvalue)
-    - [hasValue()](#hasvalue)
+    - [hasValue() - DEPRECATED](#hasvalue)
     - [resetValue()](#resetvalue)
     - [getErrorMessage()](#geterrormessage)
     - [isValid()](#isvalid)
@@ -94,9 +88,6 @@ See `examples` folder for live examples.
   /** @jsx React.DOM */
   var Formsy = require('formsy-react');
   var MyAppForm = React.createClass({
-    changeUrl: function () {
-      location.href = '/success';
-    },
     enableButton: function () {
       this.setState({
         canSubmit: true
@@ -107,9 +98,12 @@ See `examples` folder for live examples.
         canSubmit: false
       });
     },
+    submit: function (model) {
+      someDep.saveEmail(model.email);
+    },
     render: function () {
       return (
-        <Formsy.Form url="/users" onSuccess={this.changeUrl} onValid={this.enableButton} onInvalid={this.disableButton}>
+        <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <MyOwnInput name="email" validations="isEmail" validationError="This is not a valid email" required/>
           <button type="submit" disabled={!this.state.canSubmit}>Submit</button>
         </Formsy.Form>
@@ -118,7 +112,7 @@ See `examples` folder for live examples.
   });
 ```
 
-This code results in a form with a submit button that will POST to /users when clicked. The submit button is disabled as long as the input is empty ([required](#required)) or the value is not an email ([isEmail](#validators)). On validation error it will show the message: "This is not a valid email".
+This code results in a form with a submit button that will run the `submit` method when the submit button is clicked with a valid email. The submit button is disabled as long as the input is empty ([required](#required)) or the value is not an email ([isEmail](#validators)). On validation error it will show the message: "This is not a valid email".
 
 #### Building a form element (required)
 ```javascript
@@ -160,20 +154,7 @@ The form element component is what gives the form validation functionality to wh
 
 ## <a name="API">API</a>
 
-### <a name="formsydefaults">Formsy.defaults(options)</a>
-```javascript
-Formsy.defaults({
-  contentType: 'urlencoded', // default: 'json'
-  headers: {} // default headers
-  /* DEPRECATED
-  hideSubmit: true, // default: false
-  submitButtonClass: 'btn btn-success', // default: null
-  cancelButtonClass: 'btn btn-default', // default: null
-  buttonWrapperClass: 'my-wrapper' // default: null
-  */
-});
-```
-Use **defaults** to set general settings for all your forms.
+### <a name="formsydefaults">Formsy.defaults(options) - DEPRECATED</a>
 
 ### <a name="formsyform">Formsy.Form</a>
 
@@ -182,26 +163,6 @@ Use **defaults** to set general settings for all your forms.
 <Formsy.Form className="my-class"></Formsy.Form>
 ```
 Sets a class name on the form itself.
-
-#### <a name="url">url</a>
-```html
-<Formsy.Form url="/users"></Formsy.Form>
-```
-Will either **POST** or **PUT** to the url specified when submitted. If you do not pass a url the data for the form will be passed to the [**onSubmit**](#onsubmitdata-resetform-invalidateform) handler.
-
-#### <a name="method">method</a>
-```html
-<Formsy.Form url="/users" method="PUT"></Formsy.Form>
-```
-Supports **POST** (default) and **PUT**.
-
-#### <a name="contenttype">contentType</a>
-```html
-<Formsy.Form url="/users" method="PUT" contentType="urlencoded"></Formsy.Form>
-```
-Supports **json** (default) and **urlencoded** (x-www-form-urlencoded). 
-
-**Note!** Response has to be **json**.
 
 #### <a name="mapping">mapping</a>
 ```javascript
@@ -212,17 +173,20 @@ var MyForm = React.createClass({
       'field2': inputs.bar
     };
   },
+  submit: function (model) {
+    model; // {field1: '', field2: ''}
+  },
   render: function () {
     return (
-      <Formsy.Form url="/users" mapping={this.mapInputs}>
-        <MyInput name="foo"/>
-        <MyInput name="bar"/>
+      <Formsy.Form onSubmit={this.submit} mapping={this.mapInputs}>
+        <MyInput name="foo" value=""/>
+        <MyInput name="bar" value=""/>
       </Formsy.Form>
     );
   }
 })
 ```
-Use mapping to change the data structure of your input elements. This structure is passed to the onSubmit handler and/or to the server on submitting, depending on how you submit the form.
+Use mapping to change the data structure of your input elements. This structure is passed to the submit hooks.
 
 #### <a name="validationerrors">validationErrors</a>
 You can manually pass down errors to your form. In combination with `onChange` you are able to validate using an external validator.
@@ -257,12 +221,6 @@ var Form = React.createClass({
 });
 ```
 
-#### <a name="onsuccess">onSuccess(serverResponse)</a>
-```html
-<Formsy.Form url="/users" onSuccess={this.changeUrl}></Formsy.Form>
-```
-Takes a function to run when the server has responded with a success http status code.
-
 #### <a name="onsubmit">onSubmit(data, resetForm, invalidateForm)</a>
 ```html
 <Formsy.Form url="/users" onSubmit={this.showFormLoader}></Formsy.Form>
@@ -270,20 +228,6 @@ Takes a function to run when the server has responded with a success http status
 Takes a function to run when the submit button has been clicked. 
 
 The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. E.g. `{email: "This email is taken"}`. Resetting or invalidating the form will cause **setState** to run on the form element component.
-
-**note!** If you do not pass a url attribute this handler is where you would manually do your ajax request.
-
-#### <a name="onsubmitted">onSubmitted()</a>
-```html
-<Formsy.Form url="/users" onSubmitted={this.hideFormLoader}></Formsy.Form>
-```
-Takes a function to run when either a success or error response is received from the server.
-
-#### <a name="onerror">onError(serverResponse)</a>
-```html
-<Formsy.Form url="/users" onError={this.changeToFormErrorClass}></Formsy.Form>
-```
-Takes a function to run when the server responds with an error http status code.
 
 #### <a name="onvalid">onValid()</a>
 ```html
@@ -325,9 +269,9 @@ The name is required to register the form input component in the form.
 
 #### <a name="value">value</a>
 ```html
-<MyInputComponent name="email" value="My default value"/>
+<MyInputComponent name="email" value="My initial value"/>
 ```
-You should always use the [**getValue()**](#getvalue) method inside your formsy form element. To pass a default value, use the value attribute.
+You should always use the [**getValue()**](#getvalue) method inside your formsy form element. To pass an initial value, use the value attribute. This value will become the "pristine" value and any reset of the form will bring back this value.
 
 #### <a name="validations">validations</a>
 ```html
@@ -341,11 +285,11 @@ You should always use the [**getValue()**](#getvalue) method inside your formsy 
   myCustomIsFiveValidation: function (values, value) {
     values; // Other current values in form {foo: 'bar', 'number': 5}
     value; // 5
-    return 5 === value;
+    return 5 === value ? true : 'No five'; // You can return an error
   }
 }}/>
 ```
-An comma seperated list with validation rules. Take a look at [**Validators**](#validators) to see default rules. Use ":" to separate arguments passed to the validator. The arguments will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
+An comma seperated list with validation rules. Take a look at [**Validators**](#validators) to see default rules. Use ":" to separate argument passed to the validator. The argument will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
 
 ```html
 <MyInputComponent name="fruit" validations="isIn:['apple', 'orange']"/>
@@ -357,7 +301,7 @@ Works just fine.
 ```html
 <MyInputComponent name="email" validations="isEmail" validationError="This is not an email"/>
 ```
-The message that will show when the form input component is invalid.
+The message that will show when the form input component is invalid. It will be used as a default error.
 
 #### <a name="validationerrors">validationErrors</a>
 ```html
@@ -380,7 +324,7 @@ The message that will show when the form input component is invalid. You can com
 <MyInputComponent name="email" validations="isEmail" validationError="This is not an email" required/>
 ```
 
-A property that tells the form that the form input component value is required. By default it uses `isEmptyString`, but you can define your own definition of what defined a required state.
+A property that tells the form that the form input component value is required. By default it uses `isDefaultRequiredValue`, but you can define your own definition of what defined a required state.
 
 ```html
 <MyInputComponent name="email" required="isFalse"/>
@@ -416,7 +360,7 @@ var MyInput = React.createClass({
 ```
 Sets the value of your form input component. Notice that it does not have to be a text input. Anything can set a value on the component. Think calendars, checkboxes, autocomplete stuff etc. Running this method will trigger a **setState()** on the component and do a render.
 
-#### <a name="hasvalue">hasValue()</a>
+#### <a name="hasvalue">hasValue() - DEPRECATED</a>
 ```javascript
 var MyInput = React.createClass({
   mixins: [Formsy.Mixin],
@@ -471,7 +415,7 @@ var MyInput = React.createClass({
   }
 });
 ```
-Will return the server error mapped to the form input component or return the validation message set if the form input component is invalid. If no server error and form input component is valid it returns **null**.
+Will return the validation message set if the form input component is invalid. If form input component is valid it returns **null**.
 
 #### <a name="isvalid">isValid()</a>
 ```javascript
@@ -600,7 +544,7 @@ var MyInput = React.createClass({
 ```
 By default all formsy input elements are pristine, which means they are not "touched". As soon as the [**setValue**](#setvaluevalue) method is run it will no longer be pristine.
 
-**note!** When the form is reset, using the resetForm callback function on [**onSubmit**](#onsubmitdata-resetform-invalidateform) the inputs are not reset to pristine.
+**note!** When the form is reset, using the resetForm callback function on for example [**onSubmit**](#onsubmitdata-resetform-invalidateform) the inputs are reset to their pristine state.
 
 #### <a name="ispristine">isFormDisabled()</a>
 ```javascript
@@ -645,7 +589,7 @@ You can create custom validation inside a form element. The validate method defi
 ### <a name="formsyaddvalidationrule">Formsy.addValidationRule(name, ruleFunc)</a>
 An example:
 ```javascript
-Formsy.addValidationRule('isFruit', function (value) {
+Formsy.addValidationRule('isFruit', function (values, value) {
   return ['apple', 'orange', 'pear'].indexOf(value) >= 0;
 });
 ```
@@ -654,7 +598,7 @@ Formsy.addValidationRule('isFruit', function (value) {
 ```
 Another example:
 ```javascript
-Formsy.addValidationRule('isIn', function (value, array) {
+Formsy.addValidationRule('isIn', function (values, value, array) {
   return array.indexOf(value) >= 0;
 });
 ```
@@ -663,11 +607,11 @@ Formsy.addValidationRule('isIn', function (value, array) {
 ```
 Cross input validation:
 ```javascript
-Formsy.addValidationRule('isMoreThan', function (value, otherField) {
+Formsy.addValidationRule('isMoreThan', function (values, value, otherField) {
   // The this context points to an object containing the values
   // {childAge: "", parentAge: "5"}
   // otherField argument is from the validations rule ("childAge")
-  return Number(value) > Number(this[otherField]);
+  return Number(value) > Number(values[otherField]);
 });
 ```
 ```html
@@ -675,9 +619,11 @@ Formsy.addValidationRule('isMoreThan', function (value, otherField) {
 <MyInputComponent name="parentAge" validations="isMoreThan:childAge"/>
 ```
 ## Validators
-**isValue**
+**matchRegexp**
 ```html
-<MyInputComponent name="foo" validations="isValue"/>
+<MyInputComponent name="foo" validations={{
+  matchRegexp: /foo/
+}}/>
 ```
 Returns true if the value is thruthful
 
@@ -686,6 +632,18 @@ Returns true if the value is thruthful
 <MyInputComponent name="foo" validations="isEmail"/>
 ```
 Return true if it is an email
+
+**isUndefined**
+```html
+<MyInputComponent name="foo" validations="isUndefined"/>
+```
+Returns true if the value is the undefined
+
+**isEmptyString**
+```html
+<MyInputComponent name="foo" validations="isEmptyString"/>
+```
+Returns true if the value is an empty string
 
 **isTrue**
 ```html
@@ -736,6 +694,18 @@ Return true if the value from input component matches value passed (==).
 <MyInputComponent name="repeated_password" validations="equalsField:password"/>
 ```
 Return true if the value from input component matches value passed (==).
+
+**minLength:length**
+```html
+<MyInputComponent name="number" validations="minLength:1"/>
+```
+Return true if the value is more or equal to argument
+
+**maxLength:length**
+```html
+<MyInputComponent name="number" validations="maxLength:5"/>
+```
+Return true if the value is less or equal to argument
 
 ## Run tests
 - Run `gulp`
