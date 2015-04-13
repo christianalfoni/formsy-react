@@ -1,11 +1,45 @@
+var convertValidationsToObject = function (validations) {
+
+  if (typeof validations === 'string') {
+
+    return validations.split(/\,(?![^{\[]*[}\]])/g).reduce(function (validations, validation) {
+      var args = validation.split(':');
+      var validateMethod = args.shift();
+      args = args.map(function (arg) {
+        try {
+          return JSON.parse(arg);
+        } catch (e) {
+          return arg; // It is a string if it can not parse it
+        }
+      });
+      
+      if (args.length > 1) {
+        throw new Error('Formsy does not support multiple args on string validations. Use object format of validations instead.');
+      }
+      validations[validateMethod] = args[0] || true;
+      return validations;
+    }, {});
+
+  }
+
+  return validations || {};
+
+};
 module.exports = {
   getInitialState: function () {
-    var value = 'value' in this.props ? this.props.value : '';
     return {
-      _value: value,
+      _value: this.props.value,
+      _isRequired: false,
       _isValid: true,
       _isPristine: true,
-      _pristineValue: value
+      _pristineValue: this.props.value,
+      _validationError: ''
+    };
+  },
+  getDefaultProps: function () {
+    return {
+      validationError: '',
+      validationErrors: {}
     };
   },
   componentWillMount: function () {
@@ -46,25 +80,15 @@ module.exports = {
 
     var isValueChanged = function () {
       
-      return (
-        this.props.value !== prevProps.value && (
-          this.state._value === prevProps.value ||
-
-          // Since undefined is converted to empty string we have to
-          // check that specifically
-          (this.state._value === '' && prevProps.value === undefined)
-        )
-      );
+      return this.props.value !== prevProps.value && this.state._value === prevProps.value;
 
     }.bind(this);
 
 
     // If validations has changed or something outside changes 
     // the value, set the value again running a validation
-
     if (prevProps.validations !== this.props.validations || isValueChanged()) {
-      var value = 'value' in this.props ? this.props.value : '';
-      this.setValue(value);
+      this.setValue(this.props.value);
     }
   },
 
@@ -76,12 +100,8 @@ module.exports = {
   setValidations: function (validations, required) {
 
     // Add validations to the store itself as the props object can not be modified
-    this._validations = validations || '';
-
-    if (required) {
-      this._validations = validations ? validations + ',' : '';
-      this._validations += 'isValue';
-    }
+    this._validations = convertValidationsToObject(validations) || {};
+    this._requiredValidations = required === true ? {isDefaultRequiredValue: true} : convertValidationsToObject(required);
 
   },
 
@@ -109,7 +129,7 @@ module.exports = {
     return this.state._value !== '';
   },
   getErrorMessage: function () {
-    return this.isValid() || this.showRequired() ? null : this.state._serverError || this.props.validationError;
+    return !this.isValid() || this.showRequired() ? this.state._validationError : null;
   },
   isFormDisabled: function () {
     return this.props._isFormDisabled();
@@ -124,10 +144,10 @@ module.exports = {
     return !!this.props.required;
   },
   showRequired: function () {
-    return this.isRequired() && this.state._value === '';
+    return this.state._isRequired;
   },
   showError: function () {
-    return !this.showRequired() && !this.state._isValid;
+    return !this.showRequired() && !this.isValid();
   },
   isValidValue: function (value) {
     return this.props._isValidValue.call(null, this, value);

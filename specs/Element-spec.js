@@ -79,45 +79,6 @@ describe('Element', function() {
 
   });
 
-  it('should return server error message when calling getErrorMessage()', function (done) {
-    
-    jasmine.Ajax.install();
-
-    var getErrorMessage = null;
-    var TestInput = React.createClass({
-      mixins: [Formsy.Mixin],
-      componentDidMount: function () {
-        getErrorMessage = this.getErrorMessage;
-      },
-      updateValue: function (event) {
-        this.setValue(event.target.value);
-      },
-      render: function () {
-        return <input value={this.getValue()} onChange={this.updateValue}/>
-      }
-    });
-    var form = TestUtils.renderIntoDocument(
-      <Formsy.Form url="/users">
-        <TestInput name="foo" value="foo" validations="isEmail" validationError="Has to be email"/>
-      </Formsy.Form>
-    );
-
-    var form = TestUtils.Simulate.submit(form.getDOMNode());
-
-    jasmine.Ajax.requests.mostRecent().respondWith({
-      status: 500,
-      contentType: 'application/json',
-      responseText: '{"foo": "bar"}'
-    })
-
-    setTimeout(function () {
-      expect(getErrorMessage()).toBe('bar');
-      jasmine.Ajax.uninstall();
-      done();
-    }, 0);
-
-  });
-
   it('should return true or false when calling isValid() depending on valid state', function () {
     
     var isValid = null;
@@ -163,13 +124,15 @@ describe('Element', function() {
     });
     var form = TestUtils.renderIntoDocument(
       <Formsy.Form url="/users">
-        <TestInput name="foo" value="foo"/>
-        <TestInput name="foo" value="foo" required/>
+        <TestInput name="foo" value=""/>
+        <TestInput name="foo" value="" required/>
+        <TestInput name="foo" value="foo" required="isLength:3"/>
       </Formsy.Form>
     );
 
     expect(isRequireds[0]()).toBe(false);
     expect(isRequireds[1]()).toBe(true);
+    expect(isRequireds[2]()).toBe(true);
 
   });
 
@@ -200,47 +163,6 @@ describe('Element', function() {
     expect(showRequireds[1]()).toBe(true);
     expect(showRequireds[2]()).toBe(false);
 
-  });
-
-  it('should return true or false when calling showError() depending on value is invalid or a server error has arrived, or not', function (done) {
-
-    var showError = null;
-    var TestInput = React.createClass({
-      mixins: [Formsy.Mixin],
-      componentDidMount: function () {
-        showError = this.showError;
-      },
-      updateValue: function (event) {
-        this.setValue(event.target.value);
-      },
-      render: function () {
-        return <input value={this.getValue()} onChange={this.updateValue}/>
-      }
-    });
-    var form = TestUtils.renderIntoDocument(
-      <Formsy.Form url="/users">
-        <TestInput name="foo" value="foo" validations="isEmail" validationError="This is not an email"/>
-      </Formsy.Form>
-    );
-
-    expect(showError()).toBe(true);
-
-    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
-    TestUtils.Simulate.change(input, {target: {value: 'foo@foo.com'}});
-    expect(showError()).toBe(false);
-
-    jasmine.Ajax.install();
-    TestUtils.Simulate.submit(form.getDOMNode());    
-    jasmine.Ajax.requests.mostRecent().respondWith({
-      status: 500,
-      responseType: 'application/json',
-      responseText: '{"foo": "Email already exists"}'
-    });
-    setTimeout(function () {
-      expect(showError()).toBe(true);
-      jasmine.Ajax.uninstall();
-      done();
-    }, 0);
   });
 
   it('should return true or false when calling isPristine() depending on input has been "touched" or not', function () {
@@ -374,5 +296,201 @@ it('should allow an undefined value to be updated to a value', function (done) {
     expect(input.isValidValue('foo@bar')).toBe(false);
 
   }); 
+
+  it('should be able to use an object as validations property', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var TestForm = React.createClass({
+      render: function () {
+        return (
+          <Formsy.Form>
+            <TestInput name="A" validations={{
+              isEmail: true
+            }}/>
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <TestForm/>
+    );
+
+    var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    expect(input.isValidValue('foo@bar.com')).toBe(true);
+    expect(input.isValidValue('foo@bar')).toBe(false);  
+  });
+
+  it('should be able to pass complex values to a validation rule', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      changeValue: function (event) {
+        this.setValue(event.target.value);
+      },
+      render: function () {
+        return <input value={this.getValue()} onChange={this.changeValue}/>
+      }
+    });
+    var TestForm = React.createClass({
+      render: function () {
+        return (
+          <Formsy.Form>
+            <TestInput name="A" validations={{
+              matchRegexp: /foo/
+            }} value="foo"/>
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <TestForm/>
+    );
+
+    var inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
+    expect(inputComponent.isValid()).toBe(true);
+    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    TestUtils.Simulate.change(input, {target: {value: 'bar'}});   
+    expect(inputComponent.isValid()).toBe(false);
+  });
+
+  it('should be able to run a function to validate', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      changeValue: function (event) {
+        this.setValue(event.target.value);
+      },
+      render: function () {
+        return <input value={this.getValue()} onChange={this.changeValue}/>
+      }
+    });
+    var TestForm = React.createClass({
+      customValidationA: function (values, value) {
+        return value === 'foo';
+      },
+      customValidationB: function (values, value) {
+        return value === 'foo' && values.A === 'foo';
+      },
+      render: function () {
+        return (
+          <Formsy.Form>
+            <TestInput name="A" validations={{
+              custom: this.customValidationA
+            }} value="foo"/>
+            <TestInput name="B" validations={{
+              custom: this.customValidationB
+            }} value="foo"/>
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <TestForm/>
+    );
+
+    var inputComponent = TestUtils.scryRenderedComponentsWithType(form, TestInput);
+    expect(inputComponent[0].isValid()).toBe(true);
+    expect(inputComponent[1].isValid()).toBe(true);
+    var input = TestUtils.scryRenderedDOMComponentsWithTag(form, 'INPUT');
+    TestUtils.Simulate.change(input[0], {target: {value: 'bar'}});   
+    expect(inputComponent[0].isValid()).toBe(false);
+    expect(inputComponent[1].isValid()).toBe(false);
+  });
+
+  it('should override all error messages with error messages passed by form', function () {
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var TestForm = React.createClass({
+      render: function () {
+        return (
+          <Formsy.Form validationErrors={{A: 'bar'}}>
+            <TestInput name="A" validations={{
+              isEmail: true
+            }} validationError="bar2" validationErrors={{isEmail: 'bar3'}} value="foo"/>
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <TestForm/>
+    );
+
+    var inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
+    expect(inputComponent.getErrorMessage()).toBe('bar');
+  });
+
+  it('should override validation rules with required rules', function () {
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var TestForm = React.createClass({
+      render: function () {
+        return (
+          <Formsy.Form>
+            <TestInput name="A" 
+              validations={{
+                isEmail: true
+              }} 
+              validationError="bar" 
+              validationErrors={{isEmail: 'bar2', isLength: 'bar3'}} 
+              value="f"
+              required={{
+                isLength: 1
+              }}
+            />
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <TestForm/>
+    );
+
+    var inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
+    expect(inputComponent.getErrorMessage()).toBe('bar3');
+  });
+
+  it('should fall back to default error message when non exist in validationErrors map', function () {
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var TestForm = React.createClass({
+      render: function () {
+        return (
+          <Formsy.Form>
+            <TestInput name="A" 
+              validations={{
+                isEmail: true
+              }} 
+              validationError="bar" 
+              validationErrors={{foo: 'bar'}} 
+              value="foo"
+            />
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <TestForm/>
+    );
+
+    var inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
+    expect(inputComponent.getErrorMessage()).toBe('bar');
+  });
 
 });

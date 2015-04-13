@@ -82,12 +82,9 @@ describe('Formsy', function () {
       // Wait before adding the input
       setTimeout(function () {
 
-        inputs.push(TestInput({
-          name: 'test'
-        }));
+        inputs.push(<TestInput name="test" value=""/>);
 
         forceUpdate(function () {
-
           // Wait for next event loop, as that does the form
           setTimeout(function () {
             TestUtils.Simulate.submit(form.getDOMNode());
@@ -136,9 +133,7 @@ describe('Formsy', function () {
       // Wait before adding the input
       setTimeout(function () {
 
-        inputs.push(TestInput({
-          name: 'test'
-        }));
+        inputs.push(<TestInput name="test"/>);
 
         forceUpdate(function () {
 
@@ -257,7 +252,7 @@ describe('Formsy', function () {
         var form = TestUtils.renderIntoDocument(<TestForm inputs={ [{name: 'one', validations: 'CheckValid', value: 'foo'}] }/>);
         var input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
         TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'bar'}});
-        expect(CheckValid).toHaveBeenCalledWith('bar');
+        expect(CheckValid).toHaveBeenCalledWith({one: 'bar'}, 'bar', true);
         expect(OtherCheckValid).not.toHaveBeenCalled();
       });
 
@@ -266,7 +261,7 @@ describe('Formsy', function () {
         form.setProps({inputs: [{name: 'one', validations: 'OtherCheckValid', value: 'foo'}] });
         var input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
         TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'bar'}});
-        expect(OtherCheckValid).toHaveBeenCalledWith('bar');
+        expect(OtherCheckValid).toHaveBeenCalledWith({one: 'bar'}, 'bar', true);
       });
 
       it('should invalidate a form if dynamically inserted input is invalid', function(done) {
@@ -301,8 +296,8 @@ describe('Formsy', function () {
         var form = TestUtils.renderIntoDocument(<TestForm inputs={ [{name: 'one', validations: 'CheckValid,OtherCheckValid', value: 'foo'}] }/>);
         var input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
         TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'bar'}});
-        expect(CheckValid).toHaveBeenCalledWith('bar');
-        expect(OtherCheckValid).toHaveBeenCalledWith('bar');
+        expect(CheckValid).toHaveBeenCalledWith({one: 'bar'}, 'bar', true);
+        expect(OtherCheckValid).toHaveBeenCalledWith({one: 'bar'}, 'bar', true);
       });
     });
 
@@ -380,9 +375,7 @@ describe('Formsy', function () {
       );
 
       // Wait before adding the input
-      inputs.push(TestInput({
-        name: 'test'
-      }));
+      inputs.push(<TestInput name='test'/>);
 
       forceUpdate(function () {
 
