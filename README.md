@@ -3,7 +3,7 @@ formsy-react
 
 A form input builder and validator for React JS
 
-## From version 0.12.0 Formsy only supports React 0.13.1 and up
+### From version 0.12.0 Formsy only supports React 0.13.1 and up
 
 [Read more about Formsy release v1.0.0](https://github.com/christianalfoni/formsy-react/issues/83)
 
