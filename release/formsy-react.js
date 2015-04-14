@@ -45,7 +45,6 @@ Formsy.Form = React.createClass({displayName: "Form",
   componentWillMount: function () {
     this.inputs = {};
     this.model = {};
-    this.registerInputs(this.props.children);
   },
 
   componentDidMount: function () {
@@ -63,9 +62,7 @@ Formsy.Form = React.createClass({displayName: "Form",
       // update
       if (this.isMounted()) {
 
-        this.registerInputs(this.props.children);
-
-       if (this.props.validationErrors) {
+        if (this.props.validationErrors) {
           this.setInputValidationErrors(this.props.validationErrors);
         }
 
@@ -87,34 +84,11 @@ Formsy.Form = React.createClass({displayName: "Form",
     // If any inputs have not been touched yet this will make them dirty
     // so validation becomes visible (if based on isPristine)
     this.setFormPristine(false);
-
-    // To support use cases where no async or request operation is needed.
-    // The "onSubmit" callback is called with the model e.g. {fieldName: "myValue"},
-    // if wanting to reset the entire form to original state, the second param is a callback for this.
-    if (!this.props.url) {
-      this.updateModel();
-      var model = this.mapModel();
-      this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
-      this.state.isValid ? this.props.onValidSubmit(model, this.resetModel) : this.props.onInvalidSubmit(model, this.resetModel);
-      return;
-    }
-
     this.updateModel();
-    this.setState({
-      isSubmitting: true
-    });
+    var model = this.mapModel();
+    this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
+    this.state.isValid ? this.props.onValidSubmit(model, this.resetModel) : this.props.onInvalidSubmit(model, this.resetModel);
 
-    this.props.onSubmit(this.mapModel(), this.resetModel, this.updateInputsWithError);
-
-    var headers = (Object.keys(this.props.headers).length && this.props.headers) || options.headers || {};
-
-    var method = this.props.method && utils.ajax[this.props.method.toLowerCase()] ? this.props.method.toLowerCase() : 'post';
-    utils.ajax[method](this.props.url, this.mapModel(), this.props.contentType || options.contentType || 'json', headers)
-      .then(function (response) {
-        this.props.onSuccess(response);
-        this.props.onSubmitted();
-      }.bind(this))
-      .catch(this.failSubmit);
   },
 
   mapModel: function () {
@@ -139,14 +113,14 @@ Formsy.Form = React.createClass({displayName: "Form",
   },
 
   setInputValidationErrors: function (errors) {
-     Object.keys(this.inputs).forEach(function (name, index) {
+    Object.keys(this.inputs).forEach(function (name, index) {
       var component = this.inputs[name];
       var args = [{
         _isValid: !(name in errors),
         _serverError: errors[name]
       }];
       component.setState.apply(component, args);
-    }.bind(this));   
+    }.bind(this));
   },
 
   // Go through errors from server and grab the components
@@ -162,42 +136,43 @@ Formsy.Form = React.createClass({displayName: "Form",
 
       var args = [{
         _isValid: false,
-        _serverError: errors[name]
+        _validationError: errors[name]
       }];
       component.setState.apply(component, args);
     }.bind(this));
   },
 
-  failSubmit: function (errors) {
-    this.updateInputsWithError(errors);
-    this.setState({
-      isSubmitting: false
-    });
-    this.props.onError(errors);
-    this.props.onSubmitted();
-  },
-
   // Traverse the children and children of children to find
   // all inputs by checking the name prop. Maybe do a better
   // check here
-  registerInputs: function (children) {
-    React.Children.forEach(children, function (child) {
+  traverseChildrenAndRegisterInputs: function (children) {
 
-      if (child && child.props && child.props.name) {
-        child.props._attachToForm = this.attachToForm;
-        child.props._detachFromForm = this.detachFromForm;
-        child.props._validate = this.validate;
-        child.props._isFormDisabled = this.isFormDisabled;
-        child.props._isValidValue = function (component, value) {
-          return this.runValidation(component, value).isValid;
-        }.bind(this);
+    if (typeof children !== 'object' || children === null) {
+      return children;
+    }
+    return React.Children.map(children, function (child) {
+
+      if (typeof child !== 'object' || child === null) {
+        return child;
       }
 
-      if (child && child.props && child.props.children) {
-        this.registerInputs(child.props.children);
+      if (child.props && child.props.name) {
+
+        return React.cloneElement(child, {
+          _attachToForm: this.attachToForm,
+          _detachFromForm: this.detachFromForm,
+          _validate: this.validate,
+          _isFormDisabled: this.isFormDisabled,
+          _isValidValue: function (component, value) {
+            return this.runValidation(component, value).isValid;
+          }.bind(this)
+        }, child.props && child.props.children);
+      } else {
+        return React.cloneElement(child, {}, this.traverseChildrenAndRegisterInputs(child.props && child.props.children));
       }
 
-    }.bind(this));
+    }, this);
+
   },
 
   isFormDisabled: function () {
@@ -230,7 +205,7 @@ Formsy.Form = React.createClass({displayName: "Form",
   // validate the input and set its state. Then check the
   // state of the form itself
   validate: function (component) {
-    
+
     // Trigger onChange
     if (this.state.canChange) {
       this.props.onChange(this.getCurrentValues());
@@ -273,7 +248,7 @@ Formsy.Form = React.createClass({displayName: "Form",
 
         if (isValid && !isRequired) {
           return '';
-        } 
+        }
 
         if (validationResults.errors.length) {
           return validationResults.errors[0];
@@ -314,57 +289,6 @@ Formsy.Form = React.createClass({displayName: "Form",
           throw new Error('Formsy does not have the validation rule: ' + validationMethod);
         }
 
-       if (typeof validations[validationMethod] === 'function') {
-          var validation = validations[validationMethod](currentValues, value);
-          if (typeof validation === 'string') {
-            results.errors.push(validation);
-            results.failed.push(validationMethod);
-          } else if (!validation) {
-            results.failed.push(validationMethod);
-          }
-          return;
-
-        } else if (typeof validations[validationMethod] !== 'function') {
-          var validation = validationRules[validationMethod](currentValues, value, validations[validationMethod]);
-          if (typeof validation === 'string') {
-            results.errors.push(validation);
-            results.failed.push(validationMethod);
-          } else if (!validation) {
-            results.failed.push(validationMethod);   
-          } else {
-            results.success.push(validationMethod);
-          }
-          return;
-
-        }
-
-        return results.success.push(validationMethod);
-
-      });
-    }
-
-    return results;
-    
-  },
-
-/*
-
- var results = {
-      errors: [],
-      failed: [],
-      success: []
-    };
-    if (Object.keys(validations).length) {
-      Object.keys(validations).forEach(function (validationMethod) {
-
-        if (validationRules[validationMethod] && typeof validations[validationMethod] === 'function') {
-          throw new Error('Formsy does not allow you to override default validations: ' + validationMethod);
-        }
-
-        if (!validationRules[validationMethod] && typeof validations[validationMethod] !== 'function') {
-          throw new Error('Formsy does not have the validation rule: ' + validationMethod);
-        }
-
         if (typeof validations[validationMethod] === 'function') {
           var validation = validations[validationMethod](currentValues, value);
           if (typeof validation === 'string') {
@@ -381,7 +305,9 @@ Formsy.Form = React.createClass({displayName: "Form",
             results.errors.push(validation);
             results.failed.push(validationMethod);
           } else if (!validation) {
-            results.failed.push(validationMethod);   
+            results.failed.push(validationMethod);
+          } else {
+            results.success.push(validationMethod);
           }
           return;
 
@@ -393,7 +319,9 @@ Formsy.Form = React.createClass({displayName: "Form",
     }
 
     return results;
-*/
+
+  },
+
   // Validate the form by going through all child input components
   // and check their state
   validateForm: function () {
@@ -466,9 +394,10 @@ Formsy.Form = React.createClass({displayName: "Form",
 
     return React.DOM.form({
         onSubmit: this.submit,
-        className: this.props.className
+        className: this.props.className,
+        novalidate: 'novalidate' in this.props ? this.props.novalidate : true 
       },
-      this.props.children
+      this.traverseChildrenAndRegisterInputs(this.props.children)
     );
 
   }
@@ -554,11 +483,6 @@ module.exports = {
 
   // We have to make the validate method is kept when new props are added
   componentWillReceiveProps: function (nextProps) {
-    nextProps._attachToForm = this.props._attachToForm;
-    nextProps._detachFromForm = this.props._detachFromForm;
-    nextProps._validate = this.props._validate;
-    nextProps._isValidValue = this.props._isValidValue;
-    nextProps._isFormDisabled = this.props._isFormDisabled;
     this.setValidations(nextProps.validations, nextProps.required);
   },
 
@@ -679,7 +603,7 @@ module.exports = {
     return value === '';
   },
   'isEmail': function (values, value) {
-    return value !== undefined && value.match(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i);
+    return !value || value.match(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i);
   },
   'isTrue': function (values, value) {
     return value === true;
@@ -700,13 +624,13 @@ module.exports = {
     }
   },
   'isAlpha': function (values, value) {
-    return value !== undefined && value.match(/^[a-zA-Z]+$/);
+    return !value || value.match(/^[a-zA-Z]+$/);
   },
   'isWords': function (values, value) {
-    return value !== undefined && value.match(/^[a-zA-Z\s]+$/);
+    return !value || value.match(/^[a-zA-Z\s]+$/);
   },
   'isSpecialWords': function (values, value) {
-    return value !== undefined && value.match(/^[a-zA-Z\s\u00C0-\u017F]+$/);
+    return !value || value.match(/^[a-zA-Z\s\u00C0-\u017F]+$/);
   },
   isLength: function (values, value, length) {
     return value !== undefined && value.length === length;
