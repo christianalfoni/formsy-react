@@ -3,10 +3,7 @@ formsy-react
 
 A form input builder and validator for React JS
 
-## Running with React 0.13.x
-In development you will get a warning about Formsy overriding `props`. This is due to a change in the React API. A new solution has been developed for next Formsy release, though it will not be available until React 0.14.0 is ready. So please just ignore the warning for now and when React 0.14.0 is here, they will be gone!
-
-[Read more about Formsy release v1.0.0](https://github.com/christianalfoni/formsy-react/issues/83)
+### From version 0.12.0 Formsy only supports React 0.13.1 and up
 
 - [Background](#background)
 - [What you can do](#whatyoucando)
@@ -45,6 +42,7 @@ In development you will get a warning about Formsy overriding `props`. This is d
     - [isPristine()](#ispristine)
     - [isFormDisabled()](#isformdisabled)
     - [validate](#validate)
+    - [formNoValidate](#formnovalidate)
   - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
 
@@ -223,7 +221,7 @@ var Form = React.createClass({
 
 #### <a name="onsubmit">onSubmit(data, resetForm, invalidateForm)</a>
 ```html
-<Formsy.Form url="/users" onSubmit={this.showFormLoader}></Formsy.Form>
+<Formsy.Form onSubmit={this.showFormLoader}></Formsy.Form>
 ```
 Takes a function to run when the submit button has been clicked. 
 
@@ -231,31 +229,31 @@ The first argument is the data of the form. The second argument will reset the f
 
 #### <a name="onvalid">onValid()</a>
 ```html
-<Formsy.Form url="/users" onValid={this.enableSubmitButton}></Formsy.Form>
+<Formsy.Form onValid={this.enableSubmitButton}></Formsy.Form>
 ```
 Whenever the form becomes valid the "onValid" handler is called. Use it to change state of buttons or whatever your heart desires.
 
 #### <a name="oninvalid">onInvalid()</a>
 ```html
-<Formsy.Form url="/users" onInvalid={this.disableSubmitButton}></Formsy.Form>
+<Formsy.FormonInvalid={this.disableSubmitButton}></Formsy.Form>
 ```
 Whenever the form becomes invalid the "onInvalid" handler is called. Use it to for example revert "onValid" state.
 
 #### <a name="onvalidsubmit">onValidSubmit(model, resetForm, invalidateForm)</a>
 ```html
-<Formsy.Form url="/users" onValidSubmit={this.sendToServer}></Formsy.Form>
+<Formsy.Form onValidSubmit={this.sendToServer}></Formsy.Form>
 ```
 Triggers when form is submitted with a valid state. The arguments are the same as on `onSubmit`.
 
 #### <a name="oninvalidsubmit">onInvalidSubmit(model, resetForm, invalidateForm)</a>
 ```html
-<Formsy.Form url="/users" onInvalidSubmit={this.notifyFormError}></Formsy.Form>
+<Formsy.Form onInvalidSubmit={this.notifyFormError}></Formsy.Form>
 ```
 Triggers when form is submitted with an invalid state. The arguments are the same as on `onSubmit`.
 
 #### <a name="onchange">onChange(currentValues)</a>
 ```html
-<Formsy.Form url="/users" onChange={this.saveCurrentValuesToLocalStorage}></Formsy.Form>
+<Formsy.Form onChange={this.saveCurrentValuesToLocalStorage}></Formsy.Form>
 ```
 "onChange" triggers when setValue is called on your form elements. It is also triggered when dynamic form elements have been added to the form. The "currentValues" is an object where the key is the name of the input and the value is the current value.
 
@@ -585,6 +583,20 @@ var MyInput = React.createClass({
 React.render(<Formy.Form disabled={true}/>);
 ```
 You can create custom validation inside a form element. The validate method defined will be run when you set new values to the form element. It will also be run when the form validates itself. This is an alternative to passing in validation rules as props.
+
+#### <a name="formnovalidate">formNoValidate</a>
+To avoid native validation behavior on inputs, use the React `formNoValidate` property.
+```javascript
+var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
+  render: function () {
+    return (
+      <div>
+        <input formNoValidate type="number"/>
+      </div>
+    );
+  }
+});
 
 ### <a name="formsyaddvalidationrule">Formsy.addValidationRule(name, ruleFunc)</a>
 An example:
