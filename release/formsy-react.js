@@ -627,10 +627,10 @@ module.exports = {
     return this.state._isPristine;
   },
   isRequired: function () {
-    return this.state._isRequired;
+    return !!this.props.required;
   },
   showRequired: function () {
-    return this.isRequired();
+    return this.state._isRequired;
   },
   showError: function () {
     return !this.showRequired() && !this.isValid();
@@ -715,7 +715,7 @@ module.exports = {
     return value == eql;
   },
   equalsField: function (values, value, field) {
-    return value == this[field];
+    return value == values[field];
   },
   maxLength: function (values, value, length) {
     return value !== undefined && value.length <= length;

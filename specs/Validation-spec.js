@@ -220,4 +220,26 @@ describe('Validation', function() {
 
   });
 
+  it('RULE: equalsField', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" value="foo" validations="equalsField:bar"/>
+        <TestInput name="bar" value="foo" validations="equalsField:foobar"/>
+        <TestInput name="foobar" value="bar"/>
+      </Formsy.Form>
+    );
+
+    var input = TestUtils.scryRenderedComponentsWithType(form, TestInput);
+    expect(input[0].isValid()).toBe(true);
+    expect(input[1].isValid()).toBe(false);
+
+  });
+
 });
