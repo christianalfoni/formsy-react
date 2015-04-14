@@ -51,7 +51,7 @@ module.exports = {
     return value == eql;
   },
   equalsField: function (values, value, field) {
-    return value == this[field];
+    return value == values[field];
   },
   maxLength: function (values, value, length) {
     return value !== undefined && value.length <= length;
