@@ -22,7 +22,6 @@ A form input builder and validator for React JS
     - [onValidSubmit()](#onvalidsubmit)
     - [onInvalidSubmit()](#onvinalidsubmit)
     - [onChange()](#onchange)
-    - [novalidate](#novalidate)
   - [Formsy.Mixin](#formsymixin)
     - [name](#name)
     - [value](#value)
@@ -257,12 +256,6 @@ Triggers when form is submitted with an invalid state. The arguments are the sam
 <Formsy.Form onChange={this.saveCurrentValuesToLocalStorage}></Formsy.Form>
 ```
 "onChange" triggers when setValue is called on your form elements. It is also triggered when dynamic form elements have been added to the form. The "currentValues" is an object where the key is the name of the input and the value is the current value.
-
-#### <a name="novalidate">novalidate</a>
-By default Formsy will set the "novalidate" attribute on the form, ignoring native validations. You can turn this off with:
-```html
-<Formsy.Form novalidate={false}></Formsy.Form>
-```
 
 ### <a name="formsymixin">Formsy.Mixin</a>
 
