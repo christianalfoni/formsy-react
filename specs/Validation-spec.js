@@ -108,6 +108,68 @@ describe('Validation', function() {
 
   });
 
+  it('should provide invalidate callback on onValiSubmit', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var TestForm = React.createClass({
+      invalidate: function (model, reset, invalidate) {
+        invalidate({
+          foo: 'bar'
+        });
+      },
+      render: function () {
+        return (
+          <Formsy.Form onValidSubmit={this.invalidate}>
+            <TestInput name="foo" value="foo"/>
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(<TestForm/>);
+
+    var formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
+    var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    TestUtils.Simulate.submit(formEl);
+    expect(input.isValid()).toBe(false);
+
+  });
+
+  it('should provide invalidate callback on onInvalidSubmit', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var TestForm = React.createClass({
+      invalidate: function (model, reset, invalidate) {
+        invalidate({
+          foo: 'bar'
+        });
+      },
+      render: function () {
+        return (
+          <Formsy.Form onInvalidSubmit={this.invalidate}>
+            <TestInput name="foo" value="foo" validations="isEmail"/>
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(<TestForm/>);
+
+    var formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
+    var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    TestUtils.Simulate.submit(formEl);
+    expect(input.getErrorMessage()).toBe('bar');
+
+  });
+
   it('RULE: isEmail', function () {
 
     var isValid = jasmine.createSpy('valid');

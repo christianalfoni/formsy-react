@@ -493,4 +493,30 @@ it('should allow an undefined value to be updated to a value', function (done) {
     expect(inputComponent.getErrorMessage()).toBe('bar');
   });
 
+  it('should not be valid if it is required and required rule is true', function () {
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var TestForm = React.createClass({
+      render: function () {
+        return (
+          <Formsy.Form>
+            <TestInput name="A" 
+            required
+            />
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <TestForm/>
+    );
+
+    var inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
+    expect(inputComponent.isValid()).toBe(false);
+  });
+
 });

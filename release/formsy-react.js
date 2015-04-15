@@ -87,7 +87,7 @@ Formsy.Form = React.createClass({displayName: "Form",
     this.updateModel();
     var model = this.mapModel();
     this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
-    this.state.isValid ? this.props.onValidSubmit(model, this.resetModel) : this.props.onInvalidSubmit(model, this.resetModel);
+    this.state.isValid ? this.props.onValidSubmit(model, this.resetModel, this.updateInputsWithError) : this.props.onInvalidSubmit(model, this.resetModel, this.updateInputsWithError);
 
   },
 
@@ -243,7 +243,7 @@ Formsy.Form = React.createClass({displayName: "Form",
     var isValid = !validationResults.failed.length && !(this.props.validationErrors && this.props.validationErrors[component.props.name]);
     return {
       isRequired: isRequired,
-      isValid: isValid,
+      isValid: isRequired ? false : isValid,
       error: (function () {
 
         if (isValid && !isRequired) {
