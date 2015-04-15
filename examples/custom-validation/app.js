@@ -18,7 +18,7 @@ var validators = {
   }
 };
 
-Formsy.addValidationRule('isYearOfBirth', function (value) {
+Formsy.addValidationRule('isYearOfBirth', function (values, value) {
   value = parseInt(value);
   if (typeof value !== 'number' || value !== value) {
     return false;
