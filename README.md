@@ -20,14 +20,14 @@ A form input builder and validator for React JS
     - [onValid()](#onvalid)
     - [onInvalid()](#oninvalid)
     - [onValidSubmit()](#onvalidsubmit)
-    - [onInvalidSubmit()](#onvinalidsubmit)
+    - [onInvalidSubmit()](#oninvalidsubmit)
     - [onChange()](#onchange)
   - [Formsy.Mixin](#formsymixin)
     - [name](#name)
     - [value](#value)
     - [validations](#validations)
     - [validationError](#validationerror)
-    - [validationErrors](#elementvalidationerrors)
+    - [validationErrors](#validationerrors)
     - [required](#required)
     - [getValue()](#getvalue)
     - [setValue()](#setvalue)
@@ -597,6 +597,7 @@ var MyInput = React.createClass({
     );
   }
 });
+```
 
 ### <a name="formsyaddvalidationrule">Formsy.addValidationRule(name, ruleFunc)</a>
 An example:
