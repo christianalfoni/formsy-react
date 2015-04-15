@@ -336,14 +336,16 @@ Formsy.Form = React.createClass({
         }
       }.bind(this));
 
-      this.setState({
-        isValid: allIsValid
-      });
+      if (allIsValid !== this.state.isValid) {
+        this.setState({
+          isValid: allIsValid
+        });
 
-      if (allIsValid) {
-        this.props.onValid();
-      } else {
-        this.props.onInvalid();
+        if (allIsValid) {
+          this.props.onValid();
+        } else {
+          this.props.onInvalid();
+        }
       }
 
       // Tell the form that it can start to trigger change events
