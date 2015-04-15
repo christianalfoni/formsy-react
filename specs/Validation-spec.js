@@ -170,32 +170,78 @@ describe('Validation', function() {
 
   });
 
-  it('RULE: isNumeric', function () {
+  describe('RULE: isNumeric (text input)', function() {
+    var isValid, changeInput;
 
-    var isValid = jasmine.createSpy('valid');
-    var TestInput = React.createClass({
-      mixins: [Formsy.Mixin],
-      updateValue: function (event) {
-        this.setValue(event.target.value);
-      },
-      render: function () {
-        if (this.isValid()) {
-          isValid();
+    beforeEach(function() {
+      isValid = false;
+
+      var TestInput = React.createClass({
+        mixins: [Formsy.Mixin],
+        updateValue: function (event) {
+          this.setValue(event.target.value);
+        },
+        render: function () {
+          isValid = this.isValid();
+          return <input value={this.getValue()} onChange={this.updateValue}/>
         }
-        return <input value={this.getValue()} onChange={this.updateValue}/>
+      });
+
+      var form = TestUtils.renderIntoDocument(
+        <Formsy.Form>
+          <TestInput name="foo" value="" validations="isNumeric"/>
+        </Formsy.Form>
+      );
+
+      var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+
+      changeInput = function(value) {
+        TestUtils.Simulate.change(input, {target: {value: value}});
       }
     });
-    var form = TestUtils.renderIntoDocument(
-      <Formsy.Form>
-        <TestInput name="foo" value="foo" validations="isNumeric"/>
-      </Formsy.Form>
-    );
 
-    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: '123'}});
-    expect(isValid).toHaveBeenCalled();
+    it('empty value', function () {
+      expect(isValid).toBe(true);
+      changeInput('');
+      expect(isValid).toBe(true);
+    });
 
+    it('valid integer', function () {
+      changeInput('123');
+      expect(isValid).toBe(true);
+      changeInput('-123');
+      expect(isValid).toBe(true);
+      changeInput('+123');
+      expect(isValid).toBe(true);
+    });
+
+    it('non-integer string', function () {
+      changeInput('abc');
+      expect(isValid).toBe(false);
+      changeInput('two');
+      expect(isValid).toBe(false);
+    });
+
+    it('ignores surrounding whitespace', function () {
+      changeInput('  123  ');
+      expect(isValid).toBe(true);
+      changeInput('\t123\n');
+      expect(isValid).toBe(true);
+    });
+
+    it('string representation of a float', function () {
+      changeInput('1.5');
+      expect(isValid).toBe(true);
+      changeInput('0.5');
+      expect(isValid).toBe(true);
+      changeInput('.5');
+      expect(isValid).toBe(true);
+    });
+
+    it('string representation of an invalid float', function () {
+      changeInput('1.');
+      expect(isValid).toBe(false);
+    });
   });
 
   it('RULE: isNumeric (actual number)', function () {
@@ -223,62 +269,6 @@ describe('Validation', function() {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: '123'}});
     expect(isValid).toHaveBeenCalled();
-
-  });
-
-  it('RULE: isNumeric (string representation of a float)', function () {
-
-    var isValid = jasmine.createSpy('valid');
-    var TestInput = React.createClass({
-      mixins: [Formsy.Mixin],
-      updateValue: function (event) {
-        this.setValue(event.target.value);
-      },
-      render: function () {
-        if (this.isValid()) {
-          isValid();
-        }
-        return <input value={this.getValue()} onChange={this.updateValue}/>
-      }
-    });
-    var form = TestUtils.renderIntoDocument(
-      <Formsy.Form>
-        <TestInput name="foo" value="foo" validations="isNumeric"/>
-      </Formsy.Form>
-    );
-
-    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: '1.5'}});
-    expect(isValid).toHaveBeenCalled();
-
-  });
-
-  it('RULE: isNumeric is false (string representation of an invalid float)', function () {
-
-    var isValid = jasmine.createSpy('valid');
-    var TestInput = React.createClass({
-      mixins: [Formsy.Mixin],
-      updateValue: function (event) {
-        this.setValue(event.target.value);
-      },
-      render: function () {
-        if (this.isValid()) {
-          isValid();
-        }
-        return <input value={this.getValue()} onChange={this.updateValue}/>
-      }
-    });
-    var form = TestUtils.renderIntoDocument(
-      <Formsy.Form>
-        <TestInput name="foo" value="foo" validations="isNumeric"/>
-      </Formsy.Form>
-    );
-
-    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: '1.'}});
-    expect(isValid).not.toHaveBeenCalled();
 
   });
 
