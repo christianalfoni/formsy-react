@@ -229,46 +229,6 @@ it('should allow an undefined value to be updated to a value', function (done) {
     }, 0);
   });  
 
-  it('should be able to dynamically change validations', function (done) {
-
-    var isInvalid = false;
-    var TestInput = React.createClass({
-      mixins: [Formsy.Mixin],
-      render: function () {
-        return <input value={this.getValue()}/>
-      }
-    });
-    var TestForm = React.createClass({
-      getInitialState: function () {
-        return {value: 'foo@bar.com', validations: 'isEmail'};
-      },
-      changeValidations: function () {
-        this.setState({
-          validations: 'equals:foo'
-        });
-      },
-      setInvalid: function () {
-        isInvalid = true;
-      },
-      render: function () {
-        return (
-          <Formsy.Form url="/users" onInvalid={this.setInvalid}>
-            <TestInput name="A" validations={this.state.validations} value={this.state.value}/>
-          </Formsy.Form>
-        );
-      }
-    });
-    var form = TestUtils.renderIntoDocument(
-      <TestForm/>
-    );
-
-    form.changeValidations();
-    setTimeout(function () {
-      expect(isInvalid).toBe(true);
-      done();
-    }, 0);
-  });  
-
   it('should be able to test a values validity', function () {
 
     var isInvalid = false;

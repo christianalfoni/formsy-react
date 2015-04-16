@@ -82,7 +82,7 @@ module.exports = {
 
     // If validations has changed or something outside changes 
     // the value, set the value again running a validation
-    if (prevProps.validations !== this.props.validations || isValueChanged()) {
+    if (isValueChanged()) {
       this.setValue(this.props.value);
     }
   },
