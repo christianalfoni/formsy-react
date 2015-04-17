@@ -3,9 +3,6 @@ formsy-react  [![GitHub release](https://img.shields.io/github/release/christian
 
 A form input builder and validator for React JS
 
-| [How to use](#howtouse) | [API](/API.md) | [Examples](/examples) |
-|---|---|---|
-
 ### From version 0.12.0 Formsy only supports React 0.13.1 and up
 
 - [Background](#background)
@@ -82,8 +79,6 @@ The main concept is that forms, inputs and validation is done very differently a
 ## <a name="howtouse">How to use</a>
 
 See [`examples` folder](/examples) for examples.
-
-Complete API reference is available [here](/API.md).
 
 #### Formsy gives you a form straight out of the box
 
