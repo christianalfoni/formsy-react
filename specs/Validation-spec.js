@@ -2,6 +2,79 @@ var Formsy = require('./../src/main.js');
 
 describe('Validation', function() {
 
+  it('should reset only changed form element when external error is passed', function (done) {
+
+    var onSubmit = function (model, reset, invalidate) {
+      invalidate({
+        foo: 'bar',
+        bar: 'foo'
+      });
+    }
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      updateValue: function (event) {
+        this.setValue(event.target.value);
+      },
+      render: function () {
+        return <input value={this.getValue()} onChange={this.updateValue}/>
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <Formsy.Form onSubmit={onSubmit}>
+        <TestInput name="foo"/>
+        <TestInput name="bar"/>
+      </Formsy.Form>
+    );
+
+    var input = TestUtils.scryRenderedDOMComponentsWithTag(form, 'INPUT')[0];
+    var inputComponents = TestUtils.scryRenderedComponentsWithType(form, TestInput);
+
+    form.submit();
+    expect(inputComponents[0].isValid()).toBe(false);
+    expect(inputComponents[1].isValid()).toBe(false);
+    TestUtils.Simulate.change(input, {target: {value: 'bar'}});
+    setTimeout(function () {
+      expect(inputComponents[0].isValid()).toBe(true);
+      expect(inputComponents[1].isValid()).toBe(false);
+      done();
+    }, 0);
+  });
+
+  it('should let normal validation take over when component with external error is changed', function (done) {
+
+    var onSubmit = function (model, reset, invalidate) {
+      invalidate({
+        foo: 'bar'
+      });
+    }
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      updateValue: function (event) {
+        this.setValue(event.target.value);
+      },
+      render: function () {
+        return <input value={this.getValue()} onChange={this.updateValue}/>
+      }
+    });
+    var form = TestUtils.renderIntoDocument(
+      <Formsy.Form onSubmit={onSubmit}>
+        <TestInput name="foo" validations="isEmail"/>
+      </Formsy.Form>
+    );
+
+    var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    var inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
+
+    form.submit();
+    expect(inputComponent.isValid()).toBe(false);
+    TestUtils.Simulate.change(input, {target: {value: 'bar'}});
+    setTimeout(function () {
+      expect(inputComponent.getValue()).toBe('bar');
+      expect(inputComponent.isValid()).toBe(false);
+      done();
+    }, 0);
+  });
+
   it('should trigger an onValid handler, if passed, when form is valid', function () {
 
     var onValid = jasmine.createSpy('valid');

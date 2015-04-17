@@ -78,7 +78,8 @@ Formsy.Form = React.createClass({displayName: "Form",
 
   // Update model, submit to url prop and send the model
   submit: function (event) {
-    event.preventDefault();
+
+    event && event.preventDefault();
 
     // Trigger form as not pristine.
     // If any inputs have not been touched yet this will make them dirty
@@ -117,7 +118,7 @@ Formsy.Form = React.createClass({displayName: "Form",
       var component = this.inputs[name];
       var args = [{
         _isValid: !(name in errors),
-        _serverError: errors[name]
+        _validationError: errors[name]
       }];
       component.setState.apply(component, args);
     }.bind(this));
@@ -136,7 +137,7 @@ Formsy.Form = React.createClass({displayName: "Form",
 
       var args = [{
         _isValid: false,
-        _validationError: errors[name]
+        _externalError: errors[name]
       }];
       component.setState.apply(component, args);
     }.bind(this));
@@ -217,14 +218,14 @@ Formsy.Form = React.createClass({displayName: "Form",
     component.setState({
       _isValid: validation.isValid,
       _isRequired: validation.isRequired,
-      _validationError: validation.error
+      _validationError: validation.error,
+      _externalError: null
     }, this.validateForm);
 
   },
 
   // Checks validation on current value or a passed value
   runValidation: function (component, value) {
-
 
     var currentValues = this.getCurrentValues();
     var validationErrors = component.props.validationErrors;
@@ -241,6 +242,7 @@ Formsy.Form = React.createClass({displayName: "Form",
 
     var isRequired = Object.keys(component._requiredValidations).length ? !!requiredResults.success.length : false;
     var isValid = !validationResults.failed.length && !(this.props.validationErrors && this.props.validationErrors[component.props.name]);
+
     return {
       isRequired: isRequired,
       isValid: isRequired ? false : isValid,
@@ -360,10 +362,14 @@ Formsy.Form = React.createClass({displayName: "Form",
     inputKeys.forEach(function (name, index) {
       var component = inputs[name];
       var validation = this.runValidation(component);
+      if (validation.isValid && component.state._externalError) {
+        validation.isValid = false;
+      }
       component.setState({
         _isValid: validation.isValid,
         _isRequired: validation.isRequired,
-        _validationError: validation.error
+        _validationError: validation.error,
+        _externalError: !validation.isValid && component.state._externalError ? component.state._externalError : null
       }, index === inputKeys.length - 1 ? onValidationComplete : null);
     }.bind(this));
 
@@ -447,7 +453,8 @@ module.exports = {
       _isValid: true,
       _isPristine: true,
       _pristineValue: this.props.value,
-      _validationError: ''
+      _validationError: '',
+      _externalError: null
     };
   },
   getDefaultProps: function () {
@@ -538,7 +545,7 @@ module.exports = {
     return this.state._value !== '';
   },
   getErrorMessage: function () {
-    return !this.isValid() || this.showRequired() ? this.state._validationError : null;
+    return !this.isValid() || this.showRequired() ? (this.state._externalError || this.state._validationError) : null;
   },
   isFormDisabled: function () {
     return this.props._isFormDisabled();
