@@ -3,10 +3,10 @@ formsy-react  [![GitHub release](https://img.shields.io/github/release/christian
 
 A form input builder and validator for React JS
 
-### From version 0.12.0 Formsy only supports React 0.13.1 and up
-
-| [How to use](#howtouse) | [API](/API.md) | [Examples](/examples) |
+| [How to use](#how-to-use) | [API](/API.md) | [Examples](/examples) |
 |---|---|---|
+
+### From version 0.12.0 Formsy only supports React 0.13.1 and up
 
 ## <a name="background">Background</a>
 I wrote an article on forms and validation with React JS, [Nailing that validation with React JS](http://christianalfoni.github.io/javascript/2014/10/22/nailing-that-validation-with-reactjs.html), the result of that was this extension. 
@@ -73,7 +73,7 @@ Complete API reference is available [here](/API.md).
   });
 ```
 
-This code results in a form with a submit button that will run the `submit` method when the submit button is clicked with a valid email. The submit button is disabled as long as the input is empty (`required`) or the value is not an email (`isEmail`). On validation error it will show the message: "This is not a valid email".
+This code results in a form with a submit button that will run the `submit` method when the submit button is clicked with a valid email. The submit button is disabled as long as the input is empty ([required](/API.md#required)) or the value is not an email ([isEmail](/API.md#validators)). On validation error it will show the message: "This is not a valid email".
 
 #### Building a form element (required)
 ```javascript
