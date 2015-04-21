@@ -27,12 +27,7 @@ module.exports = {
     if (typeof value === 'number') {
       return true;
     } else {
-      var matchResults = value !== undefined && value.match(/[-+]?(\d*[.])?\d+/);
-      if (!!matchResults) {
-        return matchResults[0] == value;
-      } else {
-        return false;
-      }
+      return !value || /^\s*[\-+]?(\d*[.])?\d+\s*$/.test(value);
     }
   },
   'isAlpha': function (values, value) {
