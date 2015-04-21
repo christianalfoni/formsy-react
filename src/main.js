@@ -74,6 +74,11 @@ Formsy.Form = React.createClass({
     }.bind(this), 0);
   },
 
+  resetForm: function () {
+    this.setFormPristine(true);
+    this.resetModel();
+  },
+
   // Update model, submit to url prop and send the model
   submit: function (event) {
 
@@ -190,11 +195,16 @@ Formsy.Form = React.createClass({
     var inputs = this.inputs;
     var inputKeys = Object.keys(inputs);
 
+    this.setState({
+        _formSubmitted: !isPristine
+    })
+
     // Iterate through each component and set it as pristine
     // or "dirty".
     inputKeys.forEach(function (name, index) {
       var component = inputs[name];
       component.setState({
+        _formSubmitted: !isPristine,
         _isPristine: isPristine
       });
     }.bind(this));
@@ -398,7 +408,7 @@ Formsy.Form = React.createClass({
 
     return React.DOM.form({
         onSubmit: this.submit,
-        className: this.props.className 
+        className: this.props.className
       },
       this.traverseChildrenAndRegisterInputs(this.props.children)
     );
