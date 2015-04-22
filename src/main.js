@@ -115,7 +115,7 @@ Formsy.Form = React.createClass({
       var component = this.inputs[name];
       var args = [{
         _isValid: !(name in errors),
-        _serverError: errors[name]
+        _validationError: errors[name]
       }];
       component.setState.apply(component, args);
     }.bind(this));
