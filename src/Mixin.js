@@ -16,7 +16,7 @@ var convertValidationsToObject = function (validations) {
       if (args.length > 1) {
         throw new Error('Formsy does not support multiple args on string validations. Use object format of validations instead.');
       }
-      validations[validateMethod] = args[0];
+      validations[validateMethod] = args.length ? args[0] : true;
       return validations;
     }, {});
 
