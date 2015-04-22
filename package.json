@@ -1,6 +1,6 @@
 {
   "name": "formsy-react",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "description": "A form input builder and validator for React JS",
   "repository": {
     "type": "git",
@@ -13,6 +13,13 @@
   },
   "author": "Christian Alfoni",
   "license": "MIT",
+  "keywords": [
+    "react",
+    "form",
+    "forms",
+    "validation",
+    "react-component"
+  ],
   "devDependencies": {
     "browserify": "^6.2.0",
     "glob": "^4.0.6",

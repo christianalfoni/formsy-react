@@ -33,7 +33,8 @@ module.exports = {
       _isValid: true,
       _isPristine: true,
       _pristineValue: this.props.value,
-      _validationError: ''
+      _validationError: '',
+      _externalError: null
     };
   },
   getDefaultProps: function () {
@@ -124,7 +125,7 @@ module.exports = {
     return this.state._value !== '';
   },
   getErrorMessage: function () {
-    return !this.isValid() || this.showRequired() ? this.state._validationError : null;
+    return !this.isValid() || this.showRequired() ? (this.state._externalError || this.state._validationError) : null;
   },
   isFormDisabled: function () {
     return this.props._isFormDisabled();
