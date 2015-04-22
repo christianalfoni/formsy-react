@@ -3,7 +3,7 @@ var Formsy = require('./../src/main.js');
 describe('Element', function() {
 
   it('should return passed and setValue() value when using getValue()', function () {
-    
+
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       updateValue: function (event) {
@@ -27,7 +27,7 @@ describe('Element', function() {
   });
 
   it('should set back to pristine value when running reset', function () {
-    
+
     var reset = null;
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -55,7 +55,7 @@ describe('Element', function() {
   });
 
   it('should return error message passed when calling getErrorMessage()', function () {
-    
+
     var getErrorMessage = null;
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -80,7 +80,7 @@ describe('Element', function() {
   });
 
   it('should return true or false when calling isValid() depending on valid state', function () {
-    
+
     var isValid = null;
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -108,7 +108,7 @@ describe('Element', function() {
   });
 
   it('should return true or false when calling isRequired() depending on passed required attribute', function () {
-    
+
     var isRequireds = [];
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -137,7 +137,7 @@ describe('Element', function() {
   });
 
   it('should return true or false when calling showRequired() depending on input being empty and required is passed, or not', function () {
-    
+
     var showRequireds = [];
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -166,7 +166,7 @@ describe('Element', function() {
   });
 
   it('should return true or false when calling isPristine() depending on input has been "touched" or not', function () {
-    
+
     var isPristine = null;
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
@@ -190,7 +190,7 @@ describe('Element', function() {
     var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
     TestUtils.Simulate.change(input, {target: {value: 'foo'}});
     expect(isPristine()).toBe(false);
-    
+
   });
 
 it('should allow an undefined value to be updated to a value', function (done) {
@@ -227,7 +227,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
       expect(input.getDOMNode().value).toBe('foo');
       done();
     }, 0);
-  });  
+  });
 
   it('should be able to test a values validity', function () {
 
@@ -255,7 +255,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     expect(input.isValidValue('foo@bar.com')).toBe(true);
     expect(input.isValidValue('foo@bar')).toBe(false);
 
-  }); 
+  });
 
   it('should be able to use an object as validations property', function () {
 
@@ -282,7 +282,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
 
     var input = TestUtils.findRenderedComponentWithType(form, TestInput);
     expect(input.isValidValue('foo@bar.com')).toBe(true);
-    expect(input.isValidValue('foo@bar')).toBe(false);  
+    expect(input.isValidValue('foo@bar')).toBe(false);
   });
 
   it('should be able to pass complex values to a validation rule', function () {
@@ -314,7 +314,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     var inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
     expect(inputComponent.isValid()).toBe(true);
     var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
-    TestUtils.Simulate.change(input, {target: {value: 'bar'}});   
+    TestUtils.Simulate.change(input, {target: {value: 'bar'}});
     expect(inputComponent.isValid()).toBe(false);
   });
 
@@ -357,7 +357,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     expect(inputComponent[0].isValid()).toBe(true);
     expect(inputComponent[1].isValid()).toBe(true);
     var input = TestUtils.scryRenderedDOMComponentsWithTag(form, 'INPUT');
-    TestUtils.Simulate.change(input[0], {target: {value: 'bar'}});   
+    TestUtils.Simulate.change(input[0], {target: {value: 'bar'}});
     expect(inputComponent[0].isValid()).toBe(false);
     expect(inputComponent[1].isValid()).toBe(false);
   });
@@ -399,12 +399,12 @@ it('should allow an undefined value to be updated to a value', function (done) {
       render: function () {
         return (
           <Formsy.Form>
-            <TestInput name="A" 
+            <TestInput name="A"
               validations={{
                 isEmail: true
-              }} 
-              validationError="bar" 
-              validationErrors={{isEmail: 'bar2', isLength: 'bar3'}} 
+              }}
+              validationError="bar"
+              validationErrors={{isEmail: 'bar2', isLength: 'bar3'}}
               value="f"
               required={{
                 isLength: 1
@@ -433,12 +433,12 @@ it('should allow an undefined value to be updated to a value', function (done) {
       render: function () {
         return (
           <Formsy.Form>
-            <TestInput name="A" 
+            <TestInput name="A"
               validations={{
                 isEmail: true
-              }} 
-              validationError="bar" 
-              validationErrors={{foo: 'bar'}} 
+              }}
+              validationError="bar"
+              validationErrors={{foo: 'bar'}}
               value="foo"
             />
           </Formsy.Form>
@@ -464,7 +464,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
       render: function () {
         return (
           <Formsy.Form>
-            <TestInput name="A" 
+            <TestInput name="A"
             required
             />
           </Formsy.Form>

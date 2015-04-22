@@ -8,10 +8,8 @@ var uglify = require('gulp-uglify');
 var streamify = require('gulp-streamify');
 var notify = require('gulp-notify');
 var gutil = require('gulp-util');
-var shell = require('gulp-shell');
 var livereload = require('gulp-livereload');
 var glob = require('glob');
-var jasminePhantomJs = require('gulp-jasmine2-phantomjs');
 var fs = require('fs');
 
 var dependencies = ['react'];
@@ -63,7 +61,7 @@ var browserifyTask = function (options) {
 
   // We create a separate bundle for our dependencies as they
   // should not rebundle on file changes. This only happens when
-  // we develop. When deploying the dependencies will be included 
+  // we develop. When deploying the dependencies will be included
   // in the application bundle
   if (options.development) {
 

@@ -1,12 +1,12 @@
 var Formsy = require('./../src/main.js');
 
 describe('Rules: minLength', function() {
-	var TestInput, isValid, form, input;
+  var TestInput, isValid, form, input;
 
   beforeEach(function() {
-  	isValid = jasmine.createSpy('valid');
-  	
-  	TestInput = React.createClass({
+    isValid = jasmine.createSpy('valid');
+
+    TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       updateValue: function (event) {
         this.setValue(event.target.value);
@@ -30,7 +30,7 @@ describe('Rules: minLength', function() {
   });
 
   afterEach(function() {
-  	TestInput = isValid = isInvalid = form = null;
+    TestInput = isValid = isInvalid = form = null;
   });
 
   it('should fail with undefined', function () {

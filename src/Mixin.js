@@ -5,6 +5,7 @@ var convertValidationsToObject = function (validations) {
     return validations.split(/\,(?![^{\[]*[}\]])/g).reduce(function (validations, validation) {
       var args = validation.split(':');
       var validateMethod = args.shift();
+
       args = args.map(function (arg) {
         try {
           return JSON.parse(arg);
@@ -12,10 +13,11 @@ var convertValidationsToObject = function (validations) {
           return arg; // It is a string if it can not parse it
         }
       });
-      
+
       if (args.length > 1) {
         throw new Error('Formsy does not support multiple args on string validations. Use object format of validations instead.');
       }
+
       validations[validateMethod] = args.length ? args[0] : true;
       return validations;
     }, {});
@@ -23,8 +25,8 @@ var convertValidationsToObject = function (validations) {
   }
 
   return validations || {};
-
 };
+
 module.exports = {
   getInitialState: function () {
     return {
@@ -43,8 +45,8 @@ module.exports = {
       validationErrors: {}
     };
   },
-  componentWillMount: function () {
 
+  componentWillMount: function () {
     var configure = function () {
       this.setValidations(this.props.validations, this.props.required);
       this.props._attachToForm(this);
@@ -64,7 +66,6 @@ module.exports = {
       }.bind(this), 0);
     }
     configure();
-
   },
 
   // We have to make the validate method is kept when new props are added
@@ -75,13 +76,13 @@ module.exports = {
   componentDidUpdate: function (prevProps, prevState) {
 
     var isValueChanged = function () {
-      
+
       return this.props.value !== prevProps.value && this.state._value === prevProps.value;
 
     }.bind(this);
 
 
-    // If validations has changed or something outside changes 
+    // If validations has changed or something outside changes
     // the value, set the value again running a validation
     if (isValueChanged()) {
       this.setValue(this.props.value);
