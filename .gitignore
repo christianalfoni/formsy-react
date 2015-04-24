@@ -1,6 +1,2 @@
 .DS_Store
-build/index.html
-build/test.js
-build/formsy-react.js
-build/specs.js
 node_modules
