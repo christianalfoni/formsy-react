@@ -113,10 +113,11 @@ This code results in a form with a submit button that will run the `submit` meth
 ```
 The form element component is what gives the form validation functionality to whatever you want to put inside this wrapper. You do not have to use traditional inputs, it can be anything you want and the value of the form element can also be anything you want. As you can see it is very flexible, you just have a small API to help you identify the state of the component and set its value.
 
-## Run tests
-- Run `gulp`
-- Run a server in `build` folder, e.g. on port 3000
-- Go to `localhost:3000/testrunner.html` (live reload)
+## Contribute
+- Fork repo
+- `npm install`
+- `npm start` runs the development server on `localhost:8080`
+- `npm test` runs the tests
 
 License
 -------
