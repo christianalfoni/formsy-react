@@ -3,6 +3,8 @@ formsy-react  [![GitHub release](https://img.shields.io/github/release/christian
 
 A form input builder and validator for React JS
 
+![build](https://travis-ci.org/christianalfoni/formsy-react.svg)
+
 | [How to use](#how-to-use) | [API](/API.md) | [Examples](/examples) |
 |---|---|---|
 
