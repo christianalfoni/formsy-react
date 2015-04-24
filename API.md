@@ -118,7 +118,7 @@ Whenever the form becomes valid the "onValid" handler is called. Use it to chang
 
 #### <a name="oninvalid">onInvalid()</a>
 ```html
-<Formsy.FormonInvalid={this.disableSubmitButton}></Formsy.Form>
+<Formsy.Form onInvalid={this.disableSubmitButton}></Formsy.Form>
 ```
 Whenever the form becomes invalid the "onInvalid" handler is called. Use it to for example revert "onValid" state.
 
