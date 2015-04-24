@@ -1,6 +1,8 @@
+var React = require('react/addons');
+var TestUtils = React.addons.TestUtils;
 var Formsy = require('./../src/main.js');
 
-describe('Rules: isWords', function() {
+describe('Rules: maxLength', function() {
   var TestInput, isValid, form, input;
 
   beforeEach(function() {
@@ -21,7 +23,7 @@ describe('Rules: isWords', function() {
 
     form = TestUtils.renderIntoDocument(
       <Formsy.Form>
-        <TestInput name="foo" validations="isWords"/>
+        <TestInput name="foo" validations="maxLength:3"/>
       </Formsy.Form>
     );
 
@@ -51,16 +53,22 @@ describe('Rules: isWords', function() {
     expect(isValid).not.toHaveBeenCalled();
   });
 
-  it('should pass with a 1 word', function () {
+  it('should pass when a string\'s length is smaller', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'sup'}});
+    TestUtils.Simulate.change(input, {target: {value: 'hi'}});
     expect(isValid).toHaveBeenCalled();
   });
 
-  it('should pass with 2 words', function () {
+  it('should pass when a string\'s length is equal', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'sup dude'}});
+    TestUtils.Simulate.change(input, {target: {value: 'bar'}});
     expect(isValid).toHaveBeenCalled();
+  });
+
+  it('should fail when a string\'s length is bigger', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 'myValue'}});
+    expect(isValid).not.toHaveBeenCalled();
   });
 
 });

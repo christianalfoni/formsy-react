@@ -1,6 +1,8 @@
+var React = require('react/addons');
+var TestUtils = React.addons.TestUtils;
 var Formsy = require('./../src/main.js');
 
-describe('Rules: equals', function() {
+describe('Rules: isAlpha', function() {
   var TestInput, isValid, form, input;
 
   beforeEach(function() {
@@ -21,7 +23,7 @@ describe('Rules: equals', function() {
 
     form = TestUtils.renderIntoDocument(
       <Formsy.Form>
-        <TestInput name="foo" validations="equals:myValue"/>
+        <TestInput name="foo" validations="isAlpha"/>
       </Formsy.Form>
     );
 
@@ -45,13 +47,13 @@ describe('Rules: equals', function() {
     expect(isValid).not.toHaveBeenCalled();
   });
 
-  it('should fail when the value is not equal', function () {
+  it('should fail with a number', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'foo'}});
+    TestUtils.Simulate.change(input, {target: {value: 123}});
     expect(isValid).not.toHaveBeenCalled();
   });
 
-  it('should pass when the value is equal', function () {
+  it('should pass with a string', function () {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 'myValue'}});
     expect(isValid).toHaveBeenCalled();

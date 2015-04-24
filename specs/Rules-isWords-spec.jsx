@@ -1,6 +1,8 @@
+var React = require('react/addons');
+var TestUtils = React.addons.TestUtils;
 var Formsy = require('./../src/main.js');
 
-describe('Rules: isNumeric', function() {
+describe('Rules: isWords', function() {
   var TestInput, isValid, form, input;
 
   beforeEach(function() {
@@ -21,7 +23,7 @@ describe('Rules: isNumeric', function() {
 
     form = TestUtils.renderIntoDocument(
       <Formsy.Form>
-        <TestInput name="foo" validations="isNumeric"/>
+        <TestInput name="foo" validations="isWords"/>
       </Formsy.Form>
     );
 
@@ -45,27 +47,21 @@ describe('Rules: isNumeric', function() {
     expect(isValid).not.toHaveBeenCalled();
   });
 
-  it('should fail with a string', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'myValue'}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
-  it('should pass with a number as string', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: '123'}});
-    expect(isValid).toHaveBeenCalled();
-  });
-
-  it('should pass with an int', function () {
+  it('should fail with a number', function () {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 123}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should pass with a 1 word', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 'sup'}});
     expect(isValid).toHaveBeenCalled();
   });
 
-  it('should pass with a float', function () {
+  it('should pass with 2 words', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 1.23}});
+    TestUtils.Simulate.change(input, {target: {value: 'sup dude'}});
     expect(isValid).toHaveBeenCalled();
   });
 

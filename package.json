@@ -8,7 +8,8 @@
   },
   "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --content-base build",
+    "test": "node testrunner",
     "examples": "webpack-dev-server --config examples/webpack.config.js --content-base examples"
   },
   "author": "Christian Alfoni",
@@ -21,19 +22,11 @@
     "react-component"
   ],
   "devDependencies": {
-    "browserify": "^6.2.0",
-    "glob": "^4.0.6",
-    "gulp": "^3.8.9",
-    "gulp-if": "^1.2.4",
-    "gulp-livereload": "^3.4.0",
-    "gulp-notify": "^1.4.2",
-    "gulp-streamify": "0.0.5",
-    "gulp-uglify": "^0.3.1",
-    "gulp-util": "^3.0.0",
-    "jsx-loader": "^0.12.2",
-    "reactify": "^1.1.0",
-    "vinyl-source-stream": "^0.1.1",
-    "watchify": "^2.1.1",
+    "babel-core": "^5.1.11",
+    "babel-loader": "^5.0.0",
+    "jasmine-node": "^1.14.5",
+    "jsdom": "^3.1.2",
+    "node-jsx": "^0.13.2",
     "webpack": "^1.7.3",
     "webpack-dev-server": "^1.7.0"
   },

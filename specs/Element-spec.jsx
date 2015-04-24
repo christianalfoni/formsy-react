@@ -1,3 +1,5 @@
+var React = require('react/addons');
+var TestUtils = React.addons.TestUtils;
 var Formsy = require('./../src/main.js');
 
 describe('Element', function() {

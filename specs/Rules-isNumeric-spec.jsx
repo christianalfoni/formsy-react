@@ -1,6 +1,8 @@
+var React = require('react/addons');
+var TestUtils = React.addons.TestUtils;
 var Formsy = require('./../src/main.js');
 
-describe('Rules: isLength', function() {
+describe('Rules: isNumeric', function() {
   var TestInput, isValid, form, input;
 
   beforeEach(function() {
@@ -21,7 +23,7 @@ describe('Rules: isLength', function() {
 
     form = TestUtils.renderIntoDocument(
       <Formsy.Form>
-        <TestInput name="foo" validations="isLength:3"/>
+        <TestInput name="foo" validations="isNumeric"/>
       </Formsy.Form>
     );
 
@@ -45,27 +47,27 @@ describe('Rules: isLength', function() {
     expect(isValid).not.toHaveBeenCalled();
   });
 
-  it('should fail with a number', function () {
+  it('should fail with a string', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 'myValue'}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should pass with a number as string', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: '123'}});
+    expect(isValid).toHaveBeenCalled();
+  });
+
+  it('should pass with an int', function () {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 123}});
-    expect(isValid).not.toHaveBeenCalled();
+    expect(isValid).toHaveBeenCalled();
   });
 
-  it('should fail with a string too small', function () {
+  it('should pass with a float', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: "hi"}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
-  it('should fail with a string too long', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: "foo bar"}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
-  it('should pass with the right length', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'sup'}});
+    TestUtils.Simulate.change(input, {target: {value: 1.23}});
     expect(isValid).toHaveBeenCalled();
   });
 

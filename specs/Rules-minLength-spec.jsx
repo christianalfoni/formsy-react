@@ -1,6 +1,8 @@
+var React = require('react/addons');
+var TestUtils = React.addons.TestUtils;
 var Formsy = require('./../src/main.js');
 
-describe('Rules: hasValue', function() {
+describe('Rules: minLength', function() {
   var TestInput, isValid, form, input;
 
   beforeEach(function() {
@@ -21,7 +23,7 @@ describe('Rules: hasValue', function() {
 
     form = TestUtils.renderIntoDocument(
       <Formsy.Form>
-        <TestInput name="foo" validations="hasValue"/>
+        <TestInput name="foo" validations="minLength:3"/>
       </Formsy.Form>
     );
 
@@ -45,7 +47,25 @@ describe('Rules: hasValue', function() {
     expect(isValid).not.toHaveBeenCalled();
   });
 
-  it('should pass with a string', function () {
+  it('should fail with a number', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 123}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should fail when a string\'s length is smaller', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 'hi'}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should pass when a string\'s length is equal', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 'bar'}});
+    expect(isValid).toHaveBeenCalled();
+  });
+
+  it('should pass when a string\'s length is bigger', function () {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 'myValue'}});
     expect(isValid).toHaveBeenCalled();

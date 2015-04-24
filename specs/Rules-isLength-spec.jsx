@@ -1,6 +1,8 @@
+var React = require('react/addons');
+var TestUtils = React.addons.TestUtils;
 var Formsy = require('./../src/main.js');
 
-describe('Rules: isAlpha', function() {
+describe('Rules: isLength', function() {
   var TestInput, isValid, form, input;
 
   beforeEach(function() {
@@ -21,7 +23,7 @@ describe('Rules: isAlpha', function() {
 
     form = TestUtils.renderIntoDocument(
       <Formsy.Form>
-        <TestInput name="foo" validations="isAlpha"/>
+        <TestInput name="foo" validations="isLength:3"/>
       </Formsy.Form>
     );
 
@@ -51,9 +53,21 @@ describe('Rules: isAlpha', function() {
     expect(isValid).not.toHaveBeenCalled();
   });
 
-  it('should pass with a string', function () {
+  it('should fail with a string too small', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'myValue'}});
+    TestUtils.Simulate.change(input, {target: {value: "hi"}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should fail with a string too long', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: "foo bar"}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should pass with the right length', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 'sup'}});
     expect(isValid).toHaveBeenCalled();
   });
 
