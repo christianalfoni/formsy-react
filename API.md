@@ -11,6 +11,7 @@
   - [onValidSubmit()](#onvalidsubmit)
   - [onInvalidSubmit()](#oninvalidsubmit)
   - [onChange()](#onchange)
+  - [resetForm()](#resetform)
 - [Formsy.Mixin](#formsymixin)
   - [name](#name)
   - [value](#value)
@@ -30,6 +31,7 @@
   - [showError()](#showerror)
   - [isPristine()](#ispristine)
   - [isFormDisabled()](#isformdisabled)
+  - [isFormSubmitted()](#isFormSubmitted)
   - [validate](#validate)
   - [formNoValidate](#formnovalidate)
 - [Formsy.addValidationRule](#formsyaddvalidationrule)
@@ -139,6 +141,23 @@ Triggers when form is submitted with an invalid state. The arguments are the sam
 <Formsy.Form onChange={this.saveCurrentValuesToLocalStorage}></Formsy.Form>
 ```
 "onChange" triggers when setValue is called on your form elements. It is also triggered when dynamic form elements have been added to the form. The "currentValues" is an object where the key is the name of the input and the value is the current value.
+
+#### <a name="onchange">resetForm()</a>
+```html
+var MyForm = React.createClass({
+  resetForm: function () {
+    this.refs.form.reset();
+  },
+  render: function () {
+    return (
+      <Formsy.Form ref="form">
+        ...
+      </Formsy.Form>
+    );
+  }
+});
+```
+Manually reset the form to its pristine state.
 
 ### <a name="formsymixin">Formsy.Mixin</a>
 
@@ -427,7 +446,7 @@ By default all formsy input elements are pristine, which means they are not "tou
 
 **note!** When the form is reset, using the resetForm callback function on for example [**onSubmit**](#onsubmitdata-resetform-invalidateform) the inputs are reset to their pristine state.
 
-#### <a name="ispristine">isFormDisabled()</a>
+#### <a name="isformdisabled">isFormDisabled()</a>
 ```javascript
 var MyInput = React.createClass({
   mixins: [Formsy.Mixin],
@@ -443,6 +462,23 @@ var MyInput = React.createClass({
 React.render(<Formy.Form disabled={true}/>);
 ```
 You can now disable the form itself with a prop and use **isFormDisabled()** inside form elements to verify this prop.
+
+#### <a name="isformsubmitted">isFormSubmitted()</a>
+```javascript
+var MyInput = React.createClass({
+  mixins: [Formsy.Mixin],
+  render: function () {
+    var error = this.isFormSubmitted() ? this.getErrorMessage() : null;
+    return (
+      <div>
+        <input type="text" value={this.getValue()}/>
+        {error}
+      </div>
+    );
+  }
+});
+```
+You can check if the form has been submitted.
 
 #### <a name="validate">validate</a>
 ```javascript

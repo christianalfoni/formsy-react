@@ -9,6 +9,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "webpack-dev-server --content-base build",
+    "deploy": "NODE_ENV=production webpack -p --config webpack.production.config.js",
     "test": "node testrunner",
     "examples": "webpack-dev-server --config examples/webpack.config.js --content-base examples"
   },

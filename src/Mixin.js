@@ -1,3 +1,5 @@
+var utils = require('./utils.js');
+
 var convertValidationsToObject = function (validations) {
 
   if (typeof validations === 'string') {
@@ -77,10 +79,9 @@ module.exports = {
 
     var isValueChanged = function () {
 
-      return this.props.value !== prevProps.value && this.state._value === prevProps.value;
+      return !utils.isSame(this.props.value, prevProps.value) && utils.isSame(this.state._value, prevProps.value);
 
     }.bind(this);
-
 
     // If validations has changed or something outside changes
     // the value, set the value again running a validation

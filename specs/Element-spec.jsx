@@ -481,4 +481,41 @@ it('should allow an undefined value to be updated to a value', function (done) {
     expect(inputComponent.isValid()).toBe(false);
   });
 
+  it('should handle objects and arrays as values', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <div>{JSON.stringify(this.getValue())}</div>
+      }
+    });
+    var TestForm = React.createClass({
+      getInitialState: function () {
+        return {
+          foo: {foo: 'bar'},
+          bar: ['foo']
+        };
+      },
+      render: function () {
+        return (
+          <Formsy.Form>
+            <TestInput name="foo" value={this.state.foo}/>
+            <TestInput name="bar" value={this.state.bar}/>
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(<TestForm/>);
+
+    form.setState({
+      foo: {foo: 'foo'},
+      bar: ['bar']
+    });
+
+    var inputs = TestUtils.scryRenderedComponentsWithType(form, TestInput);
+    expect(inputs[0].getValue()).toEqual({foo: 'foo'});
+    expect(inputs[1].getValue()).toEqual(['bar']);
+
+  });
+
 });
