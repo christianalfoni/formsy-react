@@ -11,7 +11,7 @@
   - [onValidSubmit()](#onvalidsubmit)
   - [onInvalidSubmit()](#oninvalidsubmit)
   - [onChange()](#onchange)
-  - [resetForm()](#resetform)
+  - [reset()](#resetform)
 - [Formsy.Mixin](#formsymixin)
   - [name](#name)
   - [value](#value)
@@ -142,7 +142,7 @@ Triggers when form is submitted with an invalid state. The arguments are the sam
 ```
 "onChange" triggers when setValue is called on your form elements. It is also triggered when dynamic form elements have been added to the form. The "currentValues" is an object where the key is the name of the input and the value is the current value.
 
-#### <a name="onchange">resetForm()</a>
+#### <a name="resetform">reset()</a>
 ```html
 var MyForm = React.createClass({
   resetForm: function () {

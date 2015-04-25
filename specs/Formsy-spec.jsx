@@ -593,5 +593,24 @@ describe('Formsy', function () {
       TestUtils.Simulate.submit(form.getDOMNode());
       expect(onSubmit).toHaveBeenCalledWith({foo: false});
     });
+
+    it("should say the form is submitted", function() {
+      var form = TestUtils.renderIntoDocument(<TestForm value={ true }/>);
+      var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+      expect(input.isFormSubmitted()).toBe(false);
+      TestUtils.Simulate.submit(form.getDOMNode());
+      expect(input.isFormSubmitted()).toBe(true);
+    });
+
+    it("should be able to reset the form to its pristine state", function() {
+      var form = TestUtils.renderIntoDocument(<TestForm value={ true }/>);
+      var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+      var formsyForm = TestUtils.findRenderedComponentWithType(form, Formsy.Form);
+      expect(input.getValue()).toBe(true);
+      form.setProps({value: false});
+      expect(input.getValue()).toBe(false);
+      formsyForm.reset();
+      expect(input.getValue()).toBe(true);
+    });
   });
 });

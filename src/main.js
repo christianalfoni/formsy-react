@@ -74,7 +74,7 @@ Formsy.Form = React.createClass({
     }.bind(this), 0);
   },
 
-  resetForm: function () {
+  reset: function () {
     this.setFormPristine(true);
     this.resetModel();
   },
