@@ -38,7 +38,8 @@ module.exports = {
       _isPristine: true,
       _pristineValue: this.props.value,
       _validationError: '',
-      _externalError: null
+      _externalError: null,
+      _formSubmitted: false
     };
   },
   getDefaultProps: function () {
@@ -137,6 +138,9 @@ module.exports = {
   },
   isPristine: function () {
     return this.state._isPristine;
+  },
+  isFormSubmitted: function () {
+    return this.state._formSubmitted;
   },
   isRequired: function () {
     return !!this.props.required;
