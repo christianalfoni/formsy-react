@@ -607,12 +607,11 @@ Returns true if string is only letters, including spaces and tabs
 ```
 Returns true if string is only letters, including special letters (a-z,ú,ø,æ,å)
 
-**isLength:min**, **isLength:min:max**
+**isLength**
 ```html
 <MyInputComponent name="foo" validations="isLength:8"/>
-<MyInputComponent name="foo" validations="isLength:5:12"/>
 ```
-Returns true if the value length is the equal or more than minimum and equal or less than maximum, if maximum is passed
+Returns true if the value length is the equal.
 
 **equals:value**
 ```html
