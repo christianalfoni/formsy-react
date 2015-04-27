@@ -35,22 +35,44 @@ describe('Rules: hasValue', function() {
     TestInput = isValid = isInvalid = form = null;
   });
 
-  it('should fail with undefined', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: undefined}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
-  it('should fail with null', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: null}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
   it('should pass with a string', function () {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 'myValue'}});
     expect(isValid).toHaveBeenCalled();
   });
+
+  it('should fail with an undefined', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: undefined}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should fail with a null', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: null}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should pass with a number', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 42}});
+    expect(isValid).toHaveBeenCalled();
+  });
+
+/* ToDo:
+
+  it('should pass with an empty string', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: ''}});
+    expect(isValid).toHaveBeenCalled();
+  });
+
+  it('should pass with a zero', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 0}});
+    expect(isValid).toHaveBeenCalled();
+  });
+
+*/
 
 });

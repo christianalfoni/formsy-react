@@ -2,7 +2,7 @@ var React = require('react/addons');
 var TestUtils = React.addons.TestUtils;
 var Formsy = require('./../src/main.js');
 
-describe('Rules: isAlpha', function() {
+describe('Rules: isEmptyString', function() {
   var TestInput, isValid, form, input;
 
   beforeEach(function() {
@@ -23,7 +23,7 @@ describe('Rules: isAlpha', function() {
 
     form = TestUtils.renderIntoDocument(
       <Formsy.Form>
-        <TestInput name="foo" validations="isAlpha"/>
+        <TestInput name="foo" validations="isEmptyString"/>
       </Formsy.Form>
     );
 
@@ -35,19 +35,19 @@ describe('Rules: isAlpha', function() {
     TestInput = isValid = isInvalid = form = null;
   });
 
-  it('should pass with a string is only latin letters', function () {
+  it('should fail with non-empty string', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'myValue'}});
+    TestUtils.Simulate.change(input, {target: {value: 'asd'}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should pass with an empty string', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: ''}});
     expect(isValid).toHaveBeenCalled();
   });
 
-  it('should fail with a string with numbers', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'myValue 42'}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
-  it('should fail with an undefined', function () {
+  it('should fail with a undefined', function () {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: undefined}});
     expect(isValid).not.toHaveBeenCalled();
@@ -61,13 +61,13 @@ describe('Rules: isAlpha', function() {
 
   it('should fail with a number', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 42}});
+    TestUtils.Simulate.change(input, {target: {value: 123}});
     expect(isValid).not.toHaveBeenCalled();
   });
 
-  it('should fail with an empty string', function () {
+  it('should fail with a zero', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: ''}});
+    TestUtils.Simulate.change(input, {target: {value: 0}});
     expect(isValid).not.toHaveBeenCalled();
   });
 
