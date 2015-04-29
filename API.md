@@ -565,6 +565,18 @@ Returns true if the value is thruthful
 ```
 Return true if it is an email
 
+**isUrl**
+```html
+<MyInputComponent name="foo" validations="isUrl"/>
+```
+Return true if it is an url
+
+**isExisty**
+```html
+<MyInputComponent name="foo" validations="isExisty"/>
+```
+Returns true if the value is not undefined or null
+
 **isUndefined**
 ```html
 <MyInputComponent name="foo" validations="isUndefined"/>
@@ -582,6 +594,12 @@ Returns true if the value is an empty string
 <MyInputComponent name="foo" validations="isTrue"/>
 ```
 Returns true if the value is the boolean true
+
+**isFalse**
+```html
+<MyInputComponent name="foo" validations="isFalse"/>
+```
+Returns true if the value is the boolean false
 
 **isNumeric**
 ```html
@@ -607,12 +625,6 @@ Returns true if string is only letters, including spaces and tabs
 ```
 Returns true if string is only letters, including special letters (a-z,ú,ø,æ,å)
 
-**isLength**
-```html
-<MyInputComponent name="foo" validations="isLength:8"/>
-```
-Returns true if the value length is the equal.
-
 **equals:value**
 ```html
 <MyInputComponent name="foo" validations="equals:4"/>
@@ -625,6 +637,12 @@ Return true if the value from input component matches value passed (==).
 <MyInputComponent name="repeated_password" validations="equalsField:password"/>
 ```
 Return true if the value from input component matches value passed (==).
+
+**isLength:length**
+```html
+<MyInputComponent name="foo" validations="isLength:8"/>
+```
+Returns true if the value length is the equal.
 
 **minLength:length**
 ```html
