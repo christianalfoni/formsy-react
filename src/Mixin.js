@@ -76,17 +76,11 @@ module.exports = {
     this.setValidations(nextProps.validations, nextProps.required);
   },
 
-  componentDidUpdate: function (prevProps, prevState) {
+  componentDidUpdate: function (prevProps) {
 
-    var isValueChanged = function () {
-
-      return !utils.isSame(this.props.value, prevProps.value) && utils.isSame(this.state._value, prevProps.value);
-
-    }.bind(this);
-
-    // If validations has changed or something outside changes
-    // the value, set the value again running a validation
-    if (isValueChanged()) {
+    // If the value passed has changed, set it. If value is not passed it will
+    // internally update, and this will never run
+    if (!utils.isSame(this.props.value, prevProps.value)) {
       this.setValue(this.props.value);
     }
   },

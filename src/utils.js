@@ -26,10 +26,6 @@ module.exports = {
     return isDifferent;   
   },
   isSame: function (a, b) {
-    
-    if (a !== b) {
-      return false;
-    }
 
     if (Array.isArray(a)) {
       return !this.arraysDiffer(a, b);
@@ -37,6 +33,6 @@ module.exports = {
       return !this.objectsDiffer(a, b);
     }
 
-    return true;
+    return a === b;
   }
 };

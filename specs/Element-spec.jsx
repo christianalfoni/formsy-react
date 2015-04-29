@@ -518,4 +518,44 @@ it('should allow an undefined value to be updated to a value', function (done) {
 
   });
 
+  it('should handle isFormDisabled with dynamic inputs', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input disabled={this.isFormDisabled()} />
+      }
+    });
+
+    var TestForm = React.createClass({
+      getInitialState: function () {
+        return {
+          bool: true
+        };
+      },
+      flip: function () {
+        this.setState({
+          bool: !this.state.bool
+        });
+      },
+      render: function () {
+        return (
+          <Formsy.Form disabled={this.state.bool}>
+            {this.state.bool ?
+              <TestInput name="foo" /> :
+              <TestInput name="bar" />   
+            }
+          </Formsy.Form>
+        );
+      }
+    });
+
+    var form = TestUtils.renderIntoDocument(<TestForm/>);
+    var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    expect(input.isFormDisabled()).toBe(true);
+    form.flip();
+    expect(input.isFormDisabled()).toBe(false);
+    
+  });
+
 });

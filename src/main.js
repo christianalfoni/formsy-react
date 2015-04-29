@@ -50,28 +50,24 @@ Formsy.Form = React.createClass({
   },
 
   componentWillUpdate: function () {
-    var inputKeys = Object.keys(this.inputs);
+    
+    // Keep a reference to input keys before form updates,
+    // to check if inputs has changed after render
+    this.prevInputKeys = Object.keys(this.inputs);
 
-    // The updated children array is not available here for some reason,
-    // we need to wait for next event loop
-    setTimeout(function () {
+  },
 
-      // The component might have been unmounted on an
-      // update
-      if (this.isMounted()) {
+  componentDidUpdate: function () {
+    
+    if (this.props.validationErrors) {
+      this.setInputValidationErrors(this.props.validationErrors);
+    }
 
-        if (this.props.validationErrors) {
-          this.setInputValidationErrors(this.props.validationErrors);
-        }
+    var newInputKeys = Object.keys(this.inputs);
+    if (utils.arraysDiffer(this.prevInputKeys, newInputKeys)) {
+      this.validateForm();
+    }
 
-        var newInputKeys = Object.keys(this.inputs);
-        if (utils.arraysDiffer(inputKeys, newInputKeys)) {
-          this.validateForm();
-        }
-
-      }
-
-    }.bind(this), 0);
   },
 
   reset: function () {
