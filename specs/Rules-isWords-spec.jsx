@@ -35,24 +35,6 @@ describe('Rules: isWords', function() {
     TestInput = isValid = isInvalid = form = null;
   });
 
-  it('should fail with undefined', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: undefined}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
-  it('should fail with null', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: null}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
-  it('should fail with a number', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 123}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
   it('should pass with a 1 word', function () {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 'sup'}});
@@ -63,6 +45,30 @@ describe('Rules: isWords', function() {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 'sup dude'}});
     expect(isValid).toHaveBeenCalled();
+  });
+
+  it('should fail with a string with numbers', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 'myValue 42'}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should fail with an undefined', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: undefined}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should fail with a null', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: null}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should fail with a number', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 42}});
+    expect(isValid).not.toHaveBeenCalled();
   });
 
 });

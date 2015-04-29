@@ -35,18 +35,6 @@ describe('Rules: equals', function() {
     TestInput = isValid = isInvalid = form = null;
   });
 
-  it('should fail with undefined', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: undefined}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
-  it('should fail with null', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: null}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
-
   it('should fail when the value is not equal', function () {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 'foo'}});
@@ -57,6 +45,24 @@ describe('Rules: equals', function() {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 'myValue'}});
     expect(isValid).toHaveBeenCalled();
+  });
+
+  it('should fail with an undefined', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: undefined}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should fail with a null', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: null}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should fail with a number', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 42}});
+    expect(isValid).not.toHaveBeenCalled();
   });
 
 });
