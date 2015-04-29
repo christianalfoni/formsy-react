@@ -2,7 +2,7 @@ var React = require('react/addons');
 var TestUtils = React.addons.TestUtils;
 var Formsy = require('./../src/main.js');
 
-describe('Rules: hasValue', function() {
+describe('Rules: isUrl', function() {
   var TestInput, isValid, form, input;
 
   beforeEach(function() {
@@ -23,7 +23,7 @@ describe('Rules: hasValue', function() {
 
     form = TestUtils.renderIntoDocument(
       <Formsy.Form>
-        <TestInput name="foo" validations="hasValue"/>
+        <TestInput name="foo" value="foo" validations="isUrl"/>
       </Formsy.Form>
     );
 
@@ -35,9 +35,15 @@ describe('Rules: hasValue', function() {
     TestInput = isValid = isInvalid = form = null;
   });
 
-  it('should pass with a string', function () {
+  it('should fail with "foo"', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'myValue'}});
+    TestUtils.Simulate.change(input, {target: {value: 'foo'}});
+    expect(isValid).not.toHaveBeenCalled();
+  });
+
+  it('should pass with "https://www.google.com/"', function () {
+    expect(isValid).not.toHaveBeenCalled();
+    TestUtils.Simulate.change(input, {target: {value: 'https://www.google.com/'}});
     expect(isValid).toHaveBeenCalled();
   });
 
@@ -53,26 +59,16 @@ describe('Rules: hasValue', function() {
     expect(isValid).not.toHaveBeenCalled();
   });
 
-  it('should pass with a number', function () {
+  it('should fail with a number', function () {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: 42}});
-    expect(isValid).toHaveBeenCalled();
+    expect(isValid).not.toHaveBeenCalled();
   });
 
-/* ToDo:
-
-  it('should pass with an empty string', function () {
+  it('should fail with an empty string', function () {
     expect(isValid).not.toHaveBeenCalled();
     TestUtils.Simulate.change(input, {target: {value: ''}});
-    expect(isValid).toHaveBeenCalled();
-  });
-
-  it('should pass with a zero', function () {
     expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 0}});
-    expect(isValid).toHaveBeenCalled();
   });
-
-*/
 
 });
