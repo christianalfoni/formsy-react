@@ -50,7 +50,7 @@ Formsy.Form = React.createClass({
   },
 
   componentWillUpdate: function () {
-    
+
     // Keep a reference to input keys before form updates,
     // to check if inputs has changed after render
     this.prevInputKeys = Object.keys(this.inputs);
@@ -58,7 +58,7 @@ Formsy.Form = React.createClass({
   },
 
   componentDidUpdate: function () {
-    
+
     if (this.props.validationErrors) {
       this.setInputValidationErrors(this.props.validationErrors);
     }
@@ -70,9 +70,10 @@ Formsy.Form = React.createClass({
 
   },
 
-  reset: function () {
+  // Allow resetting to specified data
+  reset: function (data) {
     this.setFormPristine(true);
-    this.resetModel();
+    this.resetModel(data);
   },
 
   // Update model, submit to url prop and send the model
@@ -104,10 +105,14 @@ Formsy.Form = React.createClass({
     }.bind(this));
   },
 
-  // Reset each key in the model to the original / initial value
-  resetModel: function () {
+  // Reset each key in the model to the original / initial / specified value
+  resetModel: function (data) {
     Object.keys(this.inputs).forEach(function (name) {
-      this.inputs[name].resetValue();
+      if (data && data[name]) {
+        this.inputs[name].setValue(data[name]);
+      } else {
+        this.inputs[name].resetValue();
+      }
     }.bind(this));
     this.validateForm();
   },
