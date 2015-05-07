@@ -27,9 +27,11 @@ module.exports = {
   },
   isSame: function (a, b) {
 
-    if (Array.isArray(a)) {
+    if (typeof a !== typeof b) {
+      return false;
+    } else if (Array.isArray(a)) {
       return !this.arraysDiffer(a, b);
-    } else if (typeof a === 'object' && a !== null && a !== undefined) {
+    } else if (typeof a === 'object' && a !== null) {
       return !this.objectsDiffer(a, b);
     }
 
