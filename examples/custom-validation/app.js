@@ -1,5 +1,5 @@
 var React = require('react');
-var Formsy = require('./../..');
+var Formsy = require('formsy-react');
 
 var currentYear = new Date().getFullYear();
 

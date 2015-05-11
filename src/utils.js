@@ -12,6 +12,7 @@ module.exports = {
     }
     return isDifferent;
   },
+
   objectsDiffer: function (a, b) {
     var isDifferent = false;
     if (Object.keys(a).length !== Object.keys(b).length) {
@@ -23,10 +24,10 @@ module.exports = {
         }
       }, this);
     }
-    return isDifferent;   
+    return isDifferent;
   },
-  isSame: function (a, b) {
 
+  isSame: function (a, b) {
     if (typeof a !== typeof b) {
       return false;
     } else if (Array.isArray(a)) {
