@@ -136,7 +136,7 @@ Formsy.Form = React.createClass({
       var component = this.inputs[name];
 
       if (!component) {
-        throw new Error('You are trying to update an input that does not exists. Verify errors object with input names. ' + JSON.stringify(errors));
+        throw new Error('You are trying to update an input that does not exist. Verify errors object with input names. ' + JSON.stringify(errors));
       }
 
       var args = [{

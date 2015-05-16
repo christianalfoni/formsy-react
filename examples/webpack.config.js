@@ -13,8 +13,9 @@ module.exports = {
   entry: fs.readdirSync(__dirname).reduce(function (entries, dir) {
     var isDraft = dir.charAt(0) === '_';
 
-    if (!isDraft && isDirectory(path.join(__dirname, dir)))
+    if (!isDraft && isDirectory(path.join(__dirname, dir))) {
       entries[dir] = path.join(__dirname, dir, 'app.js');
+    }
 
     return entries;
   }, {}),
@@ -28,13 +29,13 @@ module.exports = {
 
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'jsx-loader' }
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel' }
     ]
   },
 
   resolve: {
     alias: {
-      'react-router': '../../modules/index'
+      'formsy-react': '../../src/main'
     }
   },
 
