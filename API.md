@@ -12,6 +12,7 @@
   - [onInvalidSubmit()](#oninvalidsubmit)
   - [onChange()](#onchange)
   - [reset()](#resetform)
+  - [preventExternalInvalidation](#preventexternalinvalidation)
 - [Formsy.Mixin](#formsymixin)
   - [name](#name)
   - [value](#value)
@@ -136,13 +137,13 @@ Triggers when form is submitted with a valid state. The arguments are the same a
 ```
 Triggers when form is submitted with an invalid state. The arguments are the same as on `onSubmit`.
 
-#### <a name="onchange">onChange(currentValues)</a>
+#### <a name="onchange">onChange(currentValues, isChanged)</a>
 ```html
 <Formsy.Form onChange={this.saveCurrentValuesToLocalStorage}></Formsy.Form>
 ```
-"onChange" triggers when setValue is called on your form elements. It is also triggered when dynamic form elements have been added to the form. The "currentValues" is an object where the key is the name of the input and the value is the current value.
+"onChange" triggers when setValue is called on your form elements. It is also triggered when dynamic form elements have been added to the form. The "currentValues" is an object where the key is the name of the input and the value is the current value. The second argument states if the forms initial values actually has changed.
 
-#### <a name="resetform">reset()</a>
+#### <a name="resetform">reset(values)</a>
 ```html
 var MyForm = React.createClass({
   resetForm: function () {
@@ -157,15 +158,35 @@ var MyForm = React.createClass({
   }
 });
 ```
-Manually reset the form to its pristine state.
+Manually reset the form to its pristine state. You can also pass an object that inserts new values into the inputs. Keys are name of input and value is of course the value.
+
+#### <a name="preventExternalInvalidation">preventExternalInvalidation</a>
+```html
+var MyForm = React.createClass({
+  onSubmit: function (model, reset, invalidate) {
+    invalidate({
+      foo: 'Got some error'
+    });
+  },
+  render: function () {
+    return (
+      <Formsy.Form onSubmit={this.onSubmit} preventExternalInvalidation>
+        ...
+      </Formsy.Form>
+    );
+  }
+});
+```
+With the `preventExternalInvalidation` the input will not be invalidated though it has an error.
 
 ### <a name="formsymixin">Formsy.Mixin</a>
 
 #### <a name="name">name</a>
 ```html
 <MyInputComponent name="email"/>
+<MyInputComponent name="address.street"/>
 ```
-The name is required to register the form input component in the form.
+The name is required to register the form input component in the form. You can also use dot notation. This will result in the "form model" being a nested object. `{email: 'value', address: {street: 'value'}}`.
 
 #### <a name="value">value</a>
 ```html

@@ -612,6 +612,20 @@ describe('Formsy', function () {
       formsyForm.reset();
       expect(input.getValue()).toBe(true);
     });
+
+    it("should be able to reset the form using custom data", function() {
+      var form = TestUtils.renderIntoDocument(<TestForm value={ true }/>);
+      var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+      var formsyForm = TestUtils.findRenderedComponentWithType(form, Formsy.Form);
+      expect(input.getValue()).toBe(true);
+      form.setProps({value: false});
+      expect(input.getValue()).toBe(false);
+      formsyForm.reset({
+        foo: 'bar'
+      });
+      expect(input.getValue()).toBe('bar');
+    });
+
   });
 
   describe('.isChanged()', function() {

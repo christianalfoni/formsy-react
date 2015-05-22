@@ -37,5 +37,15 @@ module.exports = {
     }
 
     return a === b;
+  },
+  extend: function () {
+    var objects = [].slice.call(arguments);
+    var initialObject = objects.shift();
+    return objects.reduce(function (returnedObject, object) {
+      return Object.keys(object).reduce(function (returnedObject, key) {
+        returnedObject[key] = object[key];
+        return returnedObject;
+      }, returnedObject);
+    }, initialObject);
   }
 };

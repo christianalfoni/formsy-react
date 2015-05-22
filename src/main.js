@@ -34,7 +34,8 @@ Formsy.Form = React.createClass({
       onValid: function () {},
       onInvalid: function () {},
       onChange: function () {},
-      validationErrors: null
+      validationErrors: null,
+      preventExternalInvalidation: false
     };
   },
 
@@ -93,7 +94,21 @@ Formsy.Form = React.createClass({
   },
 
   mapModel: function () {
-    return this.props.mapping ? this.props.mapping(this.model) : this.model;
+    if (this.props.mapping) {
+      return this.props.mapping(this.model)
+    } else {
+      return Object.keys(this.model).reduce(function (mappedModel, key) {
+        
+        var keyArray = key.split('.');
+        while (keyArray.length) {
+          var currentKey = keyArray.shift();
+          mappedModel[currentKey] = keyArray.length ? mappedModel[currentKey] || {} : this.model[key];
+        }
+
+        return mappedModel;
+
+      }.bind(this), {});
+    }
   },
 
   // Goes through all registered components and
@@ -152,9 +167,8 @@ Formsy.Form = React.createClass({
       if (!component) {
         throw new Error('You are trying to update an input that does not exist. Verify errors object with input names. ' + JSON.stringify(errors));
       }
-
       var args = [{
-        _isValid: false,
+        _isValid: this.props.preventExternalInvalidation || false,
         _externalError: errors[name]
       }];
       component.setState.apply(component, args);
@@ -421,10 +435,10 @@ Formsy.Form = React.createClass({
   },
   render: function () {
 
-    return React.DOM.form({
+    return React.DOM.form(utils.extend({}, this.props, {
         onSubmit: this.submit,
         className: this.props.className
-      },
+      }),
       this.traverseChildrenAndRegisterInputs(this.props.children)
     );
 

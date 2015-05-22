@@ -217,4 +217,65 @@ describe('Validation', function() {
 
   });
 
+
+  it('should not invalidate inputs on external errors with preventExternalInvalidation prop', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var TestForm = React.createClass({
+      invalidate: function (model, reset, invalidate) {
+        invalidate({
+          foo: 'bar'
+        });
+      },
+      render: function () {
+        return (
+          <Formsy.Form onSubmit={this.invalidate} preventExternalInvalidation>
+            <TestInput name="foo" value="foo"/>
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(<TestForm/>);
+    var formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
+    var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    TestUtils.Simulate.submit(formEl);
+    expect(input.isValid()).toBe(true);
+
+  });
+
+  it('should invalidate inputs on external errors without preventExternalInvalidation prop', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input value={this.getValue()}/>
+      }
+    });
+    var TestForm = React.createClass({
+      invalidate: function (model, reset, invalidate) {
+        invalidate({
+          foo: 'bar'
+        });
+      },
+      render: function () {
+        return (
+          <Formsy.Form onSubmit={this.invalidate}>
+            <TestInput name="foo" value="foo"/>
+          </Formsy.Form>
+        );
+      }
+    });
+    var form = TestUtils.renderIntoDocument(<TestForm/>);
+    var formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
+    var input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    TestUtils.Simulate.submit(formEl);
+    expect(input.isValid()).toBe(false);
+
+  });
+
 });

@@ -558,4 +558,33 @@ it('should allow an undefined value to be updated to a value', function (done) {
     
   });
 
+  it('should allow for dot notation in name which maps to a deep object', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input/>
+      }
+    });
+
+    var TestForm = React.createClass({
+      onSubmit: function (model) {
+        expect(model).toEqual({foo: {bar: 'foo', test: 'test'}});  
+      },
+      render: function () {
+        return (
+          <Formsy.Form>
+            <TestInput name="foo.bar" value="foo"/>
+            <TestInput name="foo.test" value="test"/>
+          </Formsy.Form>
+        );
+      }
+    });
+
+    var form = TestUtils.renderIntoDocument(<TestForm/>);
+    var formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
+    TestUtils.Simulate.submit(formEl);
+    
+  });
+
 });

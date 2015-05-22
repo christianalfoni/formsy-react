@@ -6,28 +6,29 @@ var Input = React.createClass({
   mixins: [Formsy.Mixin],
 
   render: function () {
-    return <input disabled={this.isFormDisabled()} />
+    return (
+      <div>
+      {this.showError()}
+      {this.getErrorMessage()}
+      <input disabled={this.isFormDisabled()} />
+      </div>
+    );
   }
 });
 
 var FormApp = React.createClass({
-  getInitialState: function () {
-    return {
-      bool: true
-    };
-  },
-  flip: function () {
-    this.setState({
-      bool: !this.state.bool
+  componentDidMount: function () {
+    this.refs.form.updateInputsWithError({
+      'foo.bar': 'hmmm'
     });
+  },
+  onSubmit: function (model) {
+    console.log('model', model);
   },
   render: function () {
     return (
-      <Formsy.Form disabled={this.state.bool}>
-        {this.state.bool ?
-          <Input name="foo" /> :
-          <Input name="bar" />   
-        }
+      <Formsy.Form ref="form" onInvalid={this.onInvalid}>
+        <Input name="foo.bar" />
       </Formsy.Form>
     );
   }
