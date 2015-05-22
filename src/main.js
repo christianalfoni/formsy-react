@@ -435,10 +435,11 @@ Formsy.Form = React.createClass({
   },
   render: function () {
 
-    return React.DOM.form(utils.extend({}, this.props, {
+    return React.DOM.form({
         onSubmit: this.submit,
-        className: this.props.className
-      }),
+        className: this.props.className,
+        autoComplete: this.props.autoComplete
+      },
       this.traverseChildrenAndRegisterInputs(this.props.children)
     );
 
