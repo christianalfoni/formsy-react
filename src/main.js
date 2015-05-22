@@ -123,6 +123,20 @@ Formsy.Form = React.createClass({
     }.bind(this));
   },
 
+  // Checks if the values have changed from their initial value
+  isChanged: function() {
+    return !utils.isSame(this.getPristineValues(), this.getCurrentValues());
+  },
+
+   getPristineValues: function() {
+    var inputs = this.inputs;
+    return Object.keys(inputs).reduce(function (data, name) {
+      var component = inputs[name];
+      data[name] = component.props.value;
+      return data;
+    }, {});
+  },
+
   // Go through errors from server and grab the components
   // stored in the inputs map. Change their state to invalid
   // and set the serverError message
@@ -213,7 +227,7 @@ Formsy.Form = React.createClass({
 
     // Trigger onChange
     if (this.state.canChange) {
-      this.props.onChange(this.getCurrentValues());
+      this.props.onChange(this.getCurrentValues(), this.isChanged());
     }
 
     var validation = this.runValidation(component);
