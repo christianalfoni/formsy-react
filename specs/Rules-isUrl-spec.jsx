@@ -5,18 +5,28 @@ var Formsy = require('./../src/main.js');
 describe('Rules: isUrl', function() {
   var TestInput, isValid, form, input;
 
-  beforeEach(function() {
-    isValid = jasmine.createSpy('valid');
+  function pass(value) {
+    return pass.length ? function () {
+      TestUtils.Simulate.change(input, {target: {value: value}});
+      expect(isValid).toBe(true);
+    } : function () { expect(isValid).toBe(true); };
+  }
 
+  function fail(value) {
+    return fail.length ? function () {
+      TestUtils.Simulate.change(input, {target: {value: value}});
+      expect(isValid).toBe(false);
+    } : function () { expect(isValid).toBe(false); };
+  }
+
+  beforeEach(function() {
     TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       updateValue: function (event) {
         this.setValue(event.target.value);
       },
       render: function () {
-        if (this.isValid()) {
-          isValid();
-        }
+        isValid = this.isValid();
         return <input value={this.getValue()} onChange={this.updateValue}/>
       }
     });
@@ -35,40 +45,18 @@ describe('Rules: isUrl', function() {
     TestInput = isValid = isInvalid = form = null;
   });
 
-  it('should fail with "foo"', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'foo'}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
+  it('should pass with a default value', pass());
 
-  it('should pass with "https://www.google.com/"', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 'https://www.google.com/'}});
-    expect(isValid).toHaveBeenCalled();
-  });
+  it('should fail with "foo"', fail('foo'));
 
-  it('should fail with an undefined', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: undefined}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
+  it('should pass with "https://www.google.com/"', pass('https://www.google.com/'));
 
-  it('should fail with a null', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: null}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
+  it('should pass with an undefined', pass(undefined));
 
-  it('should fail with a number', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: 42}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
+  it('should pass with a null', pass(null));
 
-  it('should fail with an empty string', function () {
-    expect(isValid).not.toHaveBeenCalled();
-    TestUtils.Simulate.change(input, {target: {value: ''}});
-    expect(isValid).not.toHaveBeenCalled();
-  });
+  it('should fail with a number', fail(42));
+
+  it('should pass with an empty string', pass(''));
 
 });

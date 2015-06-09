@@ -5,18 +5,28 @@ var Formsy = require('./../src/main.js');
 describe('Rules: isLength', function() {
   var TestInput, isValid, form, input;
 
-  beforeEach(function() {
-    isValid = jasmine.createSpy('valid');
+  function pass(value) {
+    return pass.length ? function () {
+      TestUtils.Simulate.change(input, {target: {value: value}});
+      expect(isValid).toBe(true);
+    } : function () { expect(isValid).toBe(true); };
+  }
 
+  function fail(value) {
+    return fail.length ? function () {
+      TestUtils.Simulate.change(input, {target: {value: value}});
+      expect(isValid).toBe(false);
+    } : function () { expect(isValid).toBe(false); };
+  }
+
+  beforeEach(function() {
     TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       updateValue: function (event) {
         this.setValue(event.target.value);
       },
       render: function () {
-        if (this.isValid()) {
-          isValid();
-        }
+        isValid = this.isValid();
         return <input value={this.getValue()} onChange={this.updateValue}/>
       }
     });
@@ -38,41 +48,21 @@ describe('Rules: isLength', function() {
       input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
     });
 
-    it('should fail with a string too small', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: 'hi'}});
-      expect(isValid).not.toHaveBeenCalled();
-    });
+    it('should pass with a default value', pass());
 
-    it('should fail with a string too long', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: 'foo bar'}});
-      expect(isValid).not.toHaveBeenCalled();
-    });
+    it('should fail with a string too small', fail('hi'));
 
-    it('should pass with the right length', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: 'sup'}});
-      expect(isValid).toHaveBeenCalled();
-    });
+    it('should fail with a string too long', fail('foo bar'));
 
-    it('should fail with an undefined', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: undefined}});
-      expect(isValid).not.toHaveBeenCalled();
-    });
+    it('should pass with the right length', pass('sup'));
 
-    it('should fail with null', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: null}});
-      expect(isValid).not.toHaveBeenCalled();
-    });
+    it('should pass with an undefined', pass(undefined));
 
-    it('should fail with a number', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: 123}});
-      expect(isValid).not.toHaveBeenCalled();
-    });
+    it('should pass with a null', pass(null));
+
+    it('should pass with an empty string', pass(''));
+
+    it('should fail with a number', fail(123));
 
   });
 
@@ -88,35 +78,17 @@ describe('Rules: isLength', function() {
       input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
     });
 
-    it('should fail with a string too long', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: 'foo bar'}});
-      expect(isValid).not.toHaveBeenCalled();
-    });
+    it('should pass with a default value', pass());
 
-    it('should pass with empty string', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: ''}});
-      expect(isValid).toHaveBeenCalled();
-    });
+    it('should fail with a string too long', fail('foo bar'));
 
-    it('should fail with undefined', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: undefined}});
-      expect(isValid).not.toHaveBeenCalled();
-    });
+    it('should pass with an undefined', pass(undefined));
 
-    it('should fail with null', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: null}});
-      expect(isValid).not.toHaveBeenCalled();
-    });
+    it('should pass with a null', pass(null));
 
-    it('should fail with a number', function () {
-      expect(isValid).not.toHaveBeenCalled();
-      TestUtils.Simulate.change(input, {target: {value: 123}});
-      expect(isValid).not.toHaveBeenCalled();
-    });
+    it('should pass with an empty string', pass(''));
+
+    it('should fail with a number', fail(123));
 
   });
 
