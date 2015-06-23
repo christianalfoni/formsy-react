@@ -98,7 +98,7 @@ Formsy.Form = React.createClass({
       return this.props.mapping(this.model)
     } else {
       return Object.keys(this.model).reduce(function (mappedModel, key) {
-        
+
         var keyArray = key.split('.');
         while (keyArray.length) {
           var currentKey = keyArray.shift();
@@ -435,12 +435,10 @@ Formsy.Form = React.createClass({
   },
   render: function () {
 
-    return React.DOM.form({
-        onSubmit: this.submit,
-        className: this.props.className,
-        autoComplete: this.props.autoComplete
-      },
-      this.traverseChildrenAndRegisterInputs(this.props.children)
+    return (
+      <form {...this.props} onSubmit={this.submit}>
+        {this.traverseChildrenAndRegisterInputs(this.props.children)}
+      </form>
     );
 
   }
