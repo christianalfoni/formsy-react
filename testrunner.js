@@ -1,9 +1,7 @@
-require('node-jsx').install({
-  extension: '.jsx'
-});
+require('babel/register');
 
 var path = require('path');
-var jsdom = require("jsdom").jsdom;
+var jsdom = require('jsdom').jsdom;
 var jasmine = require('jasmine-node');
 
 global.document = jsdom();

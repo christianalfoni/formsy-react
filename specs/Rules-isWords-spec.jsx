@@ -42,7 +42,7 @@ describe('Rules: isWords', function() {
   });
 
   afterEach(function() {
-    TestInput = isValid = isInvalid = form = null;
+    TestInput = isValid = form = null;
   });
 
   it('should pass with a default value', pass());

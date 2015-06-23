@@ -543,7 +543,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
           <Formsy.Form disabled={this.state.bool}>
             {this.state.bool ?
               <TestInput name="foo" /> :
-              <TestInput name="bar" />   
+              <TestInput name="bar" />
             }
           </Formsy.Form>
         );
@@ -555,7 +555,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     expect(input.isFormDisabled()).toBe(true);
     form.flip();
     expect(input.isFormDisabled()).toBe(false);
-    
+
   });
 
   it('should allow for dot notation in name which maps to a deep object', function () {
@@ -569,7 +569,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
 
     var TestForm = React.createClass({
       onSubmit: function (model) {
-        expect(model).toEqual({foo: {bar: 'foo', test: 'test'}});  
+        expect(model).toEqual({foo: {bar: 'foo', test: 'test'}});
       },
       render: function () {
         return (
@@ -584,7 +584,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     var form = TestUtils.renderIntoDocument(<TestForm/>);
     var formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
     TestUtils.Simulate.submit(formEl);
-    
+
   });
 
 });

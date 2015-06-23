@@ -33,7 +33,7 @@ describe('Rules: isLength', function() {
   });
 
   afterEach(function() {
-    TestInput = isValid = isInvalid = form = null;
+    TestInput = isValid = form = null;
   });
 
   describe('isLength:3', function() {
