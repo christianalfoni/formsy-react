@@ -1,6 +1,6 @@
 # API
 
-- [Formsy.defaults](#formsydefaults)
+- [Formsy.defaults - DEPRECATED](#formsydefaults)
 - [Formsy.Form](#formsyform)
   - [className](#classname)
   - [mapping](#mapping)
@@ -12,7 +12,7 @@
   - [onInvalidSubmit()](#oninvalidsubmit)
   - [onChange()](#onchange)
   - [reset()](#resetform)
-  - [preventExternalInvalidation](#preventexternalinvalidation)
+  - [preventExternalInvalidation](#preventexternalinvalidation)
 - [Formsy.Mixin](#formsymixin)
   - [name](#name)
   - [value](#value)
@@ -32,7 +32,7 @@
   - [showError()](#showerror)
   - [isPristine()](#ispristine)
   - [isFormDisabled()](#isformdisabled)
-  - [isFormSubmitted()](#isFormSubmitted)
+  - [isFormSubmitted()](#isformsubmitted)
   - [validate](#validate)
   - [formNoValidate](#formnovalidate)
 - [Formsy.addValidationRule](#formsyaddvalidationrule)
