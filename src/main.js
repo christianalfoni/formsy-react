@@ -100,9 +100,10 @@ Formsy.Form = React.createClass({
       return Object.keys(this.model).reduce(function (mappedModel, key) {
 
         var keyArray = key.split('.');
+        var base = mappedModel;
         while (keyArray.length) {
           var currentKey = keyArray.shift();
-          mappedModel[currentKey] = keyArray.length ? mappedModel[currentKey] || {} : this.model[key];
+          base = (base[currentKey] = keyArray.length ? base[currentKey] || {} : this.model[key]);
         }
 
         return mappedModel;
