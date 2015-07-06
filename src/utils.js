@@ -1,36 +1,24 @@
-module.exports = {
-  arraysDiffer: function (a, b) {
-    var isDifferent = false;
+export default {
+  arraysDiffer(a, b) {
     if (a.length !== b.length) {
-      isDifferent = true;
-    } else {
-      a.forEach(function (item, index) {
-        if (!this.isSame(item, b[index])) {
-          isDifferent = true;
-        }
-      }, this);
+      return true;
     }
-    return isDifferent;
+    return a.some((item, index) => !this.isSame(item, b[index]));
   },
 
-  objectsDiffer: function (a, b) {
-    var isDifferent = false;
+  objectsDiffer(a, b) {
     if (Object.keys(a).length !== Object.keys(b).length) {
-      isDifferent = true;
-    } else {
-      Object.keys(a).forEach(function (key) {
-        if (!this.isSame(a[key], b[key])) {
-          isDifferent = true;
-        }
-      }, this);
+      return true;
     }
-    return isDifferent;
+    return Object.keys(a).some((key) => !this.isSame(a[key], b[key]));
   },
 
-  isSame: function (a, b) {
+  isSame(a, b) {
     if (typeof a !== typeof b) {
       return false;
-    } else if (Array.isArray(a)) {
+    }
+
+    if (Array.isArray(a)) {
       return !this.arraysDiffer(a, b);
     } else if (typeof a === 'object' && a !== null && b !== null) {
       return !this.objectsDiffer(a, b);
