@@ -33,7 +33,7 @@ describe('Rules: minLength', function() {
   });
 
   afterEach(function() {
-    TestInput = isValid = isInvalid = form = null;
+    TestInput = isValid = form = null;
   });
 
   describe('minLength:3', function() {

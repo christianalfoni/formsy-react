@@ -42,7 +42,7 @@ describe('Rules: isEmptyString', function() {
   });
 
   afterEach(function() {
-    TestInput = isValid = isInvalid = form = null;
+    TestInput = isValid = form = null;
   });
 
   it('should fail with a default value', fail());
