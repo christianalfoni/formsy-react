@@ -1,0 +1,52 @@
+{
+  "ecmaFeatures": {
+    "arrowFunctions": true,
+    "binaryLiterals": true,
+    "blockBindings": true,
+    "classes": true,
+    "defaultParams": true,
+    "destructuring": true,
+    "modules": true,
+    "objectLiteralComputedProperties": true,
+    "objectLiteralShorthandMethods": true,
+    "objectLiteralShorthandProperties": true,
+    "octalLiterals": true,
+    "restParams": true,
+    "spread": true,
+    "superInFunctions": true,
+    "templateStrings": true,
+    "jsx": true
+  },
+  "env": {
+   "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    // Best Practices
+    "default-case": 2,
+    "no-new": 0,
+    "no-unused-expressions": 0,
+    "radix": 2,
+    // Stylistic Issues
+    "no-underscore-dangle": 0,
+    "quotes": [2, "single", "avoid-escape"],
+    // ECMAScript 6
+    "constructor-super": 2,
+    "generator-star-spacing": [2, "after"],
+    "no-this-before-super": 2,
+    "no-var": 2,
+    "object-shorthand": 2,
+    "prefer-const": 2,
+    // React rules
+    "react/jsx-boolean-value": 2,
+    "react/jsx-quotes": [2, "double", "avoid-escape"],
+    "react/jsx-no-undef": 1,
+    "react/no-multi-comp": 1,
+    "react/self-closing-comp": 1,
+    "react/wrap-multilines": 1
+  }
+}
