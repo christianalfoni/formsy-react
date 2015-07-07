@@ -22,9 +22,9 @@ describe('Element', function() {
     );
 
     var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
-    expect(input.getDOMNode().value).toBe('foo');
+    expect(input.value).toBe('foo');
     TestUtils.Simulate.change(input, {target: {value: 'foobar'}});
-    expect(input.getDOMNode().value).toBe('foobar');
+    expect(input.value).toBe('foobar');
 
   });
 
@@ -52,7 +52,7 @@ describe('Element', function() {
     var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
     TestUtils.Simulate.change(input, {target: {value: 'foobar'}});
     reset();
-    expect(input.getDOMNode().value).toBe('foo');
+    expect(input.value).toBe('foo');
 
   });
 
@@ -226,7 +226,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     form.changeValue();
     var input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
     setTimeout(function () {
-      expect(input.getDOMNode().value).toBe('foo');
+      expect(input.value).toBe('foo');
       done();
     }, 0);
   });
@@ -573,9 +573,38 @@ it('should allow an undefined value to be updated to a value', function (done) {
       },
       render: function () {
         return (
-          <Formsy.Form>
+          <Formsy.Form onSubmit={this.onSubmit}>
             <TestInput name="foo.bar" value="foo"/>
             <TestInput name="foo.test" value="test"/>
+          </Formsy.Form>
+        );
+      }
+    });
+
+    var form = TestUtils.renderIntoDocument(<TestForm/>);
+    var formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
+    TestUtils.Simulate.submit(formEl);
+
+  });
+
+  it('should allow for application/x-www-form-urlencoded syntax and convert to object', function () {
+
+    var TestInput = React.createClass({
+      mixins: [Formsy.Mixin],
+      render: function () {
+        return <input/>
+      }
+    });
+
+    var TestForm = React.createClass({
+      onSubmit: function (model) {
+        expect(model).toEqual({foo: ['foo', 'bar']});
+      },
+      render: function () {
+        return (
+          <Formsy.Form onSubmit={this.onSubmit}>
+            <TestInput name="foo[0]" value="foo"/>
+            <TestInput name="foo[1]" value="bar"/>
           </Formsy.Form>
         );
       }

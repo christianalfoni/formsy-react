@@ -8,12 +8,12 @@ describe('Formsy', function () {
 
     it('should render a form into the document', function () {
       var form = TestUtils.renderIntoDocument( <Formsy.Form></Formsy.Form>);
-      expect(form.getDOMNode().tagName).toEqual('FORM');
+      expect(React.findDOMNode(form).tagName).toEqual('FORM');
     });
 
     it('should set a class name if passed', function () {
       var form = TestUtils.renderIntoDocument( <Formsy.Form className="foo"></Formsy.Form>);
-      expect(form.getDOMNode().className).toEqual('foo');
+      expect(React.findDOMNode(form).className).toEqual('foo');
     });
 
     it('should allow for null/undefined children', function (done) {
@@ -46,7 +46,7 @@ describe('Formsy', function () {
 
       var form = TestUtils.renderIntoDocument(<TestForm/>);
       setTimeout(function () {
-        TestUtils.Simulate.submit(form.getDOMNode());
+        TestUtils.Simulate.submit(React.findDOMNode(form));
         expect(model).toEqual({name: 'foo'});
         done();
       }, 10);
@@ -71,14 +71,14 @@ describe('Formsy', function () {
           model = formModel;
         },
         render: function () {
-          return ( 
-            <Formsy.Form onSubmit={this.onSubmit}> 
+          return (
+            <Formsy.Form onSubmit={this.onSubmit}>
               {inputs}
             </Formsy.Form>);
         }
       });
-      var form = TestUtils.renderIntoDocument( 
-        <TestForm/> 
+      var form = TestUtils.renderIntoDocument(
+        <TestForm/>
       );
 
       // Wait before adding the input
@@ -89,7 +89,7 @@ describe('Formsy', function () {
         forceUpdate(function () {
           // Wait for next event loop, as that does the form
           setTimeout(function () {
-            TestUtils.Simulate.submit(form.getDOMNode());
+            TestUtils.Simulate.submit(React.findDOMNode(form));
             expect(model.test).toBeDefined();
             done();
           }, 0);
@@ -122,14 +122,14 @@ describe('Formsy', function () {
           model = formModel;
         },
         render: function () {
-          return ( 
-            <Formsy.Form onSubmit={this.onSubmit}> 
+          return (
+            <Formsy.Form onSubmit={this.onSubmit}>
               {inputs}
             </Formsy.Form>);
         }
       });
-      var form = TestUtils.renderIntoDocument( 
-        <TestForm/> 
+      var form = TestUtils.renderIntoDocument(
+        <TestForm/>
       );
 
       // Wait before adding the input
@@ -142,7 +142,7 @@ describe('Formsy', function () {
           // Wait for next event loop, as that does the form
           setTimeout(function () {
             TestUtils.Simulate.change(TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT'), {target: {value: 'foo'}});
-            TestUtils.Simulate.submit(form.getDOMNode());
+            TestUtils.Simulate.submit(React.findDOMNode(form));
             expect(model.test).toBe('foo');
             done();
           }, 0);
@@ -188,12 +188,13 @@ describe('Formsy', function () {
 
       // Wait before changing the input
       setTimeout(function () {
-        form.setProps({value: 'bar'});
+
+        form = TestUtils.renderIntoDocument(<TestForm value='bar'/>);
 
         forceUpdate(function () {
           // Wait for next event loop, as that does the form
           setTimeout(function () {
-            TestUtils.Simulate.submit(form.getDOMNode());
+            TestUtils.Simulate.submit(React.findDOMNode(form));
             expect(model.test).toBe('bar');
             done();
           }, 0);
@@ -253,7 +254,7 @@ describe('Formsy', function () {
       it('should run when the input changes', function() {
         var form = TestUtils.renderIntoDocument(<TestForm inputs={ [{name: 'one', validations: 'CheckValid', value: 'foo'}] }/>);
         var input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
-        TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'bar'}});
+        TestUtils.Simulate.change(React.findDOMNode(input), {target: {value: 'bar'}});
         expect(CheckValid).toHaveBeenCalledWith({one: 'bar'}, 'bar', true);
         expect(OtherCheckValid).not.toHaveBeenCalled();
       });
@@ -262,7 +263,7 @@ describe('Formsy', function () {
         var form = TestUtils.renderIntoDocument(<TestForm inputs={ [{name: 'one', validations: 'CheckValid', value: 'foo'}] }/>);
         form.setProps({inputs: [{name: 'one', validations: 'OtherCheckValid', value: 'foo'}] });
         var input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
-        TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'bar'}});
+        TestUtils.Simulate.change(React.findDOMNode(input), {target: {value: 'bar'}});
         expect(OtherCheckValid).toHaveBeenCalledWith({one: 'bar'}, 'bar', true);
       });
 
@@ -297,7 +298,7 @@ describe('Formsy', function () {
       it('runs multiple validations', function() {
         var form = TestUtils.renderIntoDocument(<TestForm inputs={ [{name: 'one', validations: 'CheckValid,OtherCheckValid', value: 'foo'}] }/>);
         var input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
-        TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'bar'}});
+        TestUtils.Simulate.change(React.findDOMNode(input), {target: {value: 'bar'}});
         expect(CheckValid).toHaveBeenCalledWith({one: 'bar'}, 'bar', true);
         expect(OtherCheckValid).toHaveBeenCalledWith({one: 'bar'}, 'bar', true);
       });
@@ -366,14 +367,14 @@ describe('Formsy', function () {
           hasChanged();
         },
         render: function () {
-          return ( 
-            <Formsy.Form onChange={this.onChange}> 
+          return (
+            <Formsy.Form onChange={this.onChange}>
               {inputs}
             </Formsy.Form>);
         }
       });
-      var form = TestUtils.renderIntoDocument( 
-        <TestForm/> 
+      var form = TestUtils.renderIntoDocument(
+        <TestForm/>
       );
 
       // Wait before adding the input
@@ -413,14 +414,14 @@ describe('Formsy', function () {
           });
         },
         render: function () {
-          return ( 
-            <Formsy.Form onChange={this.onChange} disabled={this.state.disabled}> 
+          return (
+            <Formsy.Form onChange={this.onChange} disabled={this.state.disabled}>
               <TestInput name="foo"/>
             </Formsy.Form>);
         }
       });
-      var form = TestUtils.renderIntoDocument( 
-        <TestForm/> 
+      var form = TestUtils.renderIntoDocument(
+        <TestForm/>
       );
 
       var input = TestUtils.findRenderedComponentWithType(form, TestInput);
@@ -461,14 +462,14 @@ describe('Formsy', function () {
           }
         },
         render: function () {
-          return ( 
-            <Formsy.Form onChange={this.onChange} validationErrors={this.state.validationErrors}> 
+          return (
+            <Formsy.Form onChange={this.onChange} validationErrors={this.state.validationErrors}>
               <TestInput name="foo"/>
             </Formsy.Form>);
         }
       });
-      var form = TestUtils.renderIntoDocument( 
-        <TestForm/> 
+      var form = TestUtils.renderIntoDocument(
+        <TestForm/>
       );
 
       // Wait for update
@@ -501,18 +502,18 @@ describe('Formsy', function () {
             isCalled = true;
           },
           render: function () {
-            return ( 
-              <Formsy.Form onValidSubmit={this.onValidSubmit}> 
+            return (
+              <Formsy.Form onValidSubmit={this.onValidSubmit}>
                 <TestInput name="foo" validations="isEmail" value="foo@bar.com"/>
               </Formsy.Form>);
           }
         });
-        var form = TestUtils.renderIntoDocument( 
-          <TestForm/> 
+        var form = TestUtils.renderIntoDocument(
+          <TestForm/>
         );
 
         var TestForm = TestUtils.findRenderedComponentWithType(form, TestForm);
-        TestUtils.Simulate.submit(TestForm.getDOMNode());  
+        TestUtils.Simulate.submit(React.findDOMNode(TestForm));
         expect(isCalled).toBe(true);
 
     });
@@ -531,18 +532,18 @@ describe('Formsy', function () {
             isCalled = true;
           },
           render: function () {
-            return ( 
-              <Formsy.Form onInvalidSubmit={this.onInvalidSubmit}> 
+            return (
+              <Formsy.Form onInvalidSubmit={this.onInvalidSubmit}>
                 <TestInput name="foo" validations="isEmail" value="foo@bar"/>
               </Formsy.Form>);
           }
         });
-        var form = TestUtils.renderIntoDocument( 
-          <TestForm/> 
+        var form = TestUtils.renderIntoDocument(
+          <TestForm/>
         );
 
         var TestForm = TestUtils.findRenderedComponentWithType(form, TestForm);
-        TestUtils.Simulate.submit(TestForm.getDOMNode());  
+        TestUtils.Simulate.submit(React.findDOMNode(TestForm));
         expect(isCalled).toBe(true);
 
     });
@@ -583,14 +584,14 @@ describe('Formsy', function () {
 
     it("should call onSubmit correctly", function() {
       var form = TestUtils.renderIntoDocument(<TestForm value={ false }/>);
-      TestUtils.Simulate.submit(form.getDOMNode());
+      TestUtils.Simulate.submit(React.findDOMNode(form));
       expect(onSubmit).toHaveBeenCalledWith({foo: false});
     });
 
     it("should allow dynamic changes to false", function() {
       var form = TestUtils.renderIntoDocument(<TestForm value={ true }/>);
       form.setProps({value: false});
-      TestUtils.Simulate.submit(form.getDOMNode());
+      TestUtils.Simulate.submit(React.findDOMNode(form));
       expect(onSubmit).toHaveBeenCalledWith({foo: false});
     });
 
@@ -598,7 +599,7 @@ describe('Formsy', function () {
       var form = TestUtils.renderIntoDocument(<TestForm value={ true }/>);
       var input = TestUtils.findRenderedComponentWithType(form, TestInput);
       expect(input.isFormSubmitted()).toBe(false);
-      TestUtils.Simulate.submit(form.getDOMNode());
+      TestUtils.Simulate.submit(React.findDOMNode(form));
       expect(input.isFormSubmitted()).toBe(true);
     });
 
@@ -673,7 +674,7 @@ describe('Formsy', function () {
     it('returns true when changed', function() {
       var form = TestUtils.renderIntoDocument(<TestForm inputs={ [{name: 'one', value: 'foo'}] }/>);
       var input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
-      TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'bar'}});
+      TestUtils.Simulate.change(React.findDOMNode(input), {target: {value: 'bar'}});
       expect(form.refs.formsy.isChanged()).toEqual(true);
       expect(onChange).toHaveBeenCalledWith({one: 'bar'}, true);
     });
@@ -681,9 +682,9 @@ describe('Formsy', function () {
     it('returns false if changes are undone', function() {
       var form = TestUtils.renderIntoDocument(<TestForm inputs={ [{name: 'one', value: 'foo'}] }/>);
       var input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
-      TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'bar'}});
+      TestUtils.Simulate.change(React.findDOMNode(input), {target: {value: 'bar'}});
       expect(onChange).toHaveBeenCalledWith({one: 'bar'}, true);
-      TestUtils.Simulate.change(input.getDOMNode(), {target: {value: 'foo'}});
+      TestUtils.Simulate.change(React.findDOMNode(input), {target: {value: 'foo'}});
       expect(form.refs.formsy.isChanged()).toEqual(false);
       expect(onChange).toHaveBeenCalledWith({one: 'foo'}, false);
     });

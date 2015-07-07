@@ -1,6 +1,7 @@
 var React = global.React || require('react');
 var Formsy = {};
 var validationRules = require('./validationRules.js');
+var formDataToObject = require('form-data-to-object');
 var utils = require('./utils.js');
 var Mixin = require('./Mixin.js');
 var options = {};
@@ -37,6 +38,23 @@ Formsy.Form = React.createClass({
       validationErrors: null,
       preventExternalInvalidation: false
     };
+  },
+
+  childContextTypes: {
+    formsy: React.PropTypes.object
+  },
+  getChildContext: function () {
+    return {
+      formsy: {
+        attachToForm: this.attachToForm,
+        detachFromForm: this.detachFromForm,
+        validate: this.validate,
+        isFormDisabled: this.isFormDisabled,
+        isValidValue: function (component, value) {
+          return this.runValidation(component, value).isValid;
+        }.bind(this)
+      }
+    }
   },
 
   // Add a map to store the inputs of the form, a model to store
@@ -97,7 +115,7 @@ Formsy.Form = React.createClass({
     if (this.props.mapping) {
       return this.props.mapping(this.model)
     } else {
-      return Object.keys(this.model).reduce(function (mappedModel, key) {
+      return formDataToObject(Object.keys(this.model).reduce(function (mappedModel, key) {
 
         var keyArray = key.split('.');
         var base = mappedModel;
@@ -108,7 +126,7 @@ Formsy.Form = React.createClass({
 
         return mappedModel;
 
-      }.bind(this), {});
+      }.bind(this), {}));
     }
   },
 
@@ -138,7 +156,7 @@ Formsy.Form = React.createClass({
       var component = this.inputs[name];
       var args = [{
         _isValid: !(name in errors),
-        _validationError: errors[name]
+        _validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name]
       }];
       component.setState.apply(component, args);
     }.bind(this));
@@ -170,7 +188,7 @@ Formsy.Form = React.createClass({
       }
       var args = [{
         _isValid: this.props.preventExternalInvalidation || false,
-        _externalError: errors[name]
+        _externalError: typeof errors[name] === 'string' ? [errors[name]] : errors[name]
       }];
       component.setState.apply(component, args);
     }.bind(this));
@@ -287,23 +305,23 @@ Formsy.Form = React.createClass({
       error: (function () {
 
         if (isValid && !isRequired) {
-          return '';
+          return [];
         }
 
         if (validationResults.errors.length) {
-          return validationResults.errors[0];
+          return validationResults.errors;
         }
 
         if (this.props.validationErrors && this.props.validationErrors[component.props.name]) {
-          return this.props.validationErrors[component.props.name];
+          return typeof this.props.validationErrors[component.props.name] === 'string' ? [this.props.validationErrors[component.props.name]] : this.props.validationErrors[component.props.name];
         }
 
         if (isRequired) {
-          return validationErrors[requiredResults.success[0]] || null;
+          return [validationErrors[requiredResults.success[0]]] || null;
         }
 
         if (!isValid) {
-          return validationErrors[validationResults.failed[0]] || validationError;
+          return [validationError];
         }
 
       }.call(this))
@@ -438,7 +456,8 @@ Formsy.Form = React.createClass({
 
     return (
       <form {...this.props} onSubmit={this.submit}>
-        {this.traverseChildrenAndRegisterInputs(this.props.children)}
+        {this.props.children}
+        {/*this.traverseChildrenAndRegisterInputs(this.props.children)*/}
       </form>
     );
 
