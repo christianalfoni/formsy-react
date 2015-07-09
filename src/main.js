@@ -320,8 +320,13 @@ Formsy.Form = React.createClass({
           return [validationErrors[requiredResults.success[0]]] || null;
         }
 
-        if (!isValid) {
-          return [validationError];
+        if (validationResults.failed.length) {
+          return validationResults.failed.map(function(failed) {
+            return validationErrors[failed] ? validationErrors[failed] : validationError;
+          }).filter(function(x, pos, arr) {
+            // Remove duplicates
+            return arr.indexOf(x) === pos;
+          });
         }
 
       }.call(this))
