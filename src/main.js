@@ -373,10 +373,7 @@ Formsy.Form = React.createClass({
     // run when the last component has set its state
     var onValidationComplete = function () {
       allIsValid = inputKeys.every(function (name) {
-        if (!inputs[name].state._isValid) {
-          return  false;
-        }
-        return true;
+        return inputs[name].state._isValid;
       }.bind(this));
 
       this.setState({
