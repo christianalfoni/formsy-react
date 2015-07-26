@@ -140,10 +140,11 @@ module.exports = {
     return this.state._value !== '';
   },
   getErrorMessage: function () {
-    return this.getErrorMessages() && this.getErrorMessages()[0];
+    var messages = this.getErrorMessages();
+    return messages.length ? messages[0] : null;
   },
   getErrorMessages: function () {
-    return !this.isValid() || this.showRequired() ? (this.state._externalError || this.state._validationError) : null;
+    return !this.isValid() || this.showRequired() ? (this.state._externalError || this.state._validationError || []) : [];
   },
   isFormDisabled: function () {
     return this.context.formsy.isFormDisabled();
