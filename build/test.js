@@ -3,20 +3,20 @@ var ReactDOM = require('react-dom');
 var Formsy = require('./../src/main.js');
 
 var Input = React.createClass({
-
-  mixins: [Formsy.Mixin],
   onChange: function (event) {
-    this.setValue(event.currentTarget.value);
+    this.props.setValue(event.currentTarget.value);
   },
   render: function () {
     return (
       <div>
-      {this.showRequired() ? 'required' : ''}
-      <input disabled={this.isFormDisabled()} value={this.getValue()} onChange={this.onChange}/>
+      {this.props.showRequired() ? 'required' : ''}
+      <input disabled={this.props.isFormDisabled()} value={this.props.getValue()} onChange={this.onChange}/>
       </div>
     );
   }
 });
+
+Input = Formsy.HOC(Input);
 
 var SomeComp = React.createClass({
   getInitialState: function () {
