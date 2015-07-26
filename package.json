@@ -33,6 +33,6 @@
     "webpack-dev-server": "^1.7.0"
   },
   "peerDependencies": {
-    "react": "^0.13.1"
+    "react": "0.13.x"
   }
 }
