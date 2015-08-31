@@ -108,13 +108,13 @@ var Validations = React.createClass({
       <fieldset onChange={this.changeValidation}>
         <legend>Validation Type</legend>
         <div>
-          <input name='validationType' type='radio' value='time' checked={this.props.validationType === 'time'}/>Time
+          <input name='validationType' type='radio' value='time' defaultChecked={this.props.validationType === 'time'}/>Time
         </div>
         <div>
-          <input name='validationType' type='radio' value='decimal' checked={this.props.validationType === 'decimal'}/>Decimal
+          <input name='validationType' type='radio' value='decimal' defaultChecked={this.props.validationType === 'decimal'}/>Decimal
         </div>
         <div>
-          <input name='validationType' type='radio' value='binary' checked={this.props.validationType === 'binary'}/>Binary
+          <input name='validationType' type='radio' value='binary' defaultChecked={this.props.validationType === 'binary'}/>Binary
         </div>
       </fieldset>
     );
