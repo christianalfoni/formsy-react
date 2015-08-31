@@ -393,17 +393,15 @@ Formsy.Form = React.createClass({
   // Validate the form by going through all child input components
   // and check their state
   validateForm: function () {
-    var allIsValid = true;
+    var allIsValid;
     var inputs = this.inputs;
     var inputKeys = Object.keys(inputs);
 
     // We need a callback as we are validating all inputs again. This will
     // run when the last component has set its state
     var onValidationComplete = function () {
-      inputKeys.forEach(function (name) {
-        if (!inputs[name].state._isValid) {
-          allIsValid = false;
-        }
+      allIsValid = inputKeys.every(function (name) {
+        return inputs[name].state._isValid;
       }.bind(this));
 
       this.setState({

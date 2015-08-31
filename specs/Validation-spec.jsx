@@ -160,7 +160,7 @@ describe('Validation', function() {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input/>
       }
     });
     var TestForm = React.createClass({
@@ -191,7 +191,7 @@ describe('Validation', function() {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input/>
       }
     });
     var TestForm = React.createClass({
@@ -223,7 +223,7 @@ describe('Validation', function() {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input/>
       }
     });
     var TestForm = React.createClass({
@@ -253,7 +253,7 @@ describe('Validation', function() {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input/>
       }
     });
     var TestForm = React.createClass({

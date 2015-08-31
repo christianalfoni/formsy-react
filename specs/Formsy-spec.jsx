@@ -84,7 +84,7 @@ describe('Formsy', function () {
       // Wait before adding the input
       setTimeout(function () {
 
-        inputs.push(<TestInput name="test" value=""/>);
+        inputs.push(<TestInput key={inputs.length} name="test" value=""/>);
 
         forceUpdate(function () {
           // Wait for next event loop, as that does the form
@@ -135,7 +135,7 @@ describe('Formsy', function () {
       // Wait before adding the input
       setTimeout(function () {
 
-        inputs.push(<TestInput name="test"/>);
+        inputs.push(<TestInput key={inputs.length} name="test"/>);
 
         forceUpdate(function () {
 
@@ -378,7 +378,7 @@ describe('Formsy', function () {
       );
 
       // Wait before adding the input
-      inputs.push(<TestInput name='test'/>);
+      inputs.push(<TestInput key={inputs.length} name='test'/>);
 
       forceUpdate(function () {
 
@@ -401,7 +401,7 @@ describe('Formsy', function () {
       var TestInput = React.createClass({
         mixins: [Formsy.Mixin],
         render: function () {
-          return <input value={this.getValue()}/>
+          return <input/>
         }
       });
       var TestForm = React.createClass({
@@ -439,7 +439,7 @@ describe('Formsy', function () {
       var TestInput = React.createClass({
         mixins: [Formsy.Mixin],
         render: function () {
-          return <input value={this.getValue()}/>;
+          return <input/>;
         }
       });
       var TestForm = React.createClass({
@@ -494,7 +494,7 @@ describe('Formsy', function () {
         var TestInput = React.createClass({
           mixins: [Formsy.Mixin],
           render: function () {
-            return <input value={this.getValue()}/>;
+            return <input/>;
           }
         });
         var TestForm = React.createClass({
@@ -524,7 +524,7 @@ describe('Formsy', function () {
         var TestInput = React.createClass({
           mixins: [Formsy.Mixin],
           render: function () {
-            return <input value={this.getValue()}/>;
+            return <input/>;
           }
         });
         var TestForm = React.createClass({
