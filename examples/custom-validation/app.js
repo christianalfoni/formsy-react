@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Formsy = require('formsy-react');
 
 var currentYear = new Date().getFullYear();
@@ -120,4 +121,4 @@ var Validations = React.createClass({
   }
 });
 
-React.render(<App/>, document.getElementById('example'));
+ReactDOM.render(<App/>, document.getElementById('example'));

@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Formsy = require('formsy-react');
 
 var App = React.createClass({
@@ -62,4 +63,4 @@ var MyOwnInput = React.createClass({
   }
 });
 
-React.render(<App/>, document.getElementById('example'));
+ReactDOM.render(<App/>, document.getElementById('example'));
