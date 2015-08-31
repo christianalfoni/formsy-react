@@ -198,8 +198,11 @@ describe('Element', function() {
 it('should allow an undefined value to be updated to a value', function (done) {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
+      changeValue: function (event) {
+        this.setValue(event.target.value);
+      },
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input value={this.getValue()} onChange={this.changeValue}/>
       }
     });
     var TestForm = React.createClass({
@@ -237,7 +240,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input/>
       }
     });
     var TestForm = React.createClass({
@@ -264,7 +267,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input/>
       }
     });
     var TestForm = React.createClass({
@@ -368,7 +371,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input/>
       }
     });
     var TestForm = React.createClass({
@@ -394,7 +397,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input/>
       }
     });
     var TestForm = React.createClass({
@@ -428,7 +431,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input/>
       }
     });
     var TestForm = React.createClass({
@@ -459,7 +462,7 @@ it('should allow an undefined value to be updated to a value', function (done) {
     var TestInput = React.createClass({
       mixins: [Formsy.Mixin],
       render: function () {
-        return <input value={this.getValue()}/>
+        return <input/>
       }
     });
     var TestForm = React.createClass({

@@ -1,4 +1,4 @@
-formsy-react  [![GitHub release](https://img.shields.io/github/release/christianalfoni/formsy-react.svg)](https://github.com/christianalfoni/formsy-react/releases) ![build](https://travis-ci.org/christianalfoni/formsy-react.svg)
+formsy-react  [![GitHub release](https://img.shields.io/github/release/christianalfoni/formsy-react.svg)](https://github.com/christianalfoni/formsy-react/releases) [![Build Status](https://travis-ci.org/christianalfoni/formsy-react.svg?branch=master)](https://travis-ci.org/christianalfoni/formsy-react)
 ============
 
 A form input builder and validator for React JS
