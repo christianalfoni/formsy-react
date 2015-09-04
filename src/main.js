@@ -431,7 +431,6 @@ Formsy.Form = React.createClass({
   detachFromForm: function (component) {
     delete this.inputs[component.props.name];
     delete this.model[component.props.name];
-    this.updateModel();
     this.validateForm();
   },
   render: function () {
