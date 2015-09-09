@@ -1,15 +1,16 @@
-var utils = require('./../src/utils.js');
+import utils from './../src/utils.js';
 
-describe('Utils', function() {
+describe('Utils', function () {
 
-  it('should check equality of objects and arrays', function () {
-    var objA = { foo: 'bar' };
-    var objB = { foo: 'bar' };
-    var objC = [{ foo: ['bar'] }];
-    var objD = [{ foo: ['bar'] }];
-    var objE, objF;
-    var objG = null;
-    var objH = null;
+  it('should check equality of objects and arrays', () => {
+    const objA = { foo: 'bar' };
+    const objB = { foo: 'bar' };
+    const objC = [{ foo: ['bar'] }];
+    const objD = [{ foo: ['bar'] }];
+    const objE = undefined;
+    const objF = undefined;
+    const objG = null;
+    const objH = null;
 
     expect(utils.isSame(objA, objB)).toBe(true);
     expect(utils.isSame(objC, objD)).toBe(true);

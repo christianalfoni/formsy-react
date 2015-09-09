@@ -10,16 +10,13 @@ global.navigator = global.window.navigator;
 
 var jasmineOptions = {
   specFolders: [path.resolve(__dirname, 'specs')],
-  //onComplete: onComplete,
   isVerbose: true,
   showColors: true,
   teamcity: false,
   useRequireJs: false,
-  regExpSpec: /spec\.jsx$/,
+  regExpSpec: /spec\.js$/,
   junitreport: true,
-  includeStackTrace: true,
-  //coffee: options.coffee,
-  //growl: options.growl
+  includeStackTrace: true
 };
 
 jasmine.executeSpecsInFolder(jasmineOptions);

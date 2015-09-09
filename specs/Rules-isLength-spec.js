@@ -1,47 +1,45 @@
-var React = require('react/addons');
-var TestUtils = React.addons.TestUtils;
-var Formsy = require('./../src/main.js');
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
 
-describe('Rules: isLength', function() {
-  var TestInput, isValid, form, input;
+import Formsy from './..';
+import { customizeInput } from './utils/TestInput';
+
+describe('Rules: isLength', function () {
+  let Input, isValid, form, input;
 
   function pass(value) {
-    return pass.length ? function () {
-      TestUtils.Simulate.change(input, {target: {value: value}});
+    return pass.length ? () => {
+      TestUtils.Simulate.change(input, {target: {value}});
       expect(isValid).toBe(true);
-    } : function () { expect(isValid).toBe(true); };
+    } : () => expect(isValid).toBe(true);
   }
 
   function fail(value) {
-    return fail.length ? function () {
-      TestUtils.Simulate.change(input, {target: {value: value}});
+    return fail.length ? () => {
+      TestUtils.Simulate.change(input, {target: {value}});
       expect(isValid).toBe(false);
-    } : function () { expect(isValid).toBe(false); };
+    } : () => expect(isValid).toBe(false);
   }
 
-  beforeEach(function() {
-    TestInput = React.createClass({
-      mixins: [Formsy.Mixin],
-      updateValue: function (event) {
-        this.setValue(event.target.value);
-      },
-      render: function () {
+  beforeEach(() => {
+    Input = customizeInput({
+      render() {
         isValid = this.isValid();
-        return <input value={this.getValue()} onChange={this.updateValue}/>
+        return <input value={this.getValue()} onChange={this.updateValue}/>;
       }
     });
   });
 
-  afterEach(function() {
-    TestInput = isValid = form = null;
+  afterEach(() => {
+    Input = isValid = form = null;
   });
 
-  describe('isLength:3', function() {
+  describe('isLength:3', () => {
 
-    beforeEach(function() {
+    beforeEach(() => {
       form = TestUtils.renderIntoDocument(
         <Formsy.Form>
-          <TestInput name="foo" validations="isLength:3"/>
+          <Input name="foo" validations="isLength:3"/>
         </Formsy.Form>
       );
 
@@ -66,12 +64,12 @@ describe('Rules: isLength', function() {
 
   });
 
-  describe('isLength:0', function() {
+  describe('isLength:0', () => {
 
-    beforeEach(function() {
+    beforeEach(() => {
       form = TestUtils.renderIntoDocument(
         <Formsy.Form>
-          <TestInput name="foo" validations="isLength:0"/>
+          <Input name="foo" validations="isLength:0"/>
         </Formsy.Form>
       );
 
