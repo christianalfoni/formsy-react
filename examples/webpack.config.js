@@ -11,7 +11,7 @@ module.exports = {
   devtool: 'inline-source-map',
 
   entry: fs.readdirSync(__dirname).reduce(function (entries, dir) {
-    var isDraft = dir.charAt(0) === '_';
+    var isDraft = dir.charAt(0) === '_' || dir.indexOf('components') >= 0;
 
     if (!isDraft && isDirectory(path.join(__dirname, dir))) {
       entries[dir] = path.join(__dirname, dir, 'app.js');
