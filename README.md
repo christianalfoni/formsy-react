@@ -6,6 +6,8 @@ A form input builder and validator for React JS
 | [How to use](#how-to-use) | [API](/API.md) | [Examples](/examples) |
 |---|---|---|
 
+### Currently, the development is in 'react-0.14' branch. For more information see [#158](https://github.com/christianalfoni/formsy-react/issues/158)
+
 ### From version 0.12.0 Formsy only supports React 0.13.1 and up
 
 ## <a name="background">Background</a>
