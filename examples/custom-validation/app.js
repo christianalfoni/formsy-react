@@ -21,7 +21,7 @@ var validators = {
 
 Formsy.addValidationRule('isYearOfBirth', function (values, value) {
   value = parseInt(value);
-  if (typeof value !== 'number' || value !== value) {
+  if (typeof value !== 'number') {
     return false;
   }
   return value < currentYear && value > currentYear - 130;
