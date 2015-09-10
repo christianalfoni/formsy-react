@@ -12,9 +12,8 @@ const MySelect = React.createClass({
     const className = this.props.className + ' ' + (this.showRequired() ? 'required' : this.showError() ? 'error' : null);
     const errorMessage = this.getErrorMessage();
 
-    const value = this.getValue();
-    const options = this.props.options.map(option => (
-      <option value={option.value} selected={value === option.value ? 'selected' : null}>
+    const options = this.props.options.map((option, i) => (
+      <option key={option.title+option.value} value={option.value}>
         {option.title}
       </option>
     ));
@@ -22,7 +21,7 @@ const MySelect = React.createClass({
     return (
       <div className='form-group'>
         <label htmlFor={this.props.name}>{this.props.title}</label>
-        <select name={this.props.name} onChange={this.changeValue}>
+        <select name={this.props.name} onChange={this.changeValue} value={this.getValue()}>
           {options}
         </select>
         <span className='validation-error'>{errorMessage}</span>
