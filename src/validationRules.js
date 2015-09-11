@@ -38,16 +38,25 @@ var validations = {
     if (typeof value === 'number') {
       return true;
     }
-    return validations.matchRegexp(values, value, /^[-+]?(\d*[.])?\d+$/);
+    return validations.matchRegexp(values, value, /^[-+]?(?:\d*[.])?\d+$/);
   },
   isAlpha: function (values, value) {
-    return validations.matchRegexp(values, value, /^[a-zA-Z]+$/);
+    return validations.matchRegexp(values, value, /^[A-Z]+$/i);
+  },
+  isAlphanumeric: function (values, value) {
+    return validations.matchRegexp(values, value, /^[0-9A-Z]+$/i);
+  },
+  isInt: function (values, value) {
+    return validations.matchRegexp(values, value, /^(?:[-+]?(?:0|[1-9]\d*))$/);
+  },
+  isFloat: function (values, value) {
+    return validations.matchRegexp(values, value, /^(?:[-+]?(?:\d+))?(?:\.\d*)?(?:[eE][\+\-]?(?:\d+))?$/);
   },
   isWords: function (values, value) {
-    return validations.matchRegexp(values, value, /^[a-zA-Z\s]+$/);
+    return validations.matchRegexp(values, value, /^[A-Z\s]+$/i);
   },
   isSpecialWords: function (values, value) {
-    return validations.matchRegexp(values, value, /^[a-zA-Z\s\u00C0-\u017F]+$/);
+    return validations.matchRegexp(values, value, /^[A-Z\s\u00C0-\u017F]+$/i);
   },
   isLength: function (values, value, length) {
     return !isExisty(value) || isEmpty(value) || value.length === length;

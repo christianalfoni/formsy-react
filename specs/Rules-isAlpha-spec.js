@@ -47,7 +47,7 @@ describe('Rules: isAlpha', function () {
 
   it('should pass with a string is only latin letters', pass('myValue'));
 
-  it('should fail with a string with numbers', fail('myValue 42'));
+  it('should fail with a string with numbers', fail('myValue42'));
 
   it('should pass with an undefined', pass(undefined));
 

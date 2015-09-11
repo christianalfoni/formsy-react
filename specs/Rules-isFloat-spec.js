@@ -4,7 +4,7 @@ import TestUtils from 'react-addons-test-utils';
 import Formsy from './..';
 import { customizeInput } from './utils/TestInput';
 
-describe('Rules: isNumeric', function () {
+describe('Rules: isFloat', function () {
   let Input, isValid, form, input;
 
   function pass(value) {
@@ -31,7 +31,7 @@ describe('Rules: isNumeric', function () {
 
     form = TestUtils.renderIntoDocument(
       <Formsy.Form>
-        <Input name="foo" validations="isNumeric"/>
+        <Input name="foo" validations="isFloat"/>
       </Formsy.Form>
     );
 
@@ -57,7 +57,7 @@ describe('Rules: isNumeric', function () {
 
   it('should pass with a float', pass(Math.PI));
 
-  it('should fail with a float in science notation', fail('-1e3'));
+  it('should pass with a float in science notation', pass('-1e3'));
 
   it('should pass with an undefined', pass(undefined));
 

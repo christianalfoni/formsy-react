@@ -659,17 +659,35 @@ Returns true if the value is the boolean true
 ```
 Returns true if the value is the boolean false
 
-**isNumeric**
-```html
-<MyInputComponent name="foo" validations="isNumeric"/>
-```
-Returns true if string only contains numbers
-
 **isAlpha**
 ```html
 <MyInputComponent name="foo" validations="isAlpha"/>
 ```
 Returns true if string is only letters
+
+**isNumeric**
+```html
+<MyInputComponent name="foo" validations="isNumeric"/>
+```
+Returns true if string only contains numbers. Examples: 42; -3.14
+
+**isAlphanumeric**
+```html
+<MyInputComponent name="foo" validations="isAlphanumeric"/>
+```
+Returns true if string only contains letters or numbers
+
+**isInt**
+```html
+<MyInputComponent name="foo" validations="isInt"/>
+```
+Returns true if string represents integer value. Examples: 42; -12; 0
+
+**isFloat**
+```html
+<MyInputComponent name="foo" validations="isFloat"/>
+```
+Returns true if string represents float value. Examples: 42; -3.14; 1e3
 
 **isWords**
 ```html
