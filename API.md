@@ -250,7 +250,7 @@ A property that tells the form that the form input component value is required. 
 ```html
 <MyInputComponent name="email" required="isFalse"/>
 ```
-Would be typical for a checkbox type of form element.
+Would be typical for a checkbox type of form element that must be checked, e.g. agreeing to Terms of Service.
 
 #### <a name="getvalue">getValue()</a>
 ```javascript
