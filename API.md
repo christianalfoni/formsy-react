@@ -111,7 +111,7 @@ var Form = React.createClass({
 ```
 Takes a function to run when the submit button has been clicked. 
 
-The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. E.g. `{email: "This email is taken"}`. Resetting or invalidating the form will cause **setState** to run on the form element component.
+The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. This is useful for server side validation. E.g. `{email: "This email is taken"}`. Resetting or invalidating the form will cause **setState** to run on the form element component.
 
 #### <a name="onvalid">onValid()</a>
 ```html
