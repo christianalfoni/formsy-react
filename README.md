@@ -51,6 +51,11 @@ Complete API reference is available [here](/API.md).
   /** @jsx React.DOM */
   var Formsy = require('formsy-react');
   var MyAppForm = React.createClass({
+    getInitialState: function () {
+      return {
+        canSubmit: false
+      }
+    },
     enableButton: function () {
       this.setState({
         canSubmit: true
