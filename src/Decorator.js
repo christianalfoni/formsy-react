@@ -20,7 +20,8 @@ module.exports = function () {
           isRequired: this.isRequired,
           showRequired: this.showRequired,
           showError: this.showError,
-          isValidValue: this.isValidValue
+          isValidValue: this.isValidValue,
+          ...this.props
         });
       }
     });
