@@ -23,10 +23,10 @@ If it is not helped try update your node.js and npm.
 
 ## Examples
 
-1. [**Login**](http://localhost:8080/login)
+1. [**Login**](login)
 
     Two required fields with simple validation.
 
-2. [**Custom Validation**](http://localhost:8080/custom-validation)
+2. [**Custom Validation**](custom-validation)
 
     One field with added validation rule (`Formsy.addValidationRule`) and one field with dynamically added validation and error messages. 
