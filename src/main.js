@@ -16,6 +16,7 @@ Formsy.addValidationRule = function (name, func) {
 };
 
 Formsy.Form = React.createClass({
+  displayName: 'Formsy',
   getInitialState: function () {
     return {
       isValid: true,
