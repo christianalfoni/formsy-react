@@ -6,12 +6,13 @@
     "type": "git",
     "url": "https://github.com/christianalfoni/formsy-react.git"
   },
-  "main": "src/main.js",
+  "main": "lib/main.js",
   "scripts": {
     "start": "webpack-dev-server --content-base build",
     "deploy": "NODE_ENV=production webpack -p --config webpack.production.config.js",
     "test": "node testrunner",
-    "examples": "webpack-dev-server --config examples/webpack.config.js --content-base examples"
+    "examples": "webpack-dev-server --config examples/webpack.config.js --content-base examples",
+    "prepublish": "babel ./src/ -d ./lib/"
   },
   "author": "Christian Alfoni",
   "license": "MIT",
