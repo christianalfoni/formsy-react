@@ -4,7 +4,7 @@ import TestUtils from 'react-addons-test-utils';
 import Formsy from './..';
 import { customizeInput } from './utils/TestInput';
 
-describe('Rules: isNumeric', function () {
+describe('Rules: isAlphanumeric', function () {
   let Input, isValid, form, input;
 
   function pass(value) {
@@ -31,7 +31,7 @@ describe('Rules: isNumeric', function () {
 
     form = TestUtils.renderIntoDocument(
       <Formsy.Form>
-        <Input name="foo" validations="isNumeric"/>
+        <Input name="foo" validations="isAlphanumeric"/>
       </Formsy.Form>
     );
 
@@ -45,24 +45,18 @@ describe('Rules: isNumeric', function () {
 
   it('should pass with a default value', pass());
 
-  it('should pass with an empty string', pass(''));
+  it('should pass with a string is only latin letters', pass('myValue'));
 
-  it('should fail with an unempty string', fail('myValue'));
-
-  it('should pass with a number as string', pass('+42'));
-
-  it('should fail with a number as string with not digits', fail('42 as an answer'));
-
-  it('should pass with an int', pass(42));
-
-  it('should pass with a float', pass(Math.PI));
-
-  it('should fail with a float in science notation', fail('-1e3'));
+  it('should pass with a string with numbers', pass('myValue42'));
 
   it('should pass with an undefined', pass(undefined));
 
   it('should pass with a null', pass(null));
 
-  it('should pass with a zero', pass(0));
+  it('should pass with an empty string', pass(''));
+
+  it('should pass with a number', pass(42));
+
+  it('should fail with a non alpha and number symbols', fail('!@#$%^&*()'));
 
 });
