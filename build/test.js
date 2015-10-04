@@ -1,37 +1,55 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Formsy = require('./../src/main.js');
 
 var Input = React.createClass({
-
-  mixins: [Formsy.Mixin],
-
+  onChange: function (event) {
+    this.props.setValue(event.currentTarget.value);
+  },
   render: function () {
     return (
       <div>
-      {this.showError()}
-      {this.getErrorMessage()}
-      <input disabled={this.isFormDisabled()} />
+      {this.props.showRequired() ? 'required' : ''}
+      <input disabled={this.props.isFormDisabled()} value={this.props.getValue()} onChange={this.onChange}/>
       </div>
     );
   }
 });
 
-var FormApp = React.createClass({
-  componentDidMount: function () {
-    this.refs.form.updateInputsWithError({
-      'foo.bar': 'hmmm'
+Input = Formsy.HOC(Input);
+
+var SomeComp = React.createClass({
+  getInitialState: function () {
+    return  {
+      isRequired: false
+    };
+  },
+  toggleRequired: function () {
+    this.setState({
+      isRequired: !this.state.isRequired
     });
   },
+  render: function () {
+    return (
+      <div>
+        <Input name="foo[0]" value={''} validations="isEmail" validationError="No email" required={this.state.isRequired}/>
+        <button onClick={this.toggleRequired}>Test</button>
+      </div>
+    )
+  }
+});
+
+var FormApp = React.createClass({
   onSubmit: function (model) {
     console.log('model', model);
   },
   render: function () {
     return (
-      <Formsy.Form ref="form" onInvalid={this.onInvalid}>
-        <Input name="foo.bar" />
+      <Formsy.Form ref="form" onSubmit={this.onSubmit}>
+        <SomeComp/>
       </Formsy.Form>
     );
   }
 });
 
-React.render(<FormApp />, document.getElementById('app'));
+ReactDOM.render(<FormApp />, document.getElementById('app'));

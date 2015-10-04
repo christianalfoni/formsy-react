@@ -35,6 +35,8 @@
   - [isFormSubmitted()](#isformsubmitted)
   - [validate](#validate)
   - [formNoValidate](#formnovalidate)
+- [Formsy.HOC](#formsyhoc)
+- [Formsy.Decorator](#formsydecorator)
 - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
 
@@ -109,7 +111,7 @@ var Form = React.createClass({
 ```html
 <Formsy.Form onSubmit={this.showFormLoader}></Formsy.Form>
 ```
-Takes a function to run when the submit button has been clicked. 
+Takes a function to run when the submit button has been clicked.
 
 The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. This is useful for server side validation. E.g. `{email: "This email is taken"}`. Resetting or invalidating the form will cause **setState** to run on the form element component.
 
@@ -226,12 +228,12 @@ The message that will show when the form input component is invalid. It will be 
 
 #### <a name="validationerrors">validationErrors</a>
 ```html
-<MyInputComponent 
-  name="email" 
+<MyInputComponent
+  name="email"
   validations={{
     isEmail: true,
     maxLength: 50
-  }} 
+  }}
   validationErrors={{
     isEmail: 'You have to type valid email',
     maxLength: 'You can not type in more than 50 characters'
@@ -404,7 +406,7 @@ var MyInput = React.createClass({
   }
 });
 ```
-Returns true if the required property has been passed. 
+Returns true if the required property has been passed.
 
 #### <a name="showrequired">showRequired()</a>
 ```javascript
@@ -424,7 +426,7 @@ var MyInput = React.createClass({
   }
 });
 ```
-Lets you check if the form input component should indicate if it is a required field. This happens when the form input component value is empty and the required prop has been passed. 
+Lets you check if the form input component should indicate if it is a required field. This happens when the form input component value is empty and the required prop has been passed.
 
 #### <a name="showerror">showError()</a>
 ```javascript
@@ -539,6 +541,41 @@ var MyInput = React.createClass({
 });
 ```
 
+### <a name="formsyhoc">Formsy.HOC</a>
+The same methods as the mixin are exposed to the HOC version of the element component, though through the `props`, not on the instance.
+```js
+import {HOC} from 'formsy-react';
+
+class MyInput extends React.Component {
+  render() {
+    return (
+      <div>
+        <input value={this.props.getValue()} onChange={(e) => this.props.setValue(e.target.value)}/>
+      </div>
+    );
+  }
+};
+export default HOC(MyInput);
+```
+
+### <a name="formsydecorator">Formsy.Decorator</a>
+The same methods as the mixin are exposed to the decorator version of the element component, though through the `props`, not on the instance.
+```js
+import {Decorator as FormsyElement} from 'formsy-react';
+
+@FormsyElement()
+class MyInput extends React.Component {
+  render() {
+    return (
+      <div>
+        <input value={this.props.getValue()} onChange={(e) => this.props.setValue(e.target.value)}/>
+      </div>
+    );
+  }
+};
+export default MyInput
+```
+
 ### <a name="formsyaddvalidationrule">Formsy.addValidationRule(name, ruleFunc)</a>
 An example:
 ```javascript
@@ -622,17 +659,35 @@ Returns true if the value is the boolean true
 ```
 Returns true if the value is the boolean false
 
-**isNumeric**
-```html
-<MyInputComponent name="foo" validations="isNumeric"/>
-```
-Returns true if string only contains numbers
-
 **isAlpha**
 ```html
 <MyInputComponent name="foo" validations="isAlpha"/>
 ```
 Returns true if string is only letters
+
+**isNumeric**
+```html
+<MyInputComponent name="foo" validations="isNumeric"/>
+```
+Returns true if string only contains numbers. Examples: 42; -3.14
+
+**isAlphanumeric**
+```html
+<MyInputComponent name="foo" validations="isAlphanumeric"/>
+```
+Returns true if string only contains letters or numbers
+
+**isInt**
+```html
+<MyInputComponent name="foo" validations="isInt"/>
+```
+Returns true if string represents integer value. Examples: 42; -12; 0
+
+**isFloat**
+```html
+<MyInputComponent name="foo" validations="isFloat"/>
+```
+Returns true if string represents float value. Examples: 42; -3.14; 1e3
 
 **isWords**
 ```html
