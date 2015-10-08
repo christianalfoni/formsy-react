@@ -1,6 +1,6 @@
 {
   "name": "formsy-react",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "A form input builder and validator for React JS",
   "repository": {
     "type": "git",
@@ -46,6 +46,6 @@
     "webpack-dev-server": "^1.7.0"
   },
   "peerDependencies": {
-    "react": "^0.14.0-rc1"
+    "react": "^0.14.0"
   }
 }
