@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/christianalfoni/formsy-react.git"
   },
-  "main": "src/main.js",
+  "main": "lib/main.js",
   "browserify": {
     "transform": [
       "babelify"
