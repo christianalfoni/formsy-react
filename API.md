@@ -121,11 +121,11 @@ The first argument is the data of the form. The second argument will reset the f
 ```
 Whenever the form becomes valid the "onValid" handler is called. Use it to change state of buttons or whatever your heart desires.
 
-#### <a name="oninvalid">onInvalid()</a>
+#### <a name="oninvalid">onInvalid(invalidFields)</a>
 ```html
 <Formsy.Form onInvalid={this.disableSubmitButton}></Formsy.Form>
 ```
-Whenever the form becomes invalid the "onInvalid" handler is called. Use it to for example revert "onValid" state.
+Whenever the form becomes invalid the "onInvalid" handler is called. Use it to for example revert "onValid" state. Receives an array containing the names of the invalid fields.
 
 #### <a name="onvalidsubmit">onValidSubmit(model, resetForm, invalidateForm)</a>
 ```html
