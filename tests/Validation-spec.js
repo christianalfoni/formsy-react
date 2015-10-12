@@ -110,7 +110,7 @@ export default {
 
   },
 
-  'should provide invalidate callback on onValiSubmit': function (test) {
+  'should provide invalidate callback on onValidSubmit': function (test) {
 
     const TestForm = React.createClass({
       render() {
