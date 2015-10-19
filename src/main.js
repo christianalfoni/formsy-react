@@ -83,7 +83,7 @@ Formsy.Form = React.createClass({
 
   componentDidUpdate: function () {
 
-    if (this.props.validationErrors) {
+    if (this.props.validationErrors && typeof this.props.validationErrors === 'object' && Object.keys(this.props.validationErrors).length > 0) {
       this.setInputValidationErrors(this.props.validationErrors);
     }
 
