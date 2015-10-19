@@ -26,7 +26,7 @@ The main concept is that forms, inputs and validation is done very differently a
   5. You can dynamically add form elements to your form and they will register/unregister to the form
 
 ## Default elements
-You can look at examples in this repo or use the [formsy-react-components](https://github.com/twisty/formsy-react-components) project to use bootstrap with formsy-react.
+You can look at examples in this repo or use the [formsy-react-components](https://github.com/twisty/formsy-react-components) project to use bootstrap with formsy-react, or use [formsy-material-ui](https://github.com/mbrookes/formsy-material-ui) to use [Material-UI](http://material-ui.com/) with formsy-react.
 
 ## Install
 
