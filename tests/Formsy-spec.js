@@ -701,6 +701,42 @@ export default {
 
     }
 
-  }
+  },
+  
+	'should share formsy with parent through context': function (test) {
+		const TestForm = React.createClass({
+			render() {
+				return (
+					<Formsy.Form>
+						<TestInput name="foo" value="foo" type="checkbox" />
+						<button type="submit">Save</button>
+					</Formsy.Form>
+				);
+			}
+		});
 
+		var formWasShared = false;
+
+		const Wrapper = React.createClass({
+			getChildContext: function() {
+				var self = this;
+				return {  
+					shareFormsyWithParent: function(form){
+						formWasShared = true;
+					}
+				};
+			},
+			childContextTypes: {
+				shareFormsyWithParent: React.PropTypes.func
+			},
+			render(){
+				return <TestForm />
+			}
+		});
+
+		const form = TestUtils.renderIntoDocument(<Wrapper />);
+
+		test.equal(formWasShared, true);
+		test.done();
+	}
 };
