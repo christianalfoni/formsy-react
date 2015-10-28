@@ -7,11 +7,6 @@
     "url": "https://github.com/christianalfoni/formsy-react.git"
   },
   "main": "lib/main.js",
-  "browserify": {
-    "transform": [
-      "babelify"
-    ]
-  },
   "scripts": {
     "start": "webpack-dev-server --content-base build",
     "deploy": "NODE_ENV=production webpack -p --config webpack.production.config.js",
