@@ -42,7 +42,7 @@ You can look at examples in this repo or use the [formsy-react-components](https
 
 ## How to use
 
-See [`examples` folder](/examples) for examples.
+See [`examples` folder](/examples) for examples. [Codepen demo](http://codepen.io/semigradsky/pen/dYYpwv?editors=001).
 
 Complete API reference is available [here](/API.md).
 
