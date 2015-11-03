@@ -295,6 +295,29 @@ export default {
 
   },
 
+  'should not override error messages with error messages passed by form if passed eror messages is an empty object': function (test) {
+
+    const TestForm = React.createClass({
+      render() {
+        return (
+          <Formsy.Form validationErrors={{}}>
+            <TestInput name="A" validations={{
+              isEmail: true
+            }} validationError="bar2" validationErrors={{isEmail: 'bar3'}} value="foo"/>
+          </Formsy.Form>
+        );
+      }
+    });
+    const form = TestUtils.renderIntoDocument(<TestForm/>);
+
+    const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
+    test.equal(inputComponent.getErrorMessage(), 'bar3');
+
+    test.done();
+
+  },
+
+
   'should override all error messages with error messages passed by form': function (test) {
 
     const TestForm = React.createClass({
