@@ -7,6 +7,7 @@ var Mixin = require('./Mixin.js');
 var HOC = require('./HOC.js');
 var Decorator = require('./Decorator.js');
 var options = {};
+var emptyArray = [];
 
 Formsy.Mixin = Mixin;
 Formsy.HOC = HOC;
@@ -277,7 +278,7 @@ Formsy.Form = React.createClass({
       error: (function () {
 
         if (isValid && !isRequired) {
-          return [];
+          return emptyArray;
         }
 
         if (validationResults.errors.length) {
