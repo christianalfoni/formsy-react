@@ -115,14 +115,21 @@ module.exports = {
   },
 
   // We validate after the value has been set
-  setValue: function (value) {
-    this.setState({
+  setValue: function setValue(value, newPristine) {
+    newPristine = (typeof newPristine !== 'undefined') ? newPristine : false;
+    var newState = {
       _value: value,
-      _isPristine: false
-    }, function () {
+      _isPristine: newPristine
+    };
+
+    if (newPristine) {
+      newState._pristineValue = value;
+    }
+
+    this.setState(newState, (function () {
       this.context.formsy.validate(this);
       //this.props._validate(this);
-    }.bind(this));
+    }).bind(this));
   },
   resetValue: function () {
     this.setState({

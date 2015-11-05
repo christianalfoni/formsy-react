@@ -96,9 +96,14 @@ Formsy.Form = React.createClass({
   },
 
   // Allow resetting to specified data
-  reset: function (data) {
-    this.setFormPristine(true);
-    this.resetModel(data);
+  reset: function (data, setNewPristine) {
+    setNewPristine = (typeof setNewPristine !== 'undefined') ? setNewPristine : false;
+
+    if (! setNewPristine) {
+      this.setFormPristine(true);
+    }
+
+    this.resetModel(data, true);
   },
 
   // Update model, submit to url prop and send the model
@@ -146,14 +151,15 @@ Formsy.Form = React.createClass({
   },
 
   // Reset each key in the model to the original / initial / specified value
-  resetModel: function (data) {
-    Object.keys(this.inputs).forEach(function (name) {
+  resetModel: function resetModel(data, setNewPristine) {
+    setNewPristine = (typeof setNewPristine !== 'undefined') ? setNewPristine : false;
+    Object.keys(this.inputs).forEach((function (name) {
       if (data && data[name]) {
-        this.inputs[name].setValue(data[name]);
+        this.inputs[name].setValue(data[name], setNewPristine);
       } else {
         this.inputs[name].resetValue();
       }
-    }.bind(this));
+    }).bind(this));
     this.validateForm();
   },
 
