@@ -1,5 +1,7 @@
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+import sinon from 'sinon';
 
 import Formsy from './..';
 import TestInput, { InputFactory } from './utils/TestInput';
@@ -534,6 +536,30 @@ export default {
 
     const formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
     TestUtils.Simulate.submit(formEl);
+
+    test.done();
+
+  },
+
+  'input should rendered once with PureRenderMixin': function (test) {
+
+    var renderSpy = sinon.spy();
+
+    const Input = InputFactory({
+      mixins: [Formsy.Mixin, PureRenderMixin],
+      render() {
+        renderSpy();
+        return <input type={this.props.type} value={this.getValue()} onChange={this.updateValue}/>;
+      }
+    });
+
+    const form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <Input name="foo" value="foo"/>
+      </Formsy.Form>
+    );
+
+    test.equal(renderSpy.calledOnce, true);
 
     test.done();
 
