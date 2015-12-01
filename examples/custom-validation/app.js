@@ -58,17 +58,18 @@ const DynamicInput = React.createClass({
   },
   validate() {
     const value = this.getValue();
-    return value !== '' ? validators[this.state.validationType].regexp.test(value) : true;
+    console.log(value, this.state.validationType);
+    return value ? validators[this.state.validationType].regexp.test(value) : true;
   },
   getCustomErrorMessage() {
     return this.showError() ? validators[this.state.validationType].message : '';
   },
   render() {
-    const className = this.props.className + ' ' + (this.showError() ? 'error' : null);
+    const className = 'form-group' + (this.props.className || ' ') + (this.showRequired() ? 'required' : this.showError() ? 'error' : null);
     const errorMessage = this.getCustomErrorMessage();
 
     return (
-      <div className='form-group'>
+      <div className={className}>
         <label htmlFor={this.props.name}>{this.props.title}</label>
         <input type='text' name={this.props.name} onChange={this.changeValue} value={this.getValue()}/>
         <span className='validation-error'>{errorMessage}</span>

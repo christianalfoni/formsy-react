@@ -9,7 +9,8 @@ const MySelect = React.createClass({
   },
 
   render() {
-    const className = this.props.className + ' ' + (this.showRequired() ? 'required' : this.showError() ? 'error' : null);
+    const className = 'form-group' + (this.props.className || ' ') +
+      (this.showRequired() ? 'required' : this.showError() ? 'error' : '');
     const errorMessage = this.getErrorMessage();
 
     const options = this.props.options.map((option, i) => (
@@ -19,7 +20,7 @@ const MySelect = React.createClass({
     ));
 
     return (
-      <div className='form-group'>
+      <div className={className}>
         <label htmlFor={this.props.name}>{this.props.title}</label>
         <select name={this.props.name} onChange={this.changeValue} value={this.getValue()}>
           {options}

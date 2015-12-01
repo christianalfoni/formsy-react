@@ -49,9 +49,26 @@ form {
   color: #555;
   background-color: #FFF;
   background-image: none;
-  border: 1px solid #CCC;
+  border: 2px solid #CCC;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+.form-group.error input[type='text'],
+.form-group.error input[type='email'],
+.form-group.error input[type='number'],
+.form-group.error input[type='password'],
+.form-group.error select {
+  border-color: red;
+  color: red;
+}
+
+.form-group.required input[type='text'],
+.form-group.required input[type='email'],
+.form-group.required input[type='number'],
+.form-group.required input[type='password'],
+.form-group.required select {
+  border-color: #FF9696;
 }
 
 .validation-error {

@@ -18,14 +18,15 @@ const MyInput = React.createClass({
     // when the value is empty and the required prop is
     // passed to the input. showError() is true when the
     // value typed is invalid
-    const className = this.props.className + ' ' + (this.showRequired() ? 'required' : this.showError() ? 'error' : null);
+    const className = 'form-group' + (this.props.className || ' ') +
+      (this.showRequired() ? 'required' : this.showError() ? 'error' : '');
 
     // An error message is returned ONLY if the component is invalid
     // or the server has returned an error message
     const errorMessage = this.getErrorMessage();
 
     return (
-      <div className='form-group'>
+      <div className={className}>
         <label htmlFor={this.props.name}>{this.props.title}</label>
         <input
           type={this.props.type || 'text'}

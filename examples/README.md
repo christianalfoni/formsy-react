@@ -34,3 +34,7 @@ If it is not helped try update your node.js and npm.
 3. [**Reset Values**](reset-values)
 
     Reset text input, checkbox and select to their pristine values.
+
+4. [**Dynamic Form Fields**](dynamic-form-fields)
+
+    Dynamically adding and removing fields to form.
