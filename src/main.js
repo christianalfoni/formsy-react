@@ -45,7 +45,9 @@ Formsy.Form = React.createClass({
       preventExternalInvalidation: false
     };
   },
-
+	contextTypes: {
+		shareFormsyWithParent: React.PropTypes.func
+	},
   childContextTypes: {
     formsy: React.PropTypes.object
   },
@@ -68,6 +70,7 @@ Formsy.Form = React.createClass({
   componentWillMount: function () {
     this.inputs = {};
     this.model = {};
+		if(this.context.shareFormsyWithParent) this.context.shareFormsyWithParent(this);
   },
 
   componentDidMount: function () {
