@@ -362,6 +362,7 @@ Formsy.Form = React.createClass({
   // Validate the form by going through all child input components
   // and check their state
   validateForm: function () {
+    var invalidFields;
     var allIsValid;
     var inputs = this.inputs;
     var inputKeys = Object.keys(inputs);
@@ -369,9 +370,11 @@ Formsy.Form = React.createClass({
     // We need a callback as we are validating all inputs again. This will
     // run when the last component has set its state
     var onValidationComplete = function () {
-      allIsValid = inputKeys.every(function (name) {
-        return inputs[name].state._isValid;
+      invalidFields = inputKeys.filter(function (name) {
+        return !inputs[name].state._isValid;
       }.bind(this));
+
+      allIsValid = invalidFields.length === 0;
 
       this.setState({
         isValid: allIsValid
@@ -380,7 +383,7 @@ Formsy.Form = React.createClass({
       if (allIsValid) {
         this.props.onValid();
       } else {
-        this.props.onInvalid();
+        this.props.onInvalid(invalidFields);
       }
 
       // Tell the form that it can start to trigger change events

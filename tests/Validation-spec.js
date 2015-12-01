@@ -90,6 +90,22 @@ export default {
 
   },
 
+  'should call the onInvalid handler with the name of the invalid fields': function (test) {
+
+    const onInvalid = sinon.spy();
+
+    TestUtils.renderIntoDocument(
+      <Formsy.Form onInvalid={onInvalid}>
+        <TestInput name="foo" required />
+        <TestInput name="bar" value="baz" />
+      </Formsy.Form>
+    );
+
+    test.equal(onInvalid.calledWith(['foo']), true);
+    test.done();
+
+  },
+
   'should be able to use provided validate function': function (test) {
 
     let isValid = false;
@@ -110,7 +126,7 @@ export default {
 
   },
 
-  'should provide invalidate callback on onValiSubmit': function (test) {
+  'should provide invalidate callback on onValidSubmit': function (test) {
 
     const TestForm = React.createClass({
       render() {
