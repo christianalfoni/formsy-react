@@ -37,5 +37,15 @@ module.exports = {
     }
 
     return a === b;
+  },
+
+  find: function (collection, fn) {
+    for (var i = 0, l = collection.length; i < l; i++) {
+      var item = collection[i];
+      if (fn(item)) {
+        return item;
+      }
+    }
+    return null;
   }
 };
