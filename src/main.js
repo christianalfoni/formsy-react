@@ -74,11 +74,9 @@ Formsy.Form = React.createClass({
   },
 
   componentWillUpdate: function () {
-
-    // Keep a reference to input keys before form updates,
+    // Keep a reference to input names before form updates,
     // to check if inputs has changed after render
-    this.prevInputKeys = Object.keys(this.inputs);
-
+    this.prevInputNames = this.inputs.map(component => component.props.name);
   },
 
   componentDidUpdate: function () {
@@ -87,8 +85,8 @@ Formsy.Form = React.createClass({
       this.setInputValidationErrors(this.props.validationErrors);
     }
 
-    var newInputKeys = Object.keys(this.inputs);
-    if (utils.arraysDiffer(this.prevInputKeys, newInputKeys)) {
+    var newInputNames = this.inputs.map(component => component.props.name);
+    if (utils.arraysDiffer(this.prevInputNames, newInputNames)) {
       this.validateForm();
     }
 
