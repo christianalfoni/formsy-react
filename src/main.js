@@ -42,6 +42,7 @@ Formsy.Form = React.createClass({
       onInvalid: function () {},
       onChange: function () {},
       validationErrors: null,
+      validateOnMount: true, // avoid break change
       preventExternalInvalidation: false
     };
   },
@@ -49,6 +50,7 @@ Formsy.Form = React.createClass({
   childContextTypes: {
     formsy: React.PropTypes.object
   },
+
   getChildContext: function () {
     return {
       formsy: {
@@ -71,19 +73,18 @@ Formsy.Form = React.createClass({
   },
 
   componentDidMount: function () {
-    this.validateForm();
+    if (this.props.validateOnMount) {
+      this.validateForm();
+    }
   },
 
   componentWillUpdate: function () {
-
     // Keep a reference to input keys before form updates,
     // to check if inputs has changed after render
     this.prevInputKeys = Object.keys(this.inputs);
-
   },
 
   componentDidUpdate: function () {
-
     if (this.props.validationErrors && typeof this.props.validationErrors === 'object' && Object.keys(this.props.validationErrors).length > 0) {
       this.setInputValidationErrors(this.props.validationErrors);
     }
@@ -92,7 +93,6 @@ Formsy.Form = React.createClass({
     if (utils.arraysDiffer(this.prevInputKeys, newInputKeys)) {
       this.validateForm();
     }
-
   },
 
   // Allow resetting to specified data
