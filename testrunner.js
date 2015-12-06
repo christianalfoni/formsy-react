@@ -6,10 +6,7 @@ global.document = jsdom();
 global.window = document.defaultView;
 global.navigator = global.window.navigator;
 
-let specPath = 'tests';
-if (process.argv[2] !== undefined) {
-    specPath += `/${process.argv[2]}-spec.js`
-}
+let specPath = 'tests' + (process.argv[2] ? `/${process.argv[2]}-spec.js` : '');
 
 testrunner.run([specPath], {
     "error_prefix": "\u001B[31m",
