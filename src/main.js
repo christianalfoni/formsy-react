@@ -1,6 +1,7 @@
 var React = global.React || require('react');
 var Formsy = {};
 var validationRules = require('./validationRules.js');
+var validationMessages = require('./validationMessages.js');
 var formDataToObject = require('form-data-to-object');
 var utils = require('./utils.js');
 var Mixin = require('./Mixin.js');
@@ -296,7 +297,9 @@ Formsy.Form = React.createClass({
 
         if (validationResults.failed.length) {
           return validationResults.failed.map(function(failed) {
-            return validationErrors[failed] ? validationErrors[failed] : validationError;
+            var errorMessage = validationErrors[failed] ? validationErrors[failed] : validationError;
+            // empty message? try finding a default message. not found? back to empty
+            return errorMessage || validationMessages[failed] || '';
           }).filter(function(x, pos, arr) {
             // Remove duplicates
             return arr.indexOf(x) === pos;
