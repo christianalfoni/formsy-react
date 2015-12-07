@@ -107,7 +107,7 @@ Formsy.Form = React.createClass({
     // If any inputs have not been touched yet this will make them dirty
     // so validation becomes visible (if based on isPristine)
     this.setFormPristine(false);
-    var model = this.updateModel();
+    var model = this.getModel();
     model = this.mapModel(model);
     this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
     this.state.isValid ? this.props.onValidSubmit(model, this.resetModel, this.updateInputsWithError) : this.props.onInvalidSubmit(model, this.resetModel, this.updateInputsWithError);
@@ -136,7 +136,7 @@ Formsy.Form = React.createClass({
 
   // Goes through all registered components and
   // updates the model values
-  updateModel: function () {
+  getModel: function () {
     return this.inputs.reduce((model, component) => {
       var name = component.props.name;
       model[name] = component.state._value;
