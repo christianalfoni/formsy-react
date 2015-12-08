@@ -108,7 +108,6 @@ Formsy.Form = React.createClass({
     // so validation becomes visible (if based on isPristine)
     this.setFormPristine(false);
     var model = this.getModel();
-    model = this.mapModel(model);
     this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
     this.state.isValid ? this.props.onValidSubmit(model, this.resetModel, this.updateInputsWithError) : this.props.onInvalidSubmit(model, this.resetModel, this.updateInputsWithError);
 
@@ -134,14 +133,9 @@ Formsy.Form = React.createClass({
     }
   },
 
-  // Goes through all registered components and
-  // updates the model values
   getModel: function () {
-    return this.inputs.reduce((model, component) => {
-      var name = component.props.name;
-      model[name] = component.state._value;
-      return model;
-    }, {});
+    var currentValues = this.getCurrentValues();
+    return this.mapModel(currentValues);
   },
 
   // Reset each key in the model to the original / initial / specified value
