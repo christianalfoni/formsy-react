@@ -424,9 +424,23 @@ Formsy.Form = React.createClass({
     this.validateForm();
   },
   render: function () {
+    var {
+      mapping,
+      validationErrors,
+      onSubmit,
+      onValid,
+      onInvalid,
+      onInvalidSubmit,
+      onChange,
+      reset,
+      preventExternalInvalidation,
+      onSuccess,
+      onError,
+      ...nonFormsyProps
+    } = this.props;
 
     return (
-      <form {...this.props} onSubmit={this.submit}>
+      <form {...nonFormsyProps} onSubmit={this.submit}>
         {this.props.children}
       </form>
     );
