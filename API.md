@@ -13,6 +13,7 @@
   - [onChange()](#onchange)
   - [reset()](#resetform)
   - [getModel()](#getmodel)
+  - [updateInputsWithError()](#updateinputswitherror)
   - [preventExternalInvalidation](#preventexternalinvalidation)
 - [Formsy.Mixin](#formsymixin)
   - [name](#name)
@@ -179,6 +180,26 @@ var MyForm = React.createClass({
 });
 ```
 Manually get values from all registered components. Keys are name of input and value is of course the value.
+
+#### <a name="updateInputsWithError">updateInputsWithError(errors)</a>
+```jsx
+var MyForm = React.createClass({
+  someFunction: function () {
+    this.refs.form.updateInputsWithError({
+      email: 'This email is taken',
+      'field[10]': 'Some error!'
+    });
+  },
+  render: function () {
+    return (
+      <Formsy.Form ref="form">
+        ...
+      </Formsy.Form>
+    );
+  }
+});
+```
+Manually invalidate the form by taking an object that maps to inputs. This is useful for server side validation. You can also use a third parameter to the [`onSubmit`](#onsubmitdata-resetform-invalidateform), [`onValidSubmit`](#onvalidsubmitmodel-resetform-invalidateform) or [`onInvalidSubmit`](#oninvalidsubmitmodel-resetform-invalidateform).
 
 #### <a name="preventExternalInvalidation">preventExternalInvalidation</a>
 ```jsx
