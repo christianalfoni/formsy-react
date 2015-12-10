@@ -13,7 +13,7 @@
   - [onChange()](#onchange)
   - [reset()](#resetform)
   - [getModel()](#getmodel)
-  - [updateInputsWithError()](#updateinputswitherror)
+  - [updateInputsWithError()](#updateinputswitherrorerrors)
   - [preventExternalInvalidation](#preventexternalinvalidation)
 - [Formsy.Mixin](#formsymixin)
   - [name](#name)
