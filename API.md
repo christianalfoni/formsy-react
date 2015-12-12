@@ -20,7 +20,7 @@
   - [value](#value)
   - [validations](#validations)
   - [validationError](#validationerror)
-  - [validationErrors](#validationerrors)
+  - [validationErrors](#validationerrors-1)
   - [required](#required)
   - [getValue()](#getvalue)
   - [setValue()](#setvalue)
