@@ -271,11 +271,13 @@ The message that will show when the form input component is invalid. It will be 
   name="email"
   validations={{
     isEmail: true,
-    maxLength: 50
+    maxLength: 50,
+    someCustomValidation: [1, 2, 3]
   }}
   validationErrors={{
     isEmail: 'You have to type valid email',
-    maxLength: 'You can not type in more than 50 characters'
+    maxLength: 'You can not type in more than {0} characters',
+    someCustomValidation: '{0} + {1} = {2}'
   }}
 />
 ```
