@@ -350,7 +350,7 @@ export default {
 
   },
 
-  'should trigger onChange when form element is changed': function (test) {
+  'should trigger onChange once when form element is changed': function (test) {
 
     const hasChanged = sinon.spy();
     const form = TestUtils.renderIntoDocument(
@@ -359,12 +359,12 @@ export default {
       </Formsy.Form>
     );
     TestUtils.Simulate.change(TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT'), {target: {value: 'bar'}});
-    test.equal(hasChanged.called, true);
+    test.equal(hasChanged.calledOnce, true);
     test.done();
 
   },
 
-  'should trigger onChange when new input is added to form': function (test) {
+  'should trigger onChange once when new input is added to form': function (test) {
 
     const hasChanged = sinon.spy();
     const TestForm = React.createClass({
@@ -394,7 +394,7 @@ export default {
     const form = TestUtils.renderIntoDocument(<TestForm/>);
     form.addInput();
     immediate(() => {
-      test.equal(hasChanged.called, true);
+      test.equal(hasChanged.calledOnce, true);
       test.done();
     });
 

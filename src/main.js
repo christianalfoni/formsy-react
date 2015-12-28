@@ -50,7 +50,6 @@ Formsy.Form = React.createClass({
   childContextTypes: {
     formsy: React.PropTypes.object
   },
-
   getChildContext: function () {
     return {
       formsy: {
@@ -58,9 +57,9 @@ Formsy.Form = React.createClass({
         detachFromForm: this.detachFromForm,
         validate: this.validate,
         isFormDisabled: this.isFormDisabled,
-        isValidValue: function (component, value) {
+        isValidValue: (component, value) => {
           return this.runValidation(component, value).isValid;
-        }.bind(this)
+        }
       }
     }
   },
@@ -68,8 +67,7 @@ Formsy.Form = React.createClass({
   // Add a map to store the inputs of the form, a model to store
   // the values of the form and register child inputs
   componentWillMount: function () {
-    this.inputs = {};
-    this.model = {};
+    this.inputs = [];
   },
 
   componentDidMount: function () {
@@ -79,20 +77,22 @@ Formsy.Form = React.createClass({
   },
 
   componentWillUpdate: function () {
-    // Keep a reference to input keys before form updates,
+    // Keep a reference to input names before form updates,
     // to check if inputs has changed after render
-    this.prevInputKeys = Object.keys(this.inputs);
+    this.prevInputNames = this.inputs.map(component => component.props.name);
   },
 
   componentDidUpdate: function () {
+
     if (this.props.validationErrors && typeof this.props.validationErrors === 'object' && Object.keys(this.props.validationErrors).length > 0) {
       this.setInputValidationErrors(this.props.validationErrors);
     }
 
-    var newInputKeys = Object.keys(this.inputs);
-    if (utils.arraysDiffer(this.prevInputKeys, newInputKeys)) {
+    var newInputNames = this.inputs.map(component => component.props.name);
+    if (utils.arraysDiffer(this.prevInputNames, newInputNames)) {
       this.validateForm();
     }
+
   },
 
   // Allow resetting to specified data
@@ -110,62 +110,59 @@ Formsy.Form = React.createClass({
     // If any inputs have not been touched yet this will make them dirty
     // so validation becomes visible (if based on isPristine)
     this.setFormPristine(false);
-    this.updateModel();
-    var model = this.mapModel();
+    var model = this.getModel();
     this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
     this.state.isValid ? this.props.onValidSubmit(model, this.resetModel, this.updateInputsWithError) : this.props.onInvalidSubmit(model, this.resetModel, this.updateInputsWithError);
 
   },
 
-  mapModel: function () {
+  mapModel: function (model) {
+
     if (this.props.mapping) {
-      return this.props.mapping(this.model)
+      return this.props.mapping(model)
     } else {
-      return formDataToObject(Object.keys(this.model).reduce(function (mappedModel, key) {
+      return formDataToObject(Object.keys(model).reduce((mappedModel, key) => {
 
         var keyArray = key.split('.');
         var base = mappedModel;
         while (keyArray.length) {
           var currentKey = keyArray.shift();
-          base = (base[currentKey] = keyArray.length ? base[currentKey] || {} : this.model[key]);
+          base = (base[currentKey] = keyArray.length ? base[currentKey] || {} : model[key]);
         }
 
         return mappedModel;
 
-      }.bind(this), {}));
+      }, {}));
     }
   },
 
-  // Goes through all registered components and
-  // updates the model values
-  updateModel: function () {
-    Object.keys(this.inputs).forEach(function (name) {
-      var component = this.inputs[name];
-      this.model[name] = component.state._value;
-    }.bind(this));
+  getModel: function () {
+    var currentValues = this.getCurrentValues();
+    return this.mapModel(currentValues);
   },
 
   // Reset each key in the model to the original / initial / specified value
   resetModel: function (data) {
-    Object.keys(this.inputs).forEach(function (name) {
+    this.inputs.forEach(component => {
+      var name = component.props.name;
       if (data && data[name]) {
-        this.inputs[name].setValue(data[name]);
+        component.setValue(data[name]);
       } else {
-        this.inputs[name].resetValue();
+        component.resetValue();
       }
-    }.bind(this));
+    });
     this.validateForm();
   },
 
   setInputValidationErrors: function (errors) {
-    Object.keys(this.inputs).forEach(function (name, index) {
-      var component = this.inputs[name];
+    this.inputs.forEach(component => {
+      var name = component.props.name;
       var args = [{
         _isValid: !(name in errors),
         _validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name]
       }];
       component.setState.apply(component, args);
-    }.bind(this));
+    });
   },
 
   // Checks if the values have changed from their initial value
@@ -174,9 +171,8 @@ Formsy.Form = React.createClass({
   },
 
    getPristineValues: function() {
-    var inputs = this.inputs;
-    return Object.keys(inputs).reduce(function (data, name) {
-      var component = inputs[name];
+    return this.inputs.reduce((data, component) => {
+      var name = component.props.name;
       data[name] = component.props.value;
       return data;
     }, {});
@@ -186,18 +182,18 @@ Formsy.Form = React.createClass({
   // stored in the inputs map. Change their state to invalid
   // and set the serverError message
   updateInputsWithError: function (errors) {
-    Object.keys(errors).forEach(function (name, index) {
-      var component = this.inputs[name];
-
+    Object.keys(errors).forEach((name, index) => {
+      var component = utils.find(this.inputs, component => component.props.name === name);
       if (!component) {
-        throw new Error('You are trying to update an input that does not exist. Verify errors object with input names. ' + JSON.stringify(errors));
+        throw new Error('You are trying to update an input that does not exist. ' +
+          'Verify errors object with input names. ' + JSON.stringify(errors));
       }
       var args = [{
         _isValid: this.props.preventExternalInvalidation || false,
         _externalError: typeof errors[name] === 'string' ? [errors[name]] : errors[name]
       }];
       component.setState.apply(component, args);
-    }.bind(this));
+    });
   },
 
   isFormDisabled: function () {
@@ -205,30 +201,26 @@ Formsy.Form = React.createClass({
   },
 
   getCurrentValues: function () {
-    return Object.keys(this.inputs).reduce(function (data, name) {
-      var component = this.inputs[name];
+    return this.inputs.reduce((data, component) => {
+      var name = component.props.name;
       data[name] = component.state._value;
       return data;
-    }.bind(this), {});
+    }, {});
   },
 
   setFormPristine: function (isPristine) {
-    var inputs = this.inputs;
-    var inputKeys = Object.keys(inputs);
-
     this.setState({
-        _formSubmitted: !isPristine
-    })
+      _formSubmitted: !isPristine
+    });
 
     // Iterate through each component and set it as pristine
     // or "dirty".
-    inputKeys.forEach(function (name, index) {
-      var component = inputs[name];
+    this.inputs.forEach((component, index) => {
       component.setState({
         _formSubmitted: !isPristine,
         _isPristine: isPristine
       });
-    }.bind(this));
+    });
   },
 
   // Use the binded values and the actual input value to
@@ -362,16 +354,13 @@ Formsy.Form = React.createClass({
   // Validate the form by going through all child input components
   // and check their state
   validateForm: function () {
-    var allIsValid;
-    var inputs = this.inputs;
-    var inputKeys = Object.keys(inputs);
 
     // We need a callback as we are validating all inputs again. This will
     // run when the last component has set its state
     var onValidationComplete = function () {
-      allIsValid = inputKeys.every(function (name) {
-        return inputs[name].state._isValid;
-      }.bind(this));
+      var allIsValid = this.inputs.every(component => {
+        return component.state._isValid;
+      });
 
       this.setState({
         isValid: allIsValid
@@ -392,8 +381,7 @@ Formsy.Form = React.createClass({
 
     // Run validation again in case affected by other inputs. The
     // last component validated will run the onValidationComplete callback
-    inputKeys.forEach(function (name, index) {
-      var component = inputs[name];
+    this.inputs.forEach((component, index) => {
       var validation = this.runValidation(component);
       if (validation.isValid && component.state._externalError) {
         validation.isValid = false;
@@ -403,12 +391,12 @@ Formsy.Form = React.createClass({
         _isRequired: validation.isRequired,
         _validationError: validation.error,
         _externalError: !validation.isValid && component.state._externalError ? component.state._externalError : null
-      }, index === inputKeys.length - 1 ? onValidationComplete : null);
-    }.bind(this));
+      }, index === this.inputs.length - 1 ? onValidationComplete : null);
+    });
 
     // If there are no inputs, set state where form is ready to trigger
     // change event. New inputs might be added later
-    if (!inputKeys.length && this.isMounted()) {
+    if (!this.inputs.length && this.isMounted()) {
       this.setState({
         canChange: true
       });
@@ -418,22 +406,44 @@ Formsy.Form = React.createClass({
   // Method put on each input component to register
   // itself to the form
   attachToForm: function (component) {
-    this.inputs[component.props.name] = component;
-    this.model[component.props.name] = component.state._value;
+
+    if (this.inputs.indexOf(component) === -1) {
+      this.inputs.push(component);
+    }
+
     this.validate(component);
   },
 
   // Method put on each input component to unregister
   // itself from the form
   detachFromForm: function (component) {
-    delete this.inputs[component.props.name];
-    delete this.model[component.props.name];
+    var componentPos = this.inputs.indexOf(component);
+
+    if (componentPos !== -1) {
+      this.inputs = this.inputs.slice(0, componentPos)
+        .concat(this.inputs.slice(componentPos + 1));
+    }
+
     this.validateForm();
   },
   render: function () {
+    var {
+      mapping,
+      validationErrors,
+      onSubmit,
+      onValid,
+      onInvalid,
+      onInvalidSubmit,
+      onChange,
+      reset,
+      preventExternalInvalidation,
+      onSuccess,
+      onError,
+      ...nonFormsyProps
+    } = this.props;
 
     return (
-      <form {...this.props} onSubmit={this.submit}>
+      <form {...nonFormsyProps} onSubmit={this.submit}>
         {this.props.children}
       </form>
     );
