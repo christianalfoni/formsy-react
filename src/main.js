@@ -411,7 +411,9 @@ Formsy.Form = React.createClass({
       this.inputs.push(component);
     }
 
-    this.validate(component);
+    if (this.props.validateOnMount) {
+      this.validate(component);
+    }
   },
 
   // Method put on each input component to unregister
