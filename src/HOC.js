@@ -5,6 +5,7 @@ module.exports = function (Component) {
     mixins: [Mixin],
     render: function () {
       return React.createElement(Component, {
+        setState: this.setState.bind(this),
         setValidations: this.setValidations,
         setValue: this.setValue,
         resetValue: this.resetValue,
