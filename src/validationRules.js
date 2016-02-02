@@ -68,10 +68,10 @@ var validations = {
     return value == values[field];
   },
   maxLength: function (values, value, length) {
-    return !isExisty(value) || value.length <= length;
+    return !isExisty(value) || isEmpty() || value.length <= length;
   },
   minLength: function (values, value, length) {
-    return !isExisty(value) || isEmpty(value) || value.length >= length;
+    return typeof value !== 'number' && (length <=0 || (isExisty(value) && !isEmpty(value) && value.length >= length));
   }
 };
 
