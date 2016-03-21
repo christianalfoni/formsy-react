@@ -1,10 +1,10 @@
 {
-  "name": "formsy-react",
-  "version": "0.17.0",
+  "name": "mki-formsy-react",
+  "version": "0.18.0",
   "description": "A form input builder and validator for React JS",
   "repository": {
     "type": "git",
-    "url": "https://github.com/christianalfoni/formsy-react.git"
+    "url": "https://github.com/meraki/mki-formsy-react.git"
   },
   "main": "lib/main.js",
   "scripts": {
@@ -15,6 +15,10 @@
     "prepublish": "babel ./src/ -d ./lib/"
   },
   "author": "Christian Alfoni",
+  "contributors": [{
+    "name": "Stephen Demjanenko",
+    "email": "sdemjanenko@gmail.com"
+  }],
   "license": "MIT",
   "keywords": [
     "react",
