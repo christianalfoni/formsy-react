@@ -436,15 +436,23 @@ Formsy.Form = React.createClass({
       preventExternalInvalidation,
       onSuccess,
       onError,
+      skipFormRender,
       ...nonFormsyProps
     } = this.props;
 
-    return (
-      <form {...nonFormsyProps} onSubmit={this.submit}>
-        {this.props.children}
-      </form>
-    );
-
+    if (skipFormRender) {
+      return (
+        <div>
+          { this.props.children }
+        </div>
+      );
+    } else {
+      return (
+        <form {...nonFormsyProps} onSubmit={this.submit}>
+          { this.props.children }
+        </form>
+      );
+    }
   }
 });
 
