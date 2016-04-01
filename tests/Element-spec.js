@@ -27,6 +27,58 @@ export default {
 
   },
 
+  'should set _pristineValue to the passed value': function(test) {
+    const form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" value="foo"/>
+      </Formsy.Form>
+    );
+
+    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    test.equal(input.state._pristineValue, 'foo');
+
+    test.done();
+  },
+
+  'should set _pristineValue to the passed defaultValue': function(test) {
+    const form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" defaultValue="foo"/>
+      </Formsy.Form>
+    );
+
+    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    test.equal(input.state._pristineValue, 'foo');
+
+    test.done();
+  },
+
+  'should set _value to the passed value': function(test) {
+    const form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" value="foo"/>
+      </Formsy.Form>
+    );
+
+    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    test.equal(input.state._value, 'foo');
+
+    test.done();
+  },
+
+  'should set _value to the passed defaultValue': function(test) {
+    const form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" defaultValue="foo"/>
+      </Formsy.Form>
+    );
+
+    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    test.equal(input.state._value, 'foo');
+
+    test.done();
+  },
+
   'should set back to pristine value when running reset': function (test) {
 
     let reset = null;
