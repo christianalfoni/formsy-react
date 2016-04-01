@@ -2,6 +2,7 @@ import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import sinon from 'sinon';
+import ReactDOM from 'react-dom';
 
 import Formsy from './..';
 import TestInput, { InputFactory } from './utils/TestInput';
@@ -24,6 +25,58 @@ export default {
 
     test.done();
 
+  },
+
+  'should set _pristineValue to the passed value': function(test) {
+    const form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" value="foo"/>
+      </Formsy.Form>
+    );
+
+    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    test.equal(input.state._pristineValue, 'foo');
+
+    test.done();
+  },
+
+  'should set _pristineValue to the passed defaultValue': function(test) {
+    const form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" defaultValue="foo"/>
+      </Formsy.Form>
+    );
+
+    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    test.equal(input.state._pristineValue, 'foo');
+
+    test.done();
+  },
+
+  'should set _value to the passed value': function(test) {
+    const form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" value="foo"/>
+      </Formsy.Form>
+    );
+
+    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    test.equal(input.state._value, 'foo');
+
+    test.done();
+  },
+
+  'should set _value to the passed defaultValue': function(test) {
+    const form = TestUtils.renderIntoDocument(
+      <Formsy.Form>
+        <TestInput name="foo" defaultValue="foo"/>
+      </Formsy.Form>
+    );
+
+    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    test.equal(input.state._value, 'foo');
+
+    test.done();
   },
 
   'should set back to pristine value when running reset': function (test) {
@@ -563,6 +616,28 @@ export default {
 
     test.done();
 
+  },
+
+  'should not render the form when passed `skipFormRender`': function(test) {
+    const TestForm = React.createClass({
+      onSubmit(model) {
+        test.deepEqual(model, {foo: ['foo', 'bar']});
+      },
+      render() {
+        return (
+          <div>
+            <Formsy.Form onSubmit={this.onSubmit} skipFormRender>
+              <TestInput name="foo[0]" value="foo"/>
+              <TestInput name="foo[1]" value="bar"/>
+            </Formsy.Form>
+          </div>
+        );
+      }
+    });
+    const form = TestUtils.renderIntoDocument(<TestForm/>);
+    test.equal(ReactDOM.findDOMNode(form).getElementsByTagName("form").length, 0);
+
+    test.done();
   }
 
 };
