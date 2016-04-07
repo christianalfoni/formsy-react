@@ -193,6 +193,38 @@ export default {
 
   },
 
+  'should allow an default value to be updated to another value': function (test) {
+
+    const TestForm = React.createClass({
+      getInitialState() {
+        return {value: "default"};
+      },
+      changeValue() {
+        this.setState({
+          value: 'foo'
+        });
+      },
+      render() {
+        return (
+          <Formsy.Form url="/users">
+            <TestInput name="A" value={this.state.value}/>
+          </Formsy.Form>
+        );
+      }
+    });
+    const form = TestUtils.renderIntoDocument(<TestForm/>);
+    const input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+
+    test.equal(input.value, 'default');
+
+    form.changeValue();
+    immediate(() => {
+      test.equal(input.value, 'foo');
+      test.done();
+    });
+
+  },
+
   'should be able to test a values validity': function (test) {
 
     const TestForm = React.createClass({
