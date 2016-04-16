@@ -1,6 +1,6 @@
 import React from 'react';
 import Formsy from './../..';
-import assign from 'react/lib/Object.assign';
+import assign from 'object-assign';
 
 const defaultProps = {
   mixins: [Formsy.Mixin],

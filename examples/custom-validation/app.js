@@ -86,16 +86,16 @@ const Validations = React.createClass({
   render() {
     const { validationType } = this.props;
     return (
-      <fieldset onChange={this.changeValidation}>
+      <fieldset>
         <legend>Validation Type</legend>
         <div>
-          <input name='validationType' type='radio' value='time' defaultChecked={validationType === 'time'}/>Time
+          <input name='validationType' type='radio' value='time' checked={validationType === 'time'} onChange={this.changeValidation}/>Time
         </div>
         <div>
-          <input name='validationType' type='radio' value='decimal' defaultChecked={validationType === 'decimal'}/>Decimal
+          <input name='validationType' type='radio' value='decimal' checked={validationType === 'decimal'} onChange={this.changeValidation}/>Decimal
         </div>
         <div>
-          <input name='validationType' type='radio' value='binary' defaultChecked={validationType === 'binary'}/>Binary
+          <input name='validationType' type='radio' value='binary' checked={validationType === 'binary'} onChange={this.changeValidation}/>Binary
         </div>
       </fieldset>
     );
