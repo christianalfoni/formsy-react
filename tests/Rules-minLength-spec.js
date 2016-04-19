@@ -42,6 +42,15 @@ export default {
 
     },
 
+    'should fail when a string\'s length is smaller': function (test) {
+
+      const form = TestUtils.renderIntoDocument(<TestForm rule="minLength:3" inputValue="my"/>);
+      const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
+      test.equal(inputComponent.isValid(), false);
+      test.done();
+
+    },
+
     'should pass with empty string': function (test) {
 
       const form = TestUtils.renderIntoDocument(<TestForm rule="minLength:3" inputValue=""/>);
