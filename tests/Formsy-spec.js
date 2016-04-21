@@ -650,6 +650,30 @@ export default {
 
   },
 
+  'should be able to reset the form to empty values': function (test) {
+
+    const TestForm = React.createClass({
+      render() {
+        return (
+          <Formsy.Form>
+            <TestInput name="foo" value="42" type="checkbox" />
+            <button type="submit">Save</button>
+          </Formsy.Form>
+        );
+      }
+    });
+    const form = TestUtils.renderIntoDocument(<TestForm/>);
+    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    const formsyForm = TestUtils.findRenderedComponentWithType(form, Formsy.Form);
+
+    formsyForm.reset({
+      foo: ''
+    });
+    test.equal(input.getValue(), '');
+    test.done();
+
+  },
+
   '.isChanged()': {
 
     'initially returns false': function (test) {

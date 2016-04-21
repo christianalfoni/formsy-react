@@ -142,7 +142,7 @@ Formsy.Form = React.createClass({
   resetModel: function (data) {
     this.inputs.forEach(component => {
       var name = component.props.name;
-      if (data && data[name]) {
+      if (data && data.hasOwnProperty(name)) {
         component.setValue(data[name]);
       } else {
         component.resetValue();
