@@ -1,10 +1,10 @@
 {
-  "name": "formsy-react",
+  "name": "optiopay-form",
   "version": "0.18.1",
   "description": "A form input builder and validator for React JS",
   "repository": {
     "type": "git",
-    "url": "https://github.com/christianalfoni/formsy-react.git"
+    "url": "https://github.com/optiopay/optiopay-form.git"
   },
   "main": "lib/main.js",
   "scripts": {
