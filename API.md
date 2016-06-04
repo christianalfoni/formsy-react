@@ -1,6 +1,5 @@
 # API
 
-- [Formsy.defaults - DEPRECATED](#formsydefaults)
 - [Formsy.Form](#formsyform)
   - [className](#classname)
   - [mapping](#mapping)
@@ -24,7 +23,6 @@
   - [required](#required)
   - [getValue()](#getvalue)
   - [setValue()](#setvalue)
-  - [hasValue() - DEPRECATED](#hasvalue)
   - [resetValue()](#resetvalue)
   - [getErrorMessage()](#geterrormessage)
   - [isValid()](#isvalid)
@@ -41,8 +39,6 @@
 - [Formsy.Decorator](#formsydecorator)
 - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
-
-### <a name="formsydefaults">Formsy.defaults(options) - DEPRECATED</a>
 
 ### <a name="formsyform">Formsy.Form</a>
 
@@ -321,25 +317,6 @@ var MyInput = React.createClass({
 });
 ```
 Sets the value of your form input component. Notice that it does not have to be a text input. Anything can set a value on the component. Think calendars, checkboxes, autocomplete stuff etc. Running this method will trigger a **setState()** on the component and do a render.
-
-#### <a name="hasvalue">hasValue() - DEPRECATED</a>
-```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
-    this.setValue(event.currentTarget.value);
-  },
-  render: function () {
-    return (
-      <div>
-        <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        {this.hasValue() ? 'There is a value here' : 'No value entered yet'}
-      </div>
-    );
-  }
-});
-```
-The hasValue() method helps you identify if there actually is a value or not. The only invalid value in Formsy is an empty string, "". All other values are valid as they could be something you want to send to the server. F.ex. the number zero (0), or false.
 
 #### <a name="resetvalue">resetValue()</a>
 ```jsx
@@ -763,7 +740,8 @@ Returns true if the value length is the equal.
 ```jsx
 <MyInputComponent name="number" validations="minLength:1"/>
 ```
-Return true if the value is more or equal to argument
+Return true if the value is more or equal to argument.
+**Also returns true for an empty value.** If you want to get false, then you should use [`required`](#required) additionally.
 
 **maxLength:length**
 ```jsx

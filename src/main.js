@@ -118,7 +118,7 @@ Formsy.Form = React.createClass({
     if (this.props.mapping) {
       return this.props.mapping(model)
     } else {
-      return formDataToObject(Object.keys(model).reduce((mappedModel, key) => {
+      return formDataToObject.toObj(Object.keys(model).reduce((mappedModel, key) => {
 
         var keyArray = key.split('.');
         var base = mappedModel;
@@ -142,7 +142,7 @@ Formsy.Form = React.createClass({
   resetModel: function (data) {
     this.inputs.forEach(component => {
       var name = component.props.name;
-      if (data && data[name]) {
+      if (data && data.hasOwnProperty(name)) {
         component.setValue(data[name]);
       } else {
         component.resetValue();
