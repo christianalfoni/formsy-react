@@ -2,6 +2,7 @@ var React = global.React || require('react');
 var Mixin = require('./Mixin.js');
 module.exports = function (Component) {
   return React.createClass({
+    displayName: 'Formsy(' + getDisplayName(Component) + ')',
     mixins: [Mixin],
     render: function () {
       return React.createElement(Component, {
@@ -25,3 +26,11 @@ module.exports = function (Component) {
     }
   });
 };
+
+function getDisplayName(Component) {
+  return (
+    Component.displayName ||
+    Component.name ||
+    (typeof Component === 'string' ? Component : 'Component')
+  );
+}
