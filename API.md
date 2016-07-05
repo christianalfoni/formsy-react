@@ -25,6 +25,7 @@
   - [setValue()](#setvalue)
   - [resetValue()](#resetvalue)
   - [getErrorMessage()](#geterrormessage)
+  - [getErrorMessages()](#geterrormessages)
   - [isValid()](#isvalid)
   - [isValidValue()](#isvalidvalue)
   - [isRequired()](#isrequired)
@@ -355,6 +356,9 @@ var MyInput = React.createClass({
 });
 ```
 Will return the validation message set if the form input component is invalid. If form input component is valid it returns **null**.
+
+#### <a name="geterrormessages">getErrorMessages()</a>
+Will return the validation messages set if the form input component is invalid. If form input component is valid it returns empty array.
 
 #### <a name="isvalid">isValid()</a>
 ```jsx
