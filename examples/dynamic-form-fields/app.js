@@ -23,6 +23,7 @@ const Fields = props => {
             field.type === 'input' ?
             (
               <MyInput
+                value=""
                 name={`fields[${i}]`}
                 title={field.validations ? JSON.stringify(field.validations) : 'No validations'}
                 required={field.required}

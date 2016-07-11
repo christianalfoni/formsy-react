@@ -32,6 +32,8 @@ module.exports = {
       return false;
     } else if (Array.isArray(a)) {
       return !this.arraysDiffer(a, b);
+    } else if (typeof a === 'function') {
+      return a.toString() === b.toString();
     } else if (typeof a === 'object' && a !== null && b !== null) {
       return !this.objectsDiffer(a, b);
     }
