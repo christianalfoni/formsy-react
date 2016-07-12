@@ -71,7 +71,7 @@ const DynamicInput = React.createClass({
     return (
       <div className={className}>
         <label htmlFor={this.props.name}>{this.props.title}</label>
-        <input type='text' name={this.props.name} onChange={this.changeValue} value={this.getValue()}/>
+        <input type='text' name={this.props.name} onChange={this.changeValue} value={this.getValue() || ''}/>
         <span className='validation-error'>{errorMessage}</span>
         <Validations validationType={this.state.validationType} changeValidation={this.changeValidation}/>
       </div>
