@@ -248,7 +248,7 @@ You should always use the [**getValue()**](#getvalue) method inside your formsy 
   }
 }}/>
 ```
-An comma separated list with validation rules. Take a look at [**Validators**](#validators) to see default rules. Use ":" to separate argument passed to the validator. The argument will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
+A comma separated list with validation rules. Take a look at [**Validators**](#validators) to see default rules. Use ":" to separate argument passed to the validator. The argument will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
 
 ```jsx
 <MyInputComponent name="fruit" validations="isIn:['apple', 'orange']"/>
