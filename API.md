@@ -373,7 +373,7 @@ var MyInput = React.createClass({
       <div>
         <span>{face}</span>
         <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage()}</span>
+        <span>{this.getErrorMessages()}</span>
       </div>
     );
   }
