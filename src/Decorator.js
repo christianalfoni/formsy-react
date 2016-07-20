@@ -13,6 +13,7 @@ module.exports = function () {
           hasValue: this.hasValue,
           getErrorMessage: this.getErrorMessage,
           getErrorMessages: this.getErrorMessages,
+          getInputIndex: this.getInputIndex,
           isFormDisabled: this.isFormDisabled,
           isValid: this.isValid,
           isPristine: this.isPristine,

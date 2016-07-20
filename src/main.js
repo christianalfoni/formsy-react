@@ -53,6 +53,7 @@ Formsy.Form = React.createClass({
       formsy: {
         attachToForm: this.attachToForm,
         detachFromForm: this.detachFromForm,
+        getInputIndex: this.getInputIndex,
         validate: this.validate,
         isFormDisabled: this.isFormDisabled,
         isValidValue: (component, value) => {
@@ -422,6 +423,11 @@ Formsy.Form = React.createClass({
 
     this.validateForm();
   },
+
+  getInputIndex: function (component) {
+    return this.inputs.indexOf(component);
+  },
+
   render: function () {
     var {
       mapping,

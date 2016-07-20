@@ -171,5 +171,8 @@ module.exports = {
   isValidValue: function (value) {
     return this.context.formsy.isValidValue.call(null, this, value);
     //return this.props._isValidValue.call(null, this, value);
+  },
+  getInputIndex: function () {
+    return this.context.formsy.getInputIndex(this);
   }
 };
