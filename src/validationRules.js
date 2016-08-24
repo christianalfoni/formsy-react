@@ -8,7 +8,7 @@ var isEmpty = function (value) {
 
 var validations = {
   isDefaultRequiredValue: function (values, value) {
-    return value === undefined || value === '';
+    return value === undefined || value === '' || value === null;
   },
   isExisty: function (values, value) {
     return isExisty(value);
