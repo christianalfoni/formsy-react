@@ -33,7 +33,7 @@ var convertValidationsToObject = function (validations) {
 module.exports = {
   getInitialState: function () {
     return {
-      _value: this.props.value,
+      _value: this.props.value || '',
       _isRequired: false,
       _isValid: true,
       _isPristine: true,
