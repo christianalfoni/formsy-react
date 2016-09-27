@@ -37,8 +37,7 @@ const MyTextarea = React.createClass({
                 rows={this.props.rows || '3'}
                 onChange={this.changeValue}
                 placeholder={this.props.placeholder || ''}
-                value={this.getValue()}
-                />
+                value={this.getValue() || ''} />
                 <span className='validation-error'>{errorMessage}</span>
             </div>
     );
