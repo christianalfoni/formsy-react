@@ -4,6 +4,11 @@ module.exports = function (Component) {
   return React.createClass({
     displayName: 'Formsy(' + getDisplayName(Component) + ')',
     mixins: [Mixin],
+
+    getWrappedInstance: function() {
+      return this.refs.wrappedInstance
+    },
+
     render: function () {
       return React.createElement(Component, {
         setValidations: this.setValidations,
@@ -21,6 +26,7 @@ module.exports = function (Component) {
         showRequired: this.showRequired,
         showError: this.showError,
         isValidValue: this.isValidValue,
+        ref: 'wrappedInstance',
         ...this.props
       });
     }
