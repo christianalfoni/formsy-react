@@ -11,7 +11,7 @@ import sinon from 'sinon';
 export default {
 
   'Setting up a form': {
-    'should expose \'getwrappedInstance\' method on elements when wrapped in HOC': function (test) {
+    'should expose \'getWrappedInstance\' method on elements when wrapped in HOC': function (test) {
       const TestForm = React.createClass({
         render() {
           return (
