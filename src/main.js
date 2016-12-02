@@ -278,6 +278,10 @@ Formsy.Form = React.createClass({
       }
 
       return validateComponent.then(() => {
+        if (this.inputs.indexOf(component) < 0) {
+          return;
+        }
+
         var isRequired = Object.keys(component._requiredValidations).length ? !!requiredResults.success.length : false;
         var isValid = !validationResults.failed.length && !(this.props.validationErrors && this.props.validationErrors[component.props.name]);
 
