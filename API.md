@@ -604,7 +604,7 @@ Formsy.addValidationRule('isFruit', function (values, value) {
 });
 ```
 ```jsx
-<MyInputComponent name="fruit" validations="'isFruit"/>
+<MyInputComponent name="fruit" validations="isFruit"/>
 ```
 Another example:
 ```jsx
