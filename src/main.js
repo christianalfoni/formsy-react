@@ -230,7 +230,7 @@ Formsy.Form = React.createClass({
 
     // Trigger onChange
     if (this.state.canChange) {
-      this.props.onChange(this.getCurrentValues(), this.isChanged());
+      this.props.onChange(this.getModel(), this.isChanged());
     }
 
     this.runValidation(component)
