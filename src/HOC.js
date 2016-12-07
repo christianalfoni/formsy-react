@@ -5,12 +5,9 @@ module.exports = function (Component) {
     displayName: 'Formsy(' + getDisplayName(Component) + ')',
     mixins: [Mixin],
 
-    getWrappedInstance: function() {
-      return this.refs.wrappedInstance
-    },
-
     render: function () {
-      return React.createElement(Component, {
+      const { innerRef } = this.props;
+      const propsForElement = {
         setValidations: this.setValidations,
         setValue: this.setValue,
         resetValue: this.resetValue,
@@ -26,9 +23,13 @@ module.exports = function (Component) {
         showRequired: this.showRequired,
         showError: this.showError,
         isValidValue: this.isValidValue,
-        ref: 'wrappedInstance',
         ...this.props
-      });
+      };
+
+      if (innerRef) {
+        propsForElement.ref = innerRef
+      }
+      return React.createElement(Component, propsForElement);
     }
   });
 };

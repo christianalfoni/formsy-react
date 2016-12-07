@@ -6,7 +6,7 @@ const defaultProps = {
     return param;
   },
   render() {
-    return (<input ref={(c) => { this.input = c; }} />);
+    return (<input />);
   },
 };
 

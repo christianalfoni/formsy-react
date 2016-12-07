@@ -37,7 +37,7 @@
   - [validate](#validate)
   - [formNoValidate](#formnovalidate)
 - [Formsy.HOC](#formsyhoc)
-  - [getWrappedInstance()](#getwrappedinstance)
+  - [innerRef](#innerRef)
 - [Formsy.Decorator](#formsydecorator)
 - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
@@ -579,18 +579,19 @@ class MyInputHoc extends React.Component {
 export default HOC(MyInputHoc);
 ```
 
-#### <a name="getwrappedinstance">getWrappedInstance</a>
+#### <a name="innerRef">innerRef</a>
+
+Use an `innerRef` prop to get a reference to your DOM node.
+
 ```jsx
 var MyForm = React.createClass({
-  doSomething: function () {
-    var instance = this.refs.bar.getWrappedInstance();
-    // do something with the internal instance
+  componentDidMount() {
+    this.searchInput.focus()
   },
   render: function () {
     return (
       <Formsy.Form>
-        <MyInputHoc name="foo" ref="bar"/>
-        <button onClick={this.doSomething}>Do Something</button>
+        <MyInputHoc name="search" innerRef={(c) => { this.searchInput = c; }} />
       </Formsy.Form>
     );
   }

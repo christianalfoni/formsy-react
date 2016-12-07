@@ -11,19 +11,19 @@ import sinon from 'sinon';
 export default {
 
   'Setting up a form': {
-    'should expose \'getWrappedInstance\' method on elements when wrapped in HOC': function (test) {
+    'should expose the users DOM node through an innerRef prop': function (test) {
       const TestForm = React.createClass({
         render() {
           return (
             <Formsy.Form>
-              <TestInputHoc name="name" ref={(c) => { this.name = c; }} />
+              <TestInputHoc name="name" innerRef={(c) => { this.name = c; }} />
             </Formsy.Form>
           );
         }
       });
 
       const form = TestUtils.renderIntoDocument(<TestForm/>);
-      const input = form.name.getWrappedInstance();
+      const input = form.name;
       test.equal(input.methodOnWrappedInstance('foo'), 'foo');
 
       test.done();
