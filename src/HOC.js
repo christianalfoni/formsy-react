@@ -27,7 +27,7 @@ module.exports = function (Component) {
       };
 
       if (innerRef) {
-        propsForElement.ref = innerRef
+        propsForElement.ref = innerRef;
       }
       return React.createElement(Component, propsForElement);
     }
