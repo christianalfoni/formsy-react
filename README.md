@@ -1,4 +1,4 @@
-formsy  [![GitHub release](https://img.shields.io/github/release/aesopwolf/formsy.svg)](https://github.com/aesopwolf/formsy/releases) [![Build Status](https://travis-ci.org/aesopwolf/formsy.svg?branch=master)](https://travis-ci.org/aesopwolf/formsy)
+formsy-react  [![GitHub release](https://img.shields.io/github/release/christianalfoni/formsy-react.svg)](https://github.com/christianalfoni/formsy-react/releases) [![Build Status](https://travis-ci.org/christianalfoni/formsy-react.svg?branch=master)](https://travis-ci.org/christianalfoni/formsy-react)
 ============
 
 A form input builder and validator for React JS
@@ -7,7 +7,7 @@ A form input builder and validator for React JS
 |---|---|---|
 
 ## <a name="background">Background</a>
-Christian Alfoni wrote an article on forms and validation with React JS, [Nailing that validation with React JS](http://christianalfoni.github.io/javascript/2014/10/22/nailing-that-validation-with-reactjs.html), the result of that was this extension.
+I wrote an article on forms and validation with React JS, [Nailing that validation with React JS](http://christianalfoni.github.io/javascript/2014/10/22/nailing-that-validation-with-reactjs.html), the result of that was this extension.
 
 The main concept is that forms, inputs and validation is done very differently across developers and projects. This extension to React JS aims to be that "sweet spot" between flexibility and reusability.
 
@@ -28,11 +28,13 @@ You can look at examples in this repo or use the [formsy-react-components](https
 
 ## Install
 
-  1. Install with `npm install formsy` and use with webpack etc.
+  1. Download from this REPO and use globally (Formsy) or with requirejs
+  2. Install with `npm install formsy-react` and use with browserify etc.
+  3. Install with `bower install formsy-react`
 
 ## Changes
 
-[Check out releases](https://github.com/aesopwolf/formsy/releases)
+[Check out releases](https://github.com/christianalfoni/formsy-react/releases)
 
 [Older changes](CHANGES.md)
 
@@ -132,3 +134,5 @@ The form element component is what gives the form validation functionality to wh
 ## License
 
 [The MIT License (MIT)](/LICENSE)
+
+Copyright (c) 2014-2016 PatientSky A/S
