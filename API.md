@@ -37,6 +37,7 @@
   - [validate](#validate)
   - [formNoValidate](#formnovalidate)
 - [Formsy.HOC](#formsyhoc)
+  - [innerRef](#innerRef)
 - [Formsy.Decorator](#formsydecorator)
 - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
@@ -566,7 +567,7 @@ The same methods as the mixin are exposed to the HOC version of the element comp
 ```jsx
 import {HOC} from 'formsy-react';
 
-class MyInput extends React.Component {
+class MyInputHoc extends React.Component {
   render() {
     return (
       <div>
@@ -575,8 +576,29 @@ class MyInput extends React.Component {
     );
   }
 };
-export default HOC(MyInput);
+export default HOC(MyInputHoc);
 ```
+
+#### <a name="innerRef">innerRef</a>
+
+Use an `innerRef` prop to get a reference to your DOM node.
+
+```jsx
+var MyForm = React.createClass({
+  componentDidMount() {
+    this.searchInput.focus()
+  },
+  render: function () {
+    return (
+      <Formsy.Form>
+        <MyInputHoc name="search" innerRef={(c) => { this.searchInput = c; }} />
+      </Formsy.Form>
+    );
+  }
+})
+```
+
+Sets a class name on the form itself.
 
 ### <a name="formsydecorator">Formsy.Decorator</a>
 The same methods as the mixin are exposed to the decorator version of the element component, though through the `props`, not on the instance.

@@ -4,8 +4,10 @@ module.exports = function (Component) {
   return React.createClass({
     displayName: 'Formsy(' + getDisplayName(Component) + ')',
     mixins: [Mixin],
+
     render: function () {
-      return React.createElement(Component, {
+      const { innerRef } = this.props;
+      const propsForElement = {
         setValidations: this.setValidations,
         setValue: this.setValue,
         resetValue: this.resetValue,
@@ -22,7 +24,12 @@ module.exports = function (Component) {
         showError: this.showError,
         isValidValue: this.isValidValue,
         ...this.props
-      });
+      };
+
+      if (innerRef) {
+        propsForElement.ref = innerRef;
+      }
+      return React.createElement(Component, propsForElement);
     }
   });
 };
