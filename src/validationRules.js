@@ -72,6 +72,9 @@ var validations = {
   },
   minLength: function (values, value, length) {
     return !isExisty(value) || isEmpty(value) || value.length >= length;
+  },
+  isNotWhiteSpaces: function (values, value) {
+    return !isExisty(value) || isEmpty(value) || !validations.matchRegexp(values, value, /^\s+$/)
   }
 };
 

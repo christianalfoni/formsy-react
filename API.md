@@ -774,3 +774,9 @@ Return true if the value is more or equal to argument.
 <MyInputComponent name="number" validations="maxLength:5"/>
 ```
 Return true if the value is less or equal to argument
+
+**isNotWhiteSpaces**
+```jxs
+<MyInputComponent name="number" validations="isNotWhiteSpaces"/>
+```
+Return true if the value is not only whitespaces, tabs or line breaks
