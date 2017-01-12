@@ -598,8 +598,6 @@ var MyForm = React.createClass({
 })
 ```
 
-Sets a class name on the form itself.
-
 ### <a name="formsydecorator">Formsy.Decorator</a>
 The same methods as the mixin are exposed to the decorator version of the element component, though through the `props`, not on the instance.
 ```jsx
