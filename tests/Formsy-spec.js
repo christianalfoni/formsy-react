@@ -4,12 +4,30 @@ import TestUtils from 'react-addons-test-utils';
 
 import Formsy from './..';
 import TestInput from './utils/TestInput';
+import TestInputHoc from './utils/TestInputHoc';
 import immediate from './utils/immediate';
 import sinon from 'sinon';
 
 export default {
 
   'Setting up a form': {
+    'should expose the users DOM node through an innerRef prop': function (test) {
+      const TestForm = React.createClass({
+        render() {
+          return (
+            <Formsy.Form>
+              <TestInputHoc name="name" innerRef={(c) => { this.name = c; }} />
+            </Formsy.Form>
+          );
+        }
+      });
+
+      const form = TestUtils.renderIntoDocument(<TestForm/>);
+      const input = form.name;
+      test.equal(input.methodOnWrappedInstance('foo'), 'foo');
+
+      test.done();
+    },
 
     'should render a form into the document': function (test) {
 

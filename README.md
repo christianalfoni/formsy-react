@@ -133,4 +133,6 @@ The form element component is what gives the form validation functionality to wh
 
 ## License
 
-[MIT](/LICENSE)
+[The MIT License (MIT)](/LICENSE)
+
+Copyright (c) 2014-2016 PatientSky A/S
