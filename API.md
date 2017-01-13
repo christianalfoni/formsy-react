@@ -777,6 +777,12 @@ Return true if the value is less or equal to argument
 
 **isNotWhiteSpaces**
 ```jxs
-<MyInputComponent name="number" validations="isNotWhiteSpaces"/>
+<MyInputComponent name="foo" validations="isNotWhiteSpaces"/>
 ```
 Return true if the value is not only whitespaces, tabs or line breaks
+
+**greaterThanOrEqualTo**
+```jxs
+<MyInputComponent name="number" validations="greaterThanOrEqualTo:5"/>
+```
+Return true if the number value is greater or equal to argument

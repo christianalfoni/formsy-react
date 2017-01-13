@@ -75,6 +75,9 @@ var validations = {
   },
   isNotWhiteSpaces: function (values, value) {
     return !isExisty(value) || isEmpty(value) || !validations.matchRegexp(values, value, /^\s+$/)
+  },
+  greaterThanOrEqualTo: function (values, value, x) {
+    return !isExisty(value) || isEmpty(value) || Number(value) >= Number(x);
   }
 };
 
