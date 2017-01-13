@@ -78,6 +78,9 @@ var validations = {
   },
   greaterThanOrEqualTo: function (values, value, x) {
     return !isExisty(value) || isEmpty(value) || Number(value) >= Number(x);
+  },
+  betweenNumbers: function (values, value, numbers) {
+    return !isExisty(value) || isEmpty(value) || (Number(value) >= Number(numbers[0]) && Number(value) <= Number(numbers[1]));
   }
 };
 

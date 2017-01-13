@@ -786,3 +786,9 @@ Return true if the value is not only whitespaces, tabs or line breaks
 <MyInputComponent name="number" validations="greaterThanOrEqualTo:5"/>
 ```
 Return true if the number value is greater or equal to argument
+
+**betweenNumbers**
+```jxs
+<MyInputComponent name="number" validations="betweenNumbers:[1, 12]"/>
+```
+Return true if the number value is between numbers *x* and *y* in the array argument
