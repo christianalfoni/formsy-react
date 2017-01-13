@@ -785,10 +785,17 @@ Return true if the value is not only whitespaces, tabs or line breaks
 ```jxs
 <MyInputComponent name="number" validations="greaterThanOrEqualTo:5"/>
 ```
-Return true if the number value is greater or equal to argument
+Return true if the value is greater or equal to argument
 
 **betweenNumbers**
 ```jxs
 <MyInputComponent name="number" validations="betweenNumbers:[1, 12]"/>
 ```
-Return true if the number value is between numbers *x* and *y* in the array argument
+Return true if value is between numbers *x* and *y* in the array argument
+
+**isCreditCardNumber**
+```jxs
+<MyInputComponent name="number" validations="isCreditCardNumber"/>
+```
+Return true if the value is a valid credit card number
+

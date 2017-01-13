@@ -6,6 +6,27 @@ var isEmpty = function (value) {
   return value === '';
 };
 
+/**
+ * Luhn validation algorithm
+ * https://gist.github.com/ShirtlessKirk/2134376
+ */
+var luhnChk = (function (arr) {
+    return function (ccNum) {
+        var
+            len = ccNum.length,
+            bit = 1,
+            sum = 0,
+            val;
+
+        while (len) {
+            val = parseInt(ccNum.charAt(--len), 10);
+            sum += (bit ^= 1) ? arr[val] : val;
+        }
+
+        return sum && sum % 10 === 0;
+    };
+}([0, 2, 4, 6, 8, 1, 3, 5, 7, 9]));
+
 var validations = {
   isDefaultRequiredValue: function (values, value) {
     return value === undefined || value === '';
@@ -81,6 +102,13 @@ var validations = {
   },
   betweenNumbers: function (values, value, numbers) {
     return !isExisty(value) || isEmpty(value) || (Number(value) >= Number(numbers[0]) && Number(value) <= Number(numbers[1]));
+  },
+  isCreditCardNumber: function (values, value) {
+    if (value && value.toString().length >= 13) {
+        return luhnChk(value.toString());
+    }
+
+    return false;
   }
 };
 
