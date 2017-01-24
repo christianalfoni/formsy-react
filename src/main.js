@@ -79,7 +79,6 @@ Formsy.Form = React.createClass({
   },
 
   componentDidUpdate: function () {
-
     if (this.props.validationErrors && typeof this.props.validationErrors === 'object' && Object.keys(this.props.validationErrors).length > 0) {
       this.setInputValidationErrors(this.props.validationErrors);
     }
@@ -135,6 +134,24 @@ Formsy.Form = React.createClass({
   getModel: function () {
     var currentValues = this.getCurrentValues();
     return this.mapModel(currentValues);
+  },
+
+  // Set each key in the model to a specified value, optionally disable initial validation
+  setModel: function (data, validate) {
+    this.setFormPristine(true);
+
+    this.inputs.forEach(component => {
+      var name = component.props.name;
+      if (data && data.hasOwnProperty(name)) {
+        component.setValue(data[name]);
+      } else {
+        component.resetValue();
+      }
+    });
+
+    if (validate) {
+      this.validateForm();
+    }
   },
 
   // Reset each key in the model to the original / initial / specified value
