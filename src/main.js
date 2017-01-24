@@ -278,7 +278,7 @@ Formsy.Form = React.createClass({
         }
 
         if (isRequired) {
-          var error = validationErrors[requiredResults.success[0]] || validationError;
+          var error = validationErrors[requiredResults.success[0]];
           return error ? [error] : null;
         }
 
