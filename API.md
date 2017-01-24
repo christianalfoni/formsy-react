@@ -11,7 +11,8 @@
   - [onInvalidSubmit()](#oninvalidsubmit)
   - [onChange()](#onchange)
   - [reset()](#resetform)
-  - [getModel()](#getmodel)
+  - [getModel()](#getmodel)  
+  - [setModel()](#setmodel)
   - [updateInputsWithError()](#updateinputswitherrorerrors)
   - [preventExternalInvalidation](#preventexternalinvalidation)
 - [Formsy.Mixin](#formsymixin)
@@ -178,6 +179,26 @@ var MyForm = React.createClass({
 });
 ```
 Manually get values from all registered components. Keys are name of input and value is of course the value.
+
+#### <a name="setmodel">setModel()</a>
+```jsx
+var MyForm = React.createClass({
+  setMyData: function () {
+    var data = {
+      ...
+    }
+    this.refs.form.setModel(data, false)
+  },
+  render: function () {
+    return (
+      <Formsy.Form ref="form">
+        ...
+      </Formsy.Form>
+    );
+  }
+});
+```
+Manually set values from all registered components. Optionally run validation when setting values.
 
 #### <a name="updateInputsWithError">updateInputsWithError(errors)</a>
 ```jsx
