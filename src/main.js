@@ -139,6 +139,7 @@ Formsy.Form = React.createClass({
 
   // Reset each key in the model to the original / initial / specified value
   resetModel: function (data) {
+    data = formDataToObject.fromObj(data);
     this.inputs.forEach(component => {
       var name = component.props.name;
       if (data && data.hasOwnProperty(name)) {
