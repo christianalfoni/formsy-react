@@ -86,12 +86,12 @@ module.exports = {
 
   },
 
-  componentDidUpdate: function (prevProps) {
+  componentDidUpdate: function (prevProps, nextProps) {
 
     // If the value passed has changed, set it. If value is not passed it will
     // internally update, and this will never run
-    if (!utils.isSame(this.props.value, prevProps.value)) {
-      this.setValue(this.props.value);
+    if (!utils.isSame(nextProps, prevProps.value)) {
+      this.setValue(nextProps);
     }
 
     // If validations or required is changed, run a new validation
