@@ -440,9 +440,10 @@ Formsy.Form = React.createClass({
     } = this.props;
 
     return (
-      <form {...nonFormsyProps} onSubmit={this.submit}>
+      <div {...nonFormsyProps}>
         {this.props.children}
-      </form>
+        <button type="button" onClick={this.submit}>Send</button>
+      </div>
     );
 
   }
