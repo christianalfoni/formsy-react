@@ -10,6 +10,7 @@ module.exports = function (Component) {
       const propsForElement = {
         setValidations: this.setValidations,
         setValue: this.setValue,
+        updateValue: this.updateValue,
         resetValue: this.resetValue,
         getValue: this.getValue,
         hasValue: this.hasValue,
