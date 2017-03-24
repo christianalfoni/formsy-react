@@ -6,11 +6,11 @@ const defaultProps = {
   getDefaultProps() {
     return { type: 'text' };
   },
-  updateValue(event) {
+  changeValue(event) {
     this.setValue(event.target[this.props.type === 'checkbox' ? 'checked' : 'value']);
   },
   render() {
-    return <input type={this.props.type} value={this.getValue()} onChange={this.updateValue}/>;
+    return <input type={this.props.type} value={this.getValue()} onChange={this.changeValue}/>;
   }
 };
 
