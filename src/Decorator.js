@@ -8,6 +8,7 @@ module.exports = function () {
         return React.createElement(Component, {
           setValidations: this.setValidations,
           setValue: this.setValue,
+	  updateValue: this.updateValue,
           resetValue: this.resetValue,
           getValue: this.getValue,
           hasValue: this.hasValue,
