@@ -1,5 +1,6 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import createReactClass from 'create-react-class';
+import TestUtils from 'react-dom/test-utils';
 
 import Formsy from './..';
 import TestInput, {InputFactory} from './utils/TestInput';
@@ -112,7 +113,7 @@ export default {
 
   'should provide invalidate callback on onValiSubmit': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form onValidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
@@ -134,7 +135,7 @@ export default {
 
   'should provide invalidate callback on onInvalidSubmit': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form onInvalidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
@@ -156,7 +157,7 @@ export default {
 
   'should not invalidate inputs on external errors with preventExternalInvalidation prop': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form
@@ -179,7 +180,7 @@ export default {
 
   'should invalidate inputs on external errors without preventExternalInvalidation prop': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>

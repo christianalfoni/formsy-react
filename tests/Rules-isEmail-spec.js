@@ -1,5 +1,6 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import createReactClass from 'create-react-class';
+import TestUtils from 'react-dom/test-utils';
 
 import Formsy from './..';
 import { InputFactory } from './utils/TestInput';
@@ -10,7 +11,7 @@ const TestInput = InputFactory({
   }
 });
 
-const TestForm = React.createClass({
+const TestForm = createReactClass({
   render() {
     return (
       <Formsy.Form>

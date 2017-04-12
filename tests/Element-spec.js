@@ -1,5 +1,6 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import createReactClass from 'create-react-class';
+import TestUtils from 'react-dom/test-utils';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import sinon from 'sinon';
 
@@ -165,7 +166,7 @@ export default {
 
   'should allow an undefined value to be updated to a value': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       getInitialState() {
         return {value: undefined};
       },
@@ -195,7 +196,7 @@ export default {
 
   'should be able to test a values validity': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form>
@@ -215,7 +216,7 @@ export default {
 
   'should be able to use an object as validations property': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form>
@@ -238,7 +239,7 @@ export default {
 
   'should be able to pass complex values to a validation rule': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form>
@@ -263,7 +264,7 @@ export default {
 
   'should be able to run a function to validate': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       customValidationA(values, value) {
         return value === 'foo';
       },
@@ -299,7 +300,7 @@ export default {
 
   'should not override error messages with error messages passed by form if passed eror messages is an empty object': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form validationErrors={{}}>
@@ -322,7 +323,7 @@ export default {
 
   'should override all error messages with error messages passed by form': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form validationErrors={{A: 'bar'}}>
@@ -344,7 +345,7 @@ export default {
 
   'should override validation rules with required rules': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form>
@@ -374,7 +375,7 @@ export default {
 
   'should fall back to default error message when non exist in validationErrors map': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form>
@@ -401,7 +402,7 @@ export default {
 
   'should not be valid if it is required and required rule is true': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       render() {
         return (
           <Formsy.Form>
@@ -423,7 +424,7 @@ export default {
 
   'should handle objects and arrays as values': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       getInitialState() {
         return {
           foo: {foo: 'bar'},
@@ -456,7 +457,7 @@ export default {
 
   'should handle isFormDisabled with dynamic inputs': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       getInitialState() {
         return {
           bool: true
@@ -491,7 +492,7 @@ export default {
 
   'should allow for dot notation in name which maps to a deep object': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       onSubmit(model) {
         test.deepEqual(model, {foo: {bar: 'foo', test: 'test'}});
       },
@@ -517,7 +518,7 @@ export default {
 
   'should allow for application/x-www-form-urlencoded syntax and convert to object': function (test) {
 
-    const TestForm = React.createClass({
+    const TestForm = createReactClass({
       onSubmit(model) {
         test.deepEqual(model, {foo: ['foo', 'bar']});
       },
