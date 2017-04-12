@@ -11,7 +11,7 @@ const user = {
   hair: 'brown'
 };
 
-const App = React.createClass({
+const App = createReactClass({
   submit(data) {
     alert(JSON.stringify(data, null, 4));
   },

@@ -10,7 +10,7 @@ function contains(container, item, cmp) {
   return false;
 }
 
-const MyRadioGroup = React.createClass({
+const MyRadioGroup = createReactClass({
   mixins: [Formsy.Mixin],
   getInitialState() {
     return { value: [], cmp: (a, b) => a === b };

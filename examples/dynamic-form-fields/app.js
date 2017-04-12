@@ -54,7 +54,7 @@ const Fields = props => {
   );
 };
 
-const App = React.createClass({
+const App = createReactClass({
   getInitialState() {
     return { fields: [], canSubmit: false };
   },

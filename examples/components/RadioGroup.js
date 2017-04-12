@@ -1,7 +1,7 @@
 import React from 'react';
 import Formsy from 'formsy-react';
 
-const MyRadioGroup = React.createClass({
+const MyRadioGroup = createReactClass({
   mixins: [Formsy.Mixin],
 
   componentDidMount() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import Formsy from 'formsy-react';
 
-const MyInput = React.createClass({
+const MyInput = createReactClass({
 
   // Add the Formsy Mixin
   mixins: [Formsy.Mixin],
