@@ -6,17 +6,18 @@ class TestInput extends React.Component {
     type: 'text'
   }
 
-  updateValue(event) {
+  updateValue = (event) => {
     this.props.setValue(event.target[this.props.type === 'checkbox' ? 'checked' : 'value']);
   }
 
   render() {
-    return <input type={this.props.type} value={this.props.getValue()} onChange={this.updateValue}/>;
+    return this.props.customRender && this.props.customRender() ||
+      <input type={this.props.type} value={this.props.getValue()} onChange={this.updateValue}/>;
   }
 }
 
 export const InputFactory = (props) => (
-  <TestInput {...props} />
+  <TestInput {...props} customRender={props.render} />
 )
 
 export default Formsy.Mixin(TestInput);
