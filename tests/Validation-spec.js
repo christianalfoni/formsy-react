@@ -1,5 +1,4 @@
 import React from 'react';
-import createReactClass from 'create-react-class';
 import TestUtils from 'react-dom/test-utils';
 
 import Formsy from './..';
@@ -112,8 +111,7 @@ export default {
   },
 
   'should provide invalidate callback on onValiSubmit': function (test) {
-
-    const TestForm = createReactClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form onValidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
@@ -121,7 +119,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
 
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
@@ -130,12 +128,10 @@ export default {
     TestUtils.Simulate.submit(formEl);
     test.equal(input.isValid(), false);
     test.done();
-
   },
 
   'should provide invalidate callback on onInvalidSubmit': function (test) {
-
-    const TestForm = createReactClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form onInvalidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
@@ -143,7 +139,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
 
     const form = TestUtils.renderIntoDocument(<TestForm/>);
     const formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
@@ -152,12 +148,10 @@ export default {
     test.equal(input.getErrorMessage(), 'bar');
 
     test.done();
-
   },
 
   'should not invalidate inputs on external errors with preventExternalInvalidation prop': function (test) {
-
-    const TestForm = createReactClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form
@@ -167,7 +161,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
 
     const form = TestUtils.renderIntoDocument(<TestForm/>);
     const formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
@@ -175,12 +169,10 @@ export default {
     TestUtils.Simulate.submit(formEl);
     test.equal(input.isValid(), true);
     test.done();
-
   },
 
   'should invalidate inputs on external errors without preventExternalInvalidation prop': function (test) {
-
-    const TestForm = createReactClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
@@ -188,7 +180,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
 
     const form = TestUtils.renderIntoDocument(<TestForm/>);
     const formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
@@ -196,7 +188,6 @@ export default {
     TestUtils.Simulate.submit(formEl);
     test.equal(input.isValid(), false);
     test.done();
-
   }
 
 };

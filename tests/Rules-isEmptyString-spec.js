@@ -1,5 +1,4 @@
 import React from 'react';
-import createReactClass from 'create-react-class';
 import TestUtils from 'react-dom/test-utils';
 
 import Formsy from './..';
@@ -11,7 +10,7 @@ const TestInput = InputFactory({
   }
 });
 
-const TestForm = createReactClass({
+class TestForm extends React.Component {
   render() {
     return (
       <Formsy.Form>
@@ -19,7 +18,7 @@ const TestForm = createReactClass({
       </Formsy.Form>
     );
   }
-});
+}
 
 export default {
 
