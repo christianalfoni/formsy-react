@@ -1,14 +1,14 @@
-import React from 'react';
-import { HOC as formsyHoc } from './../..';
+import React from 'react'
+import Formsy from './../..'
 
 class TestInput extends React.Component {
-  methodOnWrappedInstance(param) {
-    return param;
+  methodOnWrappedInstance (param) {
+    return param
   }
 
-  render() {
-    return <input  />
+  render () {
+    return <input {...this.props} />
   }
 }
 
-export default formsyHoc(TestInput);
+export default Formsy.HOC(TestInput)

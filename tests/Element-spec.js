@@ -3,7 +3,7 @@ import TestUtils from 'react-dom/test-utils';
 import sinon from 'sinon';
 
 import Formsy from './..';
-import TestInput, { InputFactory } from './utils/TestInput';
+import TestInput from './utils/TestInput';
 import immediate from './utils/immediate';
 
 export default {
@@ -28,11 +28,12 @@ export default {
   'should set back to pristine value when running reset': function (test) {
 
     let reset = null;
-    const Input = InputFactory({
+    const Input = class extends TestInput {
       componentDidMount() {
         reset = this.resetValue;
       }
-    });
+    };
+
     const form = TestUtils.renderIntoDocument(
       <Formsy.Form>
         <Input name="foo" value="foo"/>
@@ -51,11 +52,12 @@ export default {
   'should return error message passed when calling getErrorMessage()': function (test) {
 
     let getErrorMessage = null;
-    const Input = InputFactory({
+    const Input = class extends TestInput {
       componentDidMount() {
         getErrorMessage = this.getErrorMessage;
       }
-    });
+    };
+
     TestUtils.renderIntoDocument(
       <Formsy.Form>
         <Input name="foo" value="foo" validations="isEmail" validationError="Has to be email"/>
@@ -71,11 +73,12 @@ export default {
   'should return true or false when calling isValid() depending on valid state': function (test) {
 
     let isValid = null;
-    const Input = InputFactory({
+    const Input = class extends TestInput {
       componentDidMount() {
         isValid = this.isValid;
       }
-    });
+    };
+
     const form = TestUtils.renderIntoDocument(
       <Formsy.Form url="/users">
         <Input name="foo" value="foo" validations="isEmail"/>
@@ -94,11 +97,12 @@ export default {
   'should return true or false when calling isRequired() depending on passed required attribute': function (test) {
 
     const isRequireds = [];
-    const Input = InputFactory({
+    const Input = class extends TestInput {
       componentDidMount() {
         isRequireds.push(this.isRequired);
       }
-    });
+    };
+
     TestUtils.renderIntoDocument(
       <Formsy.Form url="/users">
         <Input name="foo" value=""/>
@@ -118,11 +122,12 @@ export default {
   'should return true or false when calling showRequired() depending on input being empty and required is passed, or not': function (test) {
 
     const showRequireds = [];
-    const Input = InputFactory({
+    const Input = class extends TestInput {
       componentDidMount() {
         showRequireds.push(this.showRequired);
       }
-    });
+    };
+
     TestUtils.renderIntoDocument(
       <Formsy.Form url="/users">
         <Input name="A" value="foo"/>
@@ -142,11 +147,11 @@ export default {
   'should return true or false when calling isPristine() depending on input has been "touched" or not': function (test) {
 
     let isPristine = null;
-    const Input = InputFactory({
+    const Input = class extends TestInput{
       componentDidMount() {
         isPristine = this.isPristine;
       }
-    });
+    };
     const form = TestUtils.renderIntoDocument(
       <Formsy.Form url="/users">
         <Input name="A" value="foo"/>
@@ -529,16 +534,16 @@ export default {
     test.done();
   },
 
-  'input should rendered once with PureRenderMixin': function (test) {
+  'input should rendered once with PureComponent': function (test) {
 
     var renderSpy = sinon.spy();
 
-    const Input = InputFactory({
+    const Input = class extends TestInput {
       render() {
         renderSpy();
         return <input type={this.props.type} value={this.getValue()} onChange={this.updateValue}/>;
       }
-    });
+    };
 
     const form = TestUtils.renderIntoDocument(
       <Formsy.Form>
@@ -547,7 +552,6 @@ export default {
     );
 
     test.equal(renderSpy.calledOnce, true);
-
     test.done();
 
   }

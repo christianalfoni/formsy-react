@@ -2,7 +2,7 @@ import React from 'react';
 import TestUtils from 'react-dom/test-utils';
 
 import Formsy from './..';
-import TestInput, {InputFactory} from './utils/TestInput';
+import TestInput from './utils/TestInput';
 import immediate from './utils/immediate';
 import sinon from 'sinon';
 
@@ -93,7 +93,7 @@ export default {
   'should be able to use provided validate function': function (test) {
 
     let isValid = false;
-    const CustomInput = InputFactory({
+    const CustomInput = class extends TestInput({
       componentDidMount() {
         isValid = this.isValid();
       }

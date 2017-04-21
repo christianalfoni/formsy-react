@@ -1,7 +1,7 @@
 import React from 'react';
 import Formsy from './../..';
 
-class TestInput extends React.Component {
+class TestInput extends React.PureComponent {
   static defaultProps = {
     type: 'text'
   }
@@ -11,13 +11,16 @@ class TestInput extends React.Component {
   }
 
   render() {
-    return this.props.customRender && this.props.customRender() ||
-      <input type={this.props.type} value={this.props.getValue()} onChange={this.updateValue}/>;
+    return (
+      <input {...this.props} type={this.props.type} value={this.props.getValue()} onChange={this.updateValue}/>
+    )
   }
 }
 
-export const InputFactory = (props) => (
-  <TestInput {...props} customRender={props.render} />
-)
+export class ReadOnlyInput extends TestInput {
+  render() {
+    return <input value={this.getValue()} readOnly/>;
+  }
+}
 
 export default Formsy.Mixin(TestInput);
