@@ -93,13 +93,13 @@ class Form extends React.Component {
   }
 
   // Allow resetting to specified data
-  reset(data) {
+  reset = (data) => {
     this.setFormPristine(true);
     this.resetModel(data);
   }
 
   // Update model, submit to url prop and send the model
-  submit(event) {
+  submit = (event) => {
     event && event.preventDefault();
 
     // Trigger form as not pristine.
