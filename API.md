@@ -52,7 +52,7 @@ Sets a class name on the form itself.
 
 #### <a name="mapping">mapping</a>
 ```jsx
-var MyForm = React.createClass({
+var MyForm = createReactClass({
   mapInputs: function (inputs) {
     return {
       'field1': inputs.foo,
@@ -78,7 +78,7 @@ Use mapping to change the data structure of your input elements. This structure 
 You can manually pass down errors to your form. In combination with `onChange` you are able to validate using an external validator.
 
 ```jsx
-var Form = React.createClass({
+var Form = createReactClass({
   getInitialState: function () {
     return {
       validationErrors: {}
@@ -147,7 +147,7 @@ Triggers when form is submitted with an invalid state. The arguments are the sam
 
 #### <a name="resetform">reset(values)</a>
 ```jsx
-var MyForm = React.createClass({
+var MyForm = createReactClass({
   resetForm: function () {
     this.refs.form.reset();
   },
@@ -164,7 +164,7 @@ Manually reset the form to its pristine state. You can also pass an object that 
 
 #### <a name="getmodel">getModel()</a>
 ```jsx
-var MyForm = React.createClass({
+var MyForm = createReactClass({
   getMyData: function () {
     alert(this.refs.form.getModel());
   },
@@ -181,7 +181,7 @@ Manually get values from all registered components. Keys are name of input and v
 
 #### <a name="updateInputsWithError">updateInputsWithError(errors)</a>
 ```jsx
-var MyForm = React.createClass({
+var MyForm = createReactClass({
   someFunction: function () {
     this.refs.form.updateInputsWithError({
       email: 'This email is taken',
@@ -201,7 +201,7 @@ Manually invalidate the form by taking an object that maps to inputs. This is us
 
 #### <a name="preventExternalInvalidation">preventExternalInvalidation</a>
 ```jsx
-var MyForm = React.createClass({
+var MyForm = createReactClass({
   onSubmit: function (model, reset, invalidate) {
     invalidate({
       foo: 'Got some error'
@@ -293,7 +293,7 @@ Would be typical for a checkbox type of form element that must be checked, e.g. 
 
 #### <a name="getvalue">getValue()</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   render: function () {
     return (
@@ -306,7 +306,7 @@ Gets the current value of the form input component.
 
 #### <a name="setvalue">setValue(value)</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
@@ -322,7 +322,7 @@ Sets the value of your form input component. Notice that it does not have to be 
 
 #### <a name="resetvalue">resetValue()</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
@@ -341,7 +341,7 @@ Resets to empty value. This will run a **setState()** on the component and do a 
 
 #### <a name="geterrormessage">getErrorMessage()</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
@@ -363,7 +363,7 @@ Will return the validation messages set if the form input component is invalid. 
 
 #### <a name="isvalid">isValid()</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
@@ -386,7 +386,7 @@ Returns the valid state of the form input component.
 You can pre-verify a value against the passed validators to the form element.
 
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   changeValue: function (event) {
     if (this.isValidValue(event.target.value)) {
@@ -398,7 +398,7 @@ var MyInput = React.createClass({
   }
 });
 
-var MyForm = React.createClass({
+var MyForm = createReactClass({
   render: function () {
     return (
       <Formsy.Form>
@@ -411,7 +411,7 @@ var MyForm = React.createClass({
 
 #### <a name="isrequired">isRequired()</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
@@ -431,7 +431,7 @@ Returns true if the required property has been passed.
 
 #### <a name="showrequired">showRequired()</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
@@ -451,7 +451,7 @@ Lets you check if the form input component should indicate if it is a required f
 
 #### <a name="showerror">showError()</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
@@ -471,7 +471,7 @@ Lets you check if the form input component should indicate if there is an error.
 
 #### <a name="ispristine">isPristine()</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.currentTarget.value);
@@ -492,7 +492,7 @@ By default all formsy input elements are pristine, which means they are not "tou
 
 #### <a name="isformdisabled">isFormDisabled()</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   render: function () {
     return (
@@ -509,7 +509,7 @@ You can now disable the form itself with a prop and use **isFormDisabled()** ins
 
 #### <a name="isformsubmitted">isFormSubmitted()</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   render: function () {
     var error = this.isFormSubmitted() ? this.getErrorMessage() : null;
@@ -526,7 +526,7 @@ You can check if the form has been submitted.
 
 #### <a name="validate">validate</a>
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   changeValue: function (event) {
     this.setValue(event.target.value);
@@ -550,7 +550,7 @@ You can create custom validation inside a form element. The validate method defi
 #### <a name="formnovalidate">formNoValidate</a>
 To avoid native validation behavior on inputs, use the React `formNoValidate` property.
 ```jsx
-var MyInput = React.createClass({
+var MyInput = createReactClass({
   mixins: [Formsy.Mixin],
   render: function () {
     return (
@@ -584,7 +584,7 @@ export default HOC(MyInputHoc);
 Use an `innerRef` prop to get a reference to your DOM node.
 
 ```jsx
-var MyForm = React.createClass({
+var MyForm = createReactClass({
   componentDidMount() {
     this.searchInput.focus()
   },

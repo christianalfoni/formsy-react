@@ -1,7 +1,7 @@
 import React from 'react';
 import Formsy from 'formsy-react';
 
-const MySelect = React.createClass({
+const MySelect = createReactClass({
   mixins: [Formsy.Mixin],
 
   changeValue(event) {

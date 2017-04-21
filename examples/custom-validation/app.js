@@ -29,7 +29,7 @@ Formsy.addValidationRule('isYearOfBirth', (values, value) => {
   return value < currentYear && value > currentYear - 130;
 });
 
-const App = React.createClass({
+const App = createReactClass({
   submit(data) {
     alert(JSON.stringify(data, null, 4));
   },
@@ -44,7 +44,7 @@ const App = React.createClass({
   }
 });
 
-const DynamicInput = React.createClass({
+const DynamicInput = createReactClass({
   mixins: [Formsy.Mixin],
   getInitialState() {
     return { validationType: 'time' };
@@ -79,7 +79,7 @@ const DynamicInput = React.createClass({
   }
 });
 
-const Validations = React.createClass({
+const Validations = createReactClass({
   changeValidation(e) {
     this.props.changeValidation(e.target.value);
   },
