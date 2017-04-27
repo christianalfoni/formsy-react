@@ -115,13 +115,14 @@ module.exports = {
   },
 
   // We validate after the value has been set
-  setValue: function (value) {
+  setValue: function (value, cb) {
     this.setState({
       _value: value,
       _isPristine: false
     }, function () {
       this.context.formsy.validate(this);
       //this.props._validate(this);
+      if (typeof cb === 'function') cb();
     }.bind(this));
   },
   resetValue: function () {
@@ -131,6 +132,7 @@ module.exports = {
     }, function () {
       this.context.formsy.validate(this);
       //this.props._validate(this);
+      
     });
   },
   getValue: function () {
