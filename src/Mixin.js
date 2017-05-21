@@ -1,5 +1,6 @@
 var utils = require('./utils.js');
 var React = global.React || require('react');
+var PropTypes = require('prop-types');
 
 var convertValidationsToObject = function (validations) {
 
@@ -44,7 +45,7 @@ module.exports = {
     };
   },
   contextTypes: {
-    formsy: React.PropTypes.object // What about required?
+    formsy: PropTypes.object // What about required?
   },
   getDefaultProps: function () {
     return {
