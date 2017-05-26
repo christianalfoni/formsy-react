@@ -1,5 +1,5 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import sinon from 'sinon';
 import ReactDOM from 'react-dom';
