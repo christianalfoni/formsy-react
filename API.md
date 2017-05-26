@@ -37,6 +37,7 @@
   - [validate](#validate)
   - [formNoValidate](#formnovalidate)
 - [Formsy.HOC](#formsyhoc)
+  - [innerRef](#innerRef)
 - [Formsy.Decorator](#formsydecorator)
 - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
@@ -248,7 +249,7 @@ You should always use the [**getValue()**](#getvalue) method inside your formsy 
   }
 }}/>
 ```
-An comma separated list with validation rules. Take a look at [**Validators**](#validators) to see default rules. Use ":" to separate argument passed to the validator. The argument will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
+A comma separated list with validation rules. Take a look at [**Validators**](#validators) to see default rules. Use ":" to separate argument passed to the validator. The argument will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
 
 ```jsx
 <MyInputComponent name="fruit" validations="isIn:['apple', 'orange']"/>
@@ -566,7 +567,7 @@ The same methods as the mixin are exposed to the HOC version of the element comp
 ```jsx
 import {HOC} from 'formsy-react';
 
-class MyInput extends React.Component {
+class MyInputHoc extends React.Component {
   render() {
     return (
       <div>
@@ -575,7 +576,26 @@ class MyInput extends React.Component {
     );
   }
 };
-export default HOC(MyInput);
+export default HOC(MyInputHoc);
+```
+
+#### <a name="innerRef">innerRef</a>
+
+Use an `innerRef` prop to get a reference to your DOM node.
+
+```jsx
+var MyForm = React.createClass({
+  componentDidMount() {
+    this.searchInput.focus()
+  },
+  render: function () {
+    return (
+      <Formsy.Form>
+        <MyInputHoc name="search" innerRef={(c) => { this.searchInput = c; }} />
+      </Formsy.Form>
+    );
+  }
+})
 ```
 
 ### <a name="formsydecorator">Formsy.Decorator</a>
@@ -604,7 +624,7 @@ Formsy.addValidationRule('isFruit', function (values, value) {
 });
 ```
 ```jsx
-<MyInputComponent name="fruit" validations="'isFruit"/>
+<MyInputComponent name="fruit" validations="isFruit"/>
 ```
 Another example:
 ```jsx
@@ -636,6 +656,8 @@ Formsy.addValidationRule('isMoreThan', function (values, value, otherField) {
 }}/>
 ```
 Returns true if the value is thruthful
+
+_For more complicated regular expressions (emoji, international characters) you can use [xregexp](https://github.com/slevithan/xregexp). See [this comment](https://github.com/christianalfoni/formsy-react/issues/407#issuecomment-266306783) for an example._
 
 **isEmail**
 ```jsx

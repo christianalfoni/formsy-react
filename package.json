@@ -1,6 +1,6 @@
 {
   "name": "mki-formsy-react",
-  "version": "0.22.0",
+  "version": "0.23.0",
   "description": "A form input builder and validator for React JS",
   "repository": {
     "type": "git",
