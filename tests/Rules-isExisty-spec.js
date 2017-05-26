@@ -10,7 +10,7 @@ const TestInput = InputFactory({
   }
 });
 
-const TestForm = React.createClass({
+class TestForm extends React.Component {
   render() {
     return (
       <Formsy.Form>
@@ -18,7 +18,7 @@ const TestForm = React.createClass({
       </Formsy.Form>
     );
   }
-});
+}
 
 export default {
 
