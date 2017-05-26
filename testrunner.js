@@ -1,9 +1,11 @@
 import path from 'path';
 import testrunner from 'nodeunit/lib/reporters/default.js';
-import {jsdom} from 'jsdom';
+import { JSDOM } from 'jsdom';
 
-global.document = jsdom();
-global.window = document.defaultView;
+const { window } = new JSDOM();
+const { document } = window;
+global.document = document;
+global.window = window;
 global.navigator = global.window.navigator;
 
 testrunner.run(['tests'], {

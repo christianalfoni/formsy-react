@@ -1,5 +1,6 @@
 import React from 'react';
 import { HOC as formsyHoc } from './../..';
+import createReactClass from 'create-react-class';
 
 const defaultProps = {
   methodOnWrappedInstance(param) {
@@ -10,4 +11,4 @@ const defaultProps = {
   },
 };
 
-export default formsyHoc(React.createClass(defaultProps));
+export default formsyHoc(createReactClass(defaultProps));

@@ -12,9 +12,9 @@ module.exports = {
     library: 'Formsy'
   },
   module: {
-    loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
-      { test: /\.json$/, loader: 'json' }
+    rules: [
+      { test: /\.js$/, exclude: /node_modules/, use: ['babel-loader'] },
+      { test: /\.json$/, use: ['json-loader'] }
     ]
   }
 

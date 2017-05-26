@@ -1,4 +1,6 @@
 var React = global.React || require('react');
+import PropTypes from "prop-types";
+import createReactClass from 'create-react-class';
 var Formsy = {};
 var validationRules = require('./validationRules.js');
 var formDataToObject = require('form-data-to-object');
@@ -21,7 +23,7 @@ Formsy.addValidationRule = function (name, func) {
   validationRules[name] = func;
 };
 
-Formsy.Form = React.createClass({
+Formsy.Form = createReactClass({
   displayName: 'Formsy',
   getInitialState: function () {
     return {
@@ -46,7 +48,7 @@ Formsy.Form = React.createClass({
   },
 
   childContextTypes: {
-    formsy: React.PropTypes.object
+    formsy: PropTypes.object
   },
   getChildContext: function () {
     return {
