@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Form } from 'formsy-react';
+import createReactClass from 'create-react-class';
 
 import MyInput from './../components/Input';
 import MySelect from './../components/Select';
@@ -11,7 +12,7 @@ const user = {
   hair: 'brown'
 };
 
-const App = React.createClass({
+const App = createReactClass({
   submit(data) {
     alert(JSON.stringify(data, null, 4));
   },

@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Form } from 'formsy-react';
+import createReactClass from 'create-react-class';
 
 import MyInput from './../components/Input';
 
-const App = React.createClass({
+const App = createReactClass({
   getInitialState() {
     return { canSubmit: false };
   },

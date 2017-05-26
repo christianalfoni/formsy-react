@@ -1,5 +1,6 @@
 var utils = require('./utils.js');
 var React = global.React || require('react');
+var PropTypes = require('prop-types');
 
 var convertValidationsToObject = function (validations) {
 
@@ -33,18 +34,22 @@ var convertValidationsToObject = function (validations) {
 module.exports = {
   getInitialState: function () {
     return {
-      _value: this.props.value,
+      _value: this._getPristineValue(),
       _isRequired: false,
       _isValid: true,
       _isPristine: true,
-      _pristineValue: this.props.value,
+      _pristineValue: this._getPristineValue(),
       _validationError: [],
       _externalError: null,
       _formSubmitted: false
     };
   },
+  _getPristineValue: function() {
+    // matches React https://github.com/facebook/react/blob/d684b1598d16936f9539b48310fa4584193063cb/src/renderers/dom/client/wrappers/ReactDOMInput.js#L79
+    return this.props.value != null ? this.props.value : this.props.defaultValue;
+  },
   contextTypes: {
-    formsy: React.PropTypes.object // What about required?
+    formsy: PropTypes.object // What about required?
   },
   getDefaultProps: function () {
     return {

@@ -1,5 +1,6 @@
 import React from 'react';
 import Formsy from 'formsy-react';
+import createReactClass from 'create-react-class';
 
 function contains(container, item, cmp) {
   for (const it of container) {
@@ -10,7 +11,7 @@ function contains(container, item, cmp) {
   return false;
 }
 
-const MyRadioGroup = React.createClass({
+const MyRadioGroup = createReactClass({
   mixins: [Formsy.Mixin],
   getInitialState() {
     return { value: [], cmp: (a, b) => a === b };

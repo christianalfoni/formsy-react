@@ -1,4 +1,4 @@
-formsy-react  [![GitHub release](https://img.shields.io/github/release/christianalfoni/formsy-react.svg)](https://github.com/christianalfoni/formsy-react/releases) [![Build Status](https://travis-ci.org/christianalfoni/formsy-react.svg?branch=master)](https://travis-ci.org/christianalfoni/formsy-react)
+mki-formsy-react  [![GitHub release](https://img.shields.io/npm/v/mki-formsy-react.svg)](https://www.npmjs.com/package/mki-formsy-react)
 ============
 
 A form input builder and validator for React JS
@@ -49,7 +49,7 @@ Complete API reference is available [here](/API.md).
 ```jsx
   import Formsy from 'formsy-react';
 
-  const MyAppForm = React.createClass({
+  const MyAppForm = createReactClass({
     getInitialState() {
       return {
         canSubmit: false
@@ -85,7 +85,7 @@ This code results in a form with a submit button that will run the `submit` meth
 ```jsx
   import Formsy from 'formsy-react';
 
-  const MyOwnInput = React.createClass({
+  const MyOwnInput = createReactClass({
 
     // Add the Formsy Mixin
     mixins: [Formsy.Mixin],

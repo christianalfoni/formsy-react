@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Form } from 'formsy-react';
+import createReactClass from 'create-react-class';
 
 import MyInput from './../components/Input';
 import MySelect from './../components/Select';
@@ -54,7 +55,7 @@ const Fields = props => {
   );
 };
 
-const App = React.createClass({
+const App = createReactClass({
   getInitialState() {
     return { fields: [], canSubmit: false };
   },

@@ -1,5 +1,6 @@
 import React from 'react';
 import Formsy from './../..';
+import createReactClass from 'create-react-class';
 
 const defaultProps = {
   mixins: [Formsy.Mixin],
@@ -15,7 +16,7 @@ const defaultProps = {
 };
 
 export function InputFactory(props) {
-  return React.createClass(Object.assign(defaultProps, props));
+  return createReactClass(Object.assign(defaultProps, props));
 }
 
-export default React.createClass(defaultProps);
+export default createReactClass(defaultProps);
