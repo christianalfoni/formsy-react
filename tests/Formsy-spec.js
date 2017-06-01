@@ -247,6 +247,15 @@ export default {
 
     },
 
+    'should not allow a custom validation to be overwritten': function (test) {
+
+      test.doesNotThrow(() => {Formsy.addValidationRule('ruleC')}, Error);
+      test.throws(() => {Formsy.addValidationRule('ruleC')}, Error);
+
+      test.done();
+
+    },
+
     'should invalidate a form if dynamically inserted input is invalid': function (test) {
 
       const isInValidSpy = sinon.spy();
@@ -332,21 +341,21 @@ export default {
 
     'runs multiple validations': function (test) {
 
-      const ruleA = sinon.spy();
-      const ruleB = sinon.spy();
-      Formsy.addValidationRule('ruleA', ruleA);
-      Formsy.addValidationRule('ruleB', ruleB);
+      const ruleD = sinon.spy();
+      const ruleE = sinon.spy();
+      Formsy.addValidationRule('ruleD', ruleD);
+      Formsy.addValidationRule('ruleE', ruleE);
 
       const form = TestUtils.renderIntoDocument(
         <Formsy.Form>
-          <TestInput name="one" validations="ruleA,ruleB" value="foo" />
+          <TestInput name="one" validations="ruleD,ruleE" value="foo" />
         </Formsy.Form>
       );
 
       const input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
       TestUtils.Simulate.change(ReactDOM.findDOMNode(input), {target: {value: 'bar'}});
-      test.equal(ruleA.calledWith({one: 'bar'}, 'bar', true), true);
-      test.equal(ruleB.calledWith({one: 'bar'}, 'bar', true), true);
+      test.equal(ruleD.calledWith({one: 'bar'}, 'bar', true), true);
+      test.equal(ruleE.calledWith({one: 'bar'}, 'bar', true), true);
       test.done();
 
     }
