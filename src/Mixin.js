@@ -1,3 +1,4 @@
+var PropTypes = require('prop-types');
 var utils = require('./utils.js');
 var React = global.React || require('react');
 
@@ -44,7 +45,7 @@ module.exports = {
     };
   },
   contextTypes: {
-    formsy: React.PropTypes.object // What about required?
+    formsy: PropTypes.object // What about required?
   },
   getDefaultProps: function () {
     return {

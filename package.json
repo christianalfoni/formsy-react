@@ -1,6 +1,6 @@
 {
   "name": "formsy-react",
-  "version": "0.19.2",
+  "version": "0.19.3",
   "description": "A form input builder and validator for React JS",
   "repository": {
     "type": "git",
@@ -8,7 +8,7 @@
   },
   "main": "lib/main.js",
   "scripts": {
-    "deploy": "NODE_ENV=production webpack -p --config webpack.production.config.js",
+    "build": "NODE_ENV=production webpack -p --config webpack.production.config.js",
     "test": "babel-node testrunner",
     "examples": "webpack-dev-server --config examples/webpack.config.js --content-base examples",
     "prepublish": "babel ./src/ -d ./lib/"
@@ -33,6 +33,7 @@
     "babel-preset-stage-2": "^6.5.0",
     "jsdom": "^6.5.1",
     "nodeunit": "^0.9.1",
+    "prop-types": "^15.5.10",
     "react": "^15.0.0",
     "react-addons-pure-render-mixin": "^15.0.0",
     "react-addons-test-utils": "^15.0.0",
