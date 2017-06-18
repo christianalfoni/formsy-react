@@ -549,7 +549,7 @@ export default {
       mixins: [Formsy.Mixin, PureRenderMixin],
       render() {
         renderSpy();
-        return <input type={this.props.type} value={this.getValue()} onChange={this.updateValue}/>;
+        return <input type={this.props.type} value={this.getValue()} onChange={this.changeValue}/>;
       }
     });
 

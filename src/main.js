@@ -99,6 +99,12 @@ Formsy.Form = createReactClass({
     this.resetModel(data);
   },
 
+  // updates all inputs and their _pristineValues to specified data
+  update: function(data) {
+    this.setFormPristine(true);
+    this.updateModel(data);
+  },
+
   // Update model, submit to url prop and send the model
   submit: function (event) {
 
@@ -152,6 +158,18 @@ Formsy.Form = createReactClass({
     this.validateForm();
   },
 
+  // Update each key in the model to the specified value
+  updateModel: function (data) {
+    this.inputs.forEach(component => {
+      var name = component.props.name;
+      if (data && data.hasOwnProperty(name)) {
+        component.updateValue(data[name]);
+      } else {
+        component.resetValue();
+      }
+    });
+    this.validateForm();
+  },
   setInputValidationErrors: function (errors) {
     this.inputs.forEach(component => {
       var name = component.props.name;
@@ -435,6 +453,7 @@ Formsy.Form = createReactClass({
       onInvalidSubmit,
       onChange,
       reset,
+      update,
       preventExternalInvalidation,
       onSuccess,
       onError,

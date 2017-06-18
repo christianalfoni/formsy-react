@@ -125,6 +125,17 @@ module.exports = {
       //this.props._validate(this);
     }.bind(this));
   },
+  // update the value, along with its pristineValue and pristineFlag
+  updateValue: function (value) {
+    this.setState({
+      _value: value,
+      _isPristine: true,
+      _pristineValue: value
+    }, function () {
+      this.context.formsy.validate(this);
+      //this.props._validate(this);
+    }.bind(this));
+  },
   resetValue: function () {
     this.setState({
       _value: this.state._pristineValue,
