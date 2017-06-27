@@ -1,11 +1,14 @@
 var React = global.React || require('react');
+var createReactClass = require('create-react-class');
 var Mixin = require('./Mixin.js');
 module.exports = function (Component) {
-  return React.createClass({
+  return createReactClass({
     displayName: 'Formsy(' + getDisplayName(Component) + ')',
     mixins: [Mixin],
+
     render: function () {
-      return React.createElement(Component, {
+      const { innerRef } = this.props;
+      const propsForElement = {
         setValidations: this.setValidations,
         setValue: this.setValue,
         resetValue: this.resetValue,
@@ -22,7 +25,12 @@ module.exports = function (Component) {
         showError: this.showError,
         isValidValue: this.isValidValue,
         ...this.props
-      });
+      };
+
+      if (innerRef) {
+        propsForElement.ref = innerRef;
+      }
+      return React.createElement(Component, propsForElement);
     }
   });
 };
