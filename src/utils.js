@@ -36,7 +36,9 @@ module.exports = {
       return a.toString() === b.toString();
     } else if (typeof a === 'object' && a !== null && b !== null) {
       return !this.objectsDiffer(a, b);
-    }
+    } else if (typeof a === 'number' && isNaN(a) && isNaN(b)) {
+      return true;
+    } 
 
     return a === b;
   },
