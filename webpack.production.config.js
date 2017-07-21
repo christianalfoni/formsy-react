@@ -4,7 +4,7 @@ module.exports = {
 
   devtool: 'source-map',
   entry: path.resolve(__dirname, 'src', 'main.js'),
-  externals: 'react',
+  externals: [ 'react', 'create-react-class' ],
   output: {
     path: path.resolve(__dirname, 'release'),
     filename: 'formsy-react.js',
