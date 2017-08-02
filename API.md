@@ -36,9 +36,8 @@
   - [isFormSubmitted()](#isformsubmitted)
   - [validate](#validate)
   - [formNoValidate](#formnovalidate)
-- [Formsy.HOC](#formsyhoc)
+- [Formsy.Wrapper](#formsywrapper)
   - [innerRef](#innerRef)
-- [Formsy.Decorator](#formsydecorator)
 - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
 
@@ -562,7 +561,7 @@ var MyInput = React.createClass({
 });
 ```
 
-### <a name="formsyhoc">Formsy.HOC</a>
+### <a name="formsywrapper">Formsy.Wrapper</a>
 The same methods as the mixin are exposed to the HOC version of the element component, though through the `props`, not on the instance.
 ```jsx
 import {HOC} from 'formsy-react';
