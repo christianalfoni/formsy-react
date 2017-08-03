@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/christianalfoni/formsy-react.git"
   },
-  "main": "lib/main.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "NODE_ENV=production webpack -p --config webpack.production.config.js",
     "test": "babel-node testrunner",
@@ -23,7 +23,8 @@
     "react-component"
   ],
   "dependencies": {
-    "form-data-to-object": "^0.2.0"
+    "form-data-to-object": "^0.2.0",
+    "hoist-non-react-statics": "^2.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",

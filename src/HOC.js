@@ -1,5 +1,6 @@
 var React = global.React || require('react');
 var PropTypes = require('prop-types');
+var hoistNonReactStatic = require('hoist-non-react-statics');
 var utils = require('./utils.js');
 
 var convertValidationsToObject = function (validations) {
@@ -29,9 +30,9 @@ var convertValidationsToObject = function (validations) {
     return validations || {};
 };
 
-module.exports = function (WrappedComponent) {
-    return class extends React.Component {
-        static displayName = 'Formsy(' + getDisplayName(WrappedComponent) + ')';
+module.exports = function (Component) {
+    class WrappedComponent extends React.Component {
+        static displayName = 'Formsy(' + getDisplayName(Component) + ')';
 
         state = {
             _value: this.props.value,
@@ -196,9 +197,10 @@ module.exports = function (WrappedComponent) {
                 propsForElement.ref = innerRef;
             }
 
-            return <WrappedComponent {...propsForElement} />
+            return <Component {...propsForElement} />
         }
     }
+    return hoistNonReactStatic(WrappedComponent, Component);
 };
 
 function getDisplayName(Component) {

@@ -254,7 +254,7 @@ Formsy.Form = class FormsyForm extends React.Component {
         var currentValues = this.getCurrentValues();
         var validationErrors = component.props.validationErrors;
         var validationError = component.props.validationError;
-        value = arguments.length === 2 ? value : component.state._value;
+        value = value ? value : component.state._value;
 
         var validationResults = this.runRules(value, currentValues, component._validations);
         var requiredResults = this.runRules(value, currentValues, component._requiredValidations);

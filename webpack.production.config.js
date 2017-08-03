@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = {
 
   devtool: 'source-map',
-  entry: path.resolve(__dirname, 'src', 'main.js'),
+  entry: path.resolve(__dirname, 'src', 'index.js'),
   externals: 'react',
   output: {
     path: path.resolve(__dirname, 'release'),
