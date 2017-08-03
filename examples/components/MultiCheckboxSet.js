@@ -29,7 +29,7 @@ class MyRadioGroup extends React.Component {
       newValue = this.state.value.filter(it => !this.state.cmp(it, value));
     }
 
-    this.setValue(newValue);
+    this.props.setValue(newValue);
     this.setState({ value: newValue });
   }
 

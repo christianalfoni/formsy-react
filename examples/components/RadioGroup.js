@@ -2,16 +2,18 @@ import React from 'react';
 import Formsy from 'formsy-react';
 
 class MyRadioGroup extends React.Component {
+  state = {};
+
   componentDidMount() {
     const value = this.props.value;
     this.props.setValue(value);
     this.setState({ value });
-  },
+  }
 
   changeValue = (value) => {
     this.props.setValue(value);
     this.setState({ value });
-  },
+  }
 
   render() {
     const className = 'form-group' + (this.props.className || ' ') +

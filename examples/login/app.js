@@ -4,19 +4,17 @@ import { Form } from 'formsy-react';
 
 import MyInput from './../components/Input';
 
-const App = React.createClass({
-  getInitialState() {
-    return { canSubmit: false };
-  },
+class App extends React.Component {
+  state = { canSubmit: false };
   submit(data) {
     alert(JSON.stringify(data, null, 4));
-  },
-  enableButton() {
+  }
+  enableButton = () => {
     this.setState({ canSubmit: true });
-  },
-  disableButton() {
+  }
+  disableButton = () => {
     this.setState({ canSubmit: false });
-  },
+  }
   render() {
     return (
       <Form onSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton} className="login">
@@ -26,6 +24,6 @@ const App = React.createClass({
       </Form>
     );
   }
-});
+}
 
 ReactDOM.render(<App/>, document.getElementById('example'));

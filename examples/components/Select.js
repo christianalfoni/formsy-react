@@ -3,7 +3,7 @@ import Formsy from 'formsy-react';
 
 class MySelect extends React.Component {
   changeValue = (event) => {
-    this.setValue(event.currentTarget.value);
+    this.props.setValue(event.currentTarget.value);
   }
 
   render() {
@@ -29,4 +29,4 @@ class MySelect extends React.Component {
   }
 }
 
-export default MySelect;
+export default Formsy.Wrapper(MySelect);
