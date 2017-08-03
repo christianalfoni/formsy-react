@@ -48,25 +48,21 @@ Complete API reference is available [here](/API.md).
 ```jsx
   import Formsy from 'formsy-react';
 
-  const MyAppForm = React.createClass({
-    getInitialState() {
-      return {
-        canSubmit: false
-      }
-    },
-    enableButton() {
+  class MyAppForm extends React.Component {
+    state = { canSubmit: false };
+    enableButton = () => {
       this.setState({
         canSubmit: true
       });
-    },
-    disableButton() {
+    }
+    disableButton = () => {
       this.setState({
         canSubmit: false
       });
-    },
+    }
     submit(model) {
       someDep.saveEmail(model.email);
-    },
+    }
     render() {
       return (
         <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
@@ -84,15 +80,12 @@ This code results in a form with a submit button that will run the `submit` meth
 ```jsx
   import Formsy from 'formsy-react';
 
-  const MyOwnInput = React.createClass({
-
-    // Add the Formsy Mixin
-    mixins: [Formsy.Mixin],
+  class MyOwnInput extends React.Component {
 
     // setValue() will set the value of the component, which in
     // turn will validate it and the rest of the form
     changeValue(event) {
-      this.setValue(event.currentTarget.value);
+      this.props.setValue(event.currentTarget.value);
     },
 
     render() {
@@ -101,20 +94,23 @@ This code results in a form with a submit button that will run the `submit` meth
       // when the value is empty and the required prop is
       // passed to the input. showError() is true when the
       // value typed is invalid
-      const className = this.showRequired() ? 'required' : this.showError() ? 'error' : null;
+      const className = this.props.showRequired() ? 'required' : this.props.showError() ? 'error' : null;
 
       // An error message is returned ONLY if the component is invalid
       // or the server has returned an error message
-      const errorMessage = this.getErrorMessage();
+      const errorMessage = this.props.getErrorMessage();
 
       return (
         <div className={className}>
-          <input type="text" onChange={this.changeValue} value={this.getValue()}/>
+          <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>
           <span>{errorMessage}</span>
         </div>
       );
     }
   });
+
+  // Wrap the component in the Formsy.Wrapper higher-order component
+  export default Formsy.Wrapper(MyOwnInput);
 ```
 The form element component is what gives the form validation functionality to whatever you want to put inside this wrapper. You do not have to use traditional inputs, it can be anything you want and the value of the form element can also be anything you want. As you can see it is very flexible, you just have a small API to help you identify the state of the component and set its value.
 
