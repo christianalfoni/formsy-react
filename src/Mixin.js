@@ -55,6 +55,7 @@ module.exports = {
   },
 
   componentWillMount: function () {
+    this.canSetValue = true;
     var configure = function () {
       this.setValidations(this.props.validations, this.props.required);
 
@@ -103,6 +104,7 @@ module.exports = {
 
   // Detach it when component unmounts
   componentWillUnmount: function () {
+    this.canSetValue = false;
     this.context.formsy.detachFromForm(this);
     //this.props._detachFromForm(this);
   },
@@ -117,6 +119,9 @@ module.exports = {
 
   // We validate after the value has been set
   setValue: function (value) {
+    if (!this.canSetValue) {
+      return
+    }
     this.setState({
       _value: value,
       _isPristine: false
