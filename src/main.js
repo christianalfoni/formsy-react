@@ -259,16 +259,15 @@ Formsy.Form = createReactClass({
     var validationError = component.props.validationError;
     value = arguments.length === 2 ? value : component.state._value;
 
-    var validationResults = this.runRules(value, currentValues, component._validations);
-    var requiredResults = this.runRules(value, currentValues, component._requiredValidations);
-
-    // the component defines an explicit validate function
-    if (typeof component.validate === "function") {
-      validationResults.failed = component.validate() ? [] : ['failed'];
+    if (this.cachedValues[component.props.name] === value) {
+      return new Promise((resolve, reject) => { resolve({
+        isValid: component.isValid(),
+        isRequired: component.isRequired(),
+        error: (component.props.validationError && component.props.validationError !== '') ? [component.props.validationError] : component.props.validationErrors
+      }) } )
     }
 
-    var isRequired = Object.keys(component._requiredValidations).length ? !!requiredResults.success.length : false;
-    var isValid = !validationResults.failed.length && !(this.props.validationErrors && this.props.validationErrors[component.props.name]);
+    this.cachedValues[component.props.name] = value
 
     return Promise.all([
       this.runRules(value, currentValues, component._validations),
