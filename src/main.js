@@ -262,7 +262,7 @@ Formsy.Form = createReactClass({
     if (this.cachedValues[component.props.name] === value) {
       return new Promise((resolve, reject) => { resolve({
         isValid: component.isValid(),
-        isRequired: component.isRequired(),
+        isRequired: component.showRequired(),
         error: (component.props.validationError && component.props.validationError !== '') ? [component.props.validationError] : component.props.validationErrors
       }) } )
     }
