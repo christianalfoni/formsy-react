@@ -260,11 +260,29 @@ Formsy.Form = createReactClass({
     value = arguments.length === 2 ? value : component.state._value;
 
     if (this.cachedValues[component.props.name] === value) {
-      return new Promise((resolve, reject) => { resolve({
-        isValid: component.isValid(),
-        isRequired: component.showRequired(),
-        error: (component.props.validationError && component.props.validationError !== '') ? [component.props.validationError] : component.props.validationErrors
-      }) } )
+      const isValid = component.isValid();
+      const isRequired = component.showRequired();
+      const error = function(){
+        if (isValid && !isRequired) {
+          return emptyArray;
+        }
+        if (isRequired) {
+          return null;
+        }
+        if (component.props.validationError
+          && component.props.validationError !== '') {
+          return [component.props.validationError];
+        } else {
+          component.props.validationErrors
+        }
+      }();
+      return new Promise(function (resolve, reject) {
+        resolve({
+          isValid: component.isValid(),
+          isRequired: component.showRequired(),
+          error: error,
+        });
+      });
     }
 
     this.cachedValues[component.props.name] = value
