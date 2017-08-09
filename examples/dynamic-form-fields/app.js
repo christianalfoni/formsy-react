@@ -54,30 +54,28 @@ const Fields = props => {
   );
 };
 
-const App = React.createClass({
-  getInitialState() {
-    return { fields: [], canSubmit: false };
-  },
+class App extends React.Component {
+  state = { fields: [], canSubmit: false };
   submit(data) {
     alert(JSON.stringify(data, null, 4));
-  },
-  addField(fieldData) {
+  }
+  addField = (fieldData) => {
     fieldData.validations = fieldData.validations.length ?
       fieldData.validations.reduce((a, b) => Object.assign({}, a, b)) :
       null;
     fieldData.id = Date.now();
     this.setState({ fields: this.state.fields.concat(fieldData) });
-  },
-  removeField(pos) {
+  }
+  removeField = (pos) => {
     const fields = this.state.fields;
     this.setState({ fields: fields.slice(0, pos).concat(fields.slice(pos+1)) })
-  },
-  enableButton() {
+  }
+  enableButton = () => {
     this.setState({ canSubmit: true });
-  },
-  disableButton() {
+  }
+  disableButton = () => {
     this.setState({ canSubmit: false });
-  },
+  }
   render() {
     const { fields, canSubmit } = this.state;
     return (
@@ -108,6 +106,6 @@ const App = React.createClass({
       </div>
     );
   }
-});
+}
 
 ReactDOM.render(<App/>, document.getElementById('example'));

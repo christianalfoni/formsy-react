@@ -1,16 +1,16 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 
 import Formsy from './..';
 import { InputFactory } from './utils/TestInput';
 
 const TestInput = InputFactory({
   render() {
-    return <input value={this.getValue()} readOnly/>;
+    return <input value={this.props.getValue()} readOnly/>;
   }
 });
 
-const TestForm = React.createClass({
+class TestForm extends React.Component {
   render() {
     return (
       <Formsy.Form>
@@ -18,7 +18,7 @@ const TestForm = React.createClass({
       </Formsy.Form>
     );
   }
-});
+}
 
 export default {
 

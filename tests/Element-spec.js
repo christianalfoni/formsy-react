@@ -1,5 +1,5 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import sinon from 'sinon';
 
@@ -30,8 +30,8 @@ export default {
 
     let reset = null;
     const Input = InputFactory({
-      componentDidMount() {
-        reset = this.resetValue;
+      componentDidMount: function() {
+          reset = this.props.resetValue;
       }
     });
     const form = TestUtils.renderIntoDocument(
@@ -53,8 +53,8 @@ export default {
 
     let getErrorMessage = null;
     const Input = InputFactory({
-      componentDidMount() {
-        getErrorMessage = this.getErrorMessage;
+      componentDidMount: function() {
+        getErrorMessage = this.props.getErrorMessage;
       }
     });
     TestUtils.renderIntoDocument(
@@ -73,12 +73,12 @@ export default {
 
     let isValid = null;
     const Input = InputFactory({
-      componentDidMount() {
-        isValid = this.isValid;
+      componentDidMount: function() {
+        isValid = this.props.isValid;
       }
     });
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form url="/users">
+      <Formsy.Form action="/users">
         <Input name="foo" value="foo" validations="isEmail"/>
       </Formsy.Form>
     );
@@ -96,12 +96,12 @@ export default {
 
     const isRequireds = [];
     const Input = InputFactory({
-      componentDidMount() {
-        isRequireds.push(this.isRequired);
+      componentDidMount: function() {
+        isRequireds.push(this.props.isRequired);
       }
     });
     TestUtils.renderIntoDocument(
-      <Formsy.Form url="/users">
+      <Formsy.Form action="/users">
         <Input name="foo" value=""/>
         <Input name="foo" value="" required/>
         <Input name="foo" value="foo" required="isLength:3"/>
@@ -120,12 +120,12 @@ export default {
 
     const showRequireds = [];
     const Input = InputFactory({
-      componentDidMount() {
-        showRequireds.push(this.showRequired);
+      componentDidMount: function() {
+        showRequireds.push(this.props.showRequired);
       }
     });
     TestUtils.renderIntoDocument(
-      <Formsy.Form url="/users">
+      <Formsy.Form action="/users">
         <Input name="A" value="foo"/>
         <Input name="B" value="" required/>
         <Input name="C" value=""/>
@@ -144,12 +144,12 @@ export default {
 
     let isPristine = null;
     const Input = InputFactory({
-      componentDidMount() {
-        isPristine = this.isPristine;
+      componentDidMount: function() {
+        isPristine = this.props.isPristine;
       }
     });
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form url="/users">
+      <Formsy.Form action="/users">
         <Input name="A" value="foo"/>
       </Formsy.Form>
     );
@@ -165,23 +165,21 @@ export default {
 
   'should allow an undefined value to be updated to a value': function (test) {
 
-    const TestForm = React.createClass({
-      getInitialState() {
-        return {value: undefined};
-      },
-      changeValue() {
+    class TestForm extends React.Component {
+      state = {value: undefined};
+      changeValue = () => {
         this.setState({
           value: 'foo'
         });
-      },
+      }
       render() {
         return (
-          <Formsy.Form url="/users">
-            <TestInput name="A" value={this.state.value}/>
+          <Formsy.Form action="/users">
+            <TestInput name="A" value={this.state.value} />
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     form.changeValue();
@@ -195,7 +193,7 @@ export default {
 
   'should be able to test a values validity': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form>
@@ -203,7 +201,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const input = TestUtils.findRenderedComponentWithType(form, TestInput);
@@ -215,7 +213,7 @@ export default {
 
   'should be able to use an object as validations property': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form>
@@ -225,7 +223,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const input = TestUtils.findRenderedComponentWithType(form, TestInput);
@@ -238,7 +236,7 @@ export default {
 
   'should be able to pass complex values to a validation rule': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form>
@@ -248,7 +246,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
@@ -263,13 +261,13 @@ export default {
 
   'should be able to run a function to validate': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       customValidationA(values, value) {
         return value === 'foo';
-      },
+      }
       customValidationB(values, value) {
         return value === 'foo' && values.A === 'foo';
-      },
+      }
       render() {
         return (
           <Formsy.Form>
@@ -282,7 +280,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const inputComponent = TestUtils.scryRenderedComponentsWithType(form, TestInput);
@@ -299,7 +297,7 @@ export default {
 
   'should not override error messages with error messages passed by form if passed eror messages is an empty object': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form validationErrors={{}}>
@@ -309,7 +307,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
@@ -322,7 +320,7 @@ export default {
 
   'should override all error messages with error messages passed by form': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form validationErrors={{A: 'bar'}}>
@@ -332,7 +330,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
@@ -344,7 +342,7 @@ export default {
 
   'should override validation rules with required rules': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form>
@@ -362,7 +360,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
@@ -374,7 +372,7 @@ export default {
 
   'should fall back to default error message when non exist in validationErrors map': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form>
@@ -389,7 +387,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
@@ -401,7 +399,7 @@ export default {
 
   'should not be valid if it is required and required rule is true': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
           <Formsy.Form>
@@ -411,7 +409,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
@@ -423,13 +421,11 @@ export default {
 
   'should handle objects and arrays as values': function (test) {
 
-    const TestForm = React.createClass({
-      getInitialState() {
-        return {
-          foo: {foo: 'bar'},
-          bar: ['foo']
-        };
-      },
+    class TestForm extends React.Component {
+      state = {
+        foo: {foo: 'bar'},
+        bar: ['foo']
+      }
       render() {
         return (
           <Formsy.Form>
@@ -438,7 +434,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     form.setState({
@@ -456,17 +452,13 @@ export default {
 
   'should handle isFormDisabled with dynamic inputs': function (test) {
 
-    const TestForm = React.createClass({
-      getInitialState() {
-        return {
-          bool: true
-        };
-      },
-      flip() {
+    class TestForm extends React.Component {
+      state = { bool: true }
+      flip = () => {
         this.setState({
           bool: !this.state.bool
         });
-      },
+      }
       render() {
         return (
           <Formsy.Form disabled={this.state.bool}>
@@ -477,7 +469,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const input = TestUtils.findRenderedComponentWithType(form, TestInput);
@@ -491,10 +483,10 @@ export default {
 
   'should allow for dot notation in name which maps to a deep object': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       onSubmit(model) {
         test.deepEqual(model, {foo: {bar: 'foo', test: 'test'}});
-      },
+      }
       render() {
         return (
           <Formsy.Form onSubmit={this.onSubmit}>
@@ -503,7 +495,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     test.expect(1);
@@ -517,10 +509,10 @@ export default {
 
   'should allow for application/x-www-form-urlencoded syntax and convert to object': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       onSubmit(model) {
         test.deepEqual(model, {foo: ['foo', 'bar']});
-      },
+      }
       render() {
         return (
           <Formsy.Form onSubmit={this.onSubmit}>
@@ -529,7 +521,7 @@ export default {
           </Formsy.Form>
         );
       }
-    });
+    }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     test.expect(1);
@@ -546,10 +538,10 @@ export default {
     var renderSpy = sinon.spy();
 
     const Input = InputFactory({
-      mixins: [Formsy.Mixin, PureRenderMixin],
-      render() {
+      shouldComponentUpdate: function() { return false },
+      render: function() {
         renderSpy();
-        return <input type={this.props.type} value={this.getValue()} onChange={this.updateValue}/>;
+        return <input type={this.props.type} value={this.props.getValue()} onChange={this.updateValue}/>;
       }
     });
 

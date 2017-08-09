@@ -11,13 +11,13 @@ const user = {
   hair: 'brown'
 };
 
-const App = React.createClass({
+class App extends React.Component {
   submit(data) {
     alert(JSON.stringify(data, null, 4));
-  },
-  resetForm() {
+  }
+  resetForm = () => {
     this.refs.form.reset();
-  },
+  }
   render() {
     return (
       <Formsy.Form ref="form" onSubmit={this.submit} className="form">
@@ -39,6 +39,6 @@ const App = React.createClass({
       </Formsy.Form>
     );
   }
-});
+}
 
 ReactDOM.render(<App/>, document.getElementById('example'));

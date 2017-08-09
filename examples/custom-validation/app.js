@@ -29,60 +29,58 @@ Formsy.addValidationRule('isYearOfBirth', (values, value) => {
   return value < currentYear && value > currentYear - 130;
 });
 
-const App = React.createClass({
+class App extends React.Component {
   submit(data) {
     alert(JSON.stringify(data, null, 4));
-  },
+  }
   render() {
     return (
       <Formsy.Form onSubmit={this.submit} className="custom-validation">
         <MyInput name="year" title="Year of Birth" type="number" validations="isYearOfBirth" validationError="Please type your year of birth" />
-        <DynamicInput name="dynamic" title="..." />
+        <FormsyDynamicInput name="dynamic" title="..." />
         <button type="submit">Submit</button>
       </Formsy.Form>
     );
   }
-});
+}
 
-const DynamicInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  getInitialState() {
-    return { validationType: 'time' };
-  },
-  changeValue(event) {
-    this.setValue(event.currentTarget.value);
-  },
-  changeValidation(validationType) {
+class DynamicInput extends React.Component {
+  state = { validationType: 'time' };
+  changeValue = (event) => {
+    this.props.setValue(event.currentTarget.value);
+  }
+  changeValidation = (validationType) => {
     this.setState({ validationType: validationType });
-    this.setValue(this.getValue());
-  },
-  validate() {
-    const value = this.getValue();
+    this.props.setValue(this.props.getValue());
+  }
+  validate = () => {
+    const value = this.props.getValue();
     console.log(value, this.state.validationType);
     return value ? validators[this.state.validationType].regexp.test(value) : true;
-  },
-  getCustomErrorMessage() {
-    return this.showError() ? validators[this.state.validationType].message : '';
-  },
+  }
+  getCustomErrorMessage = () => {
+    return this.props.showError() ? validators[this.state.validationType].message : '';
+  }
   render() {
-    const className = 'form-group' + (this.props.className || ' ') + (this.showRequired() ? 'required' : this.showError() ? 'error' : null);
+    const className = 'form-group' + (this.props.className || ' ') + (this.props.showRequired() ? 'required' : this.props.showError() ? 'error' : null);
     const errorMessage = this.getCustomErrorMessage();
 
     return (
       <div className={className}>
         <label htmlFor={this.props.name}>{this.props.title}</label>
-        <input type='text' name={this.props.name} onChange={this.changeValue} value={this.getValue() || ''}/>
+        <input type='text' name={this.props.name} onChange={this.changeValue} value={this.props.getValue() || ''}/>
         <span className='validation-error'>{errorMessage}</span>
         <Validations validationType={this.state.validationType} changeValidation={this.changeValidation}/>
       </div>
     );
   }
-});
+}
+const FormsyDynamicInput = Formsy.Wrapper(DynamicInput);
 
-const Validations = React.createClass({
-  changeValidation(e) {
+class Validations extends React.Component {
+  changeValidation = (e) => {
     this.props.changeValidation(e.target.value);
-  },
+  }
   render() {
     const { validationType } = this.props;
     return (
@@ -100,6 +98,6 @@ const Validations = React.createClass({
       </fieldset>
     );
   }
-});
+}
 
 ReactDOM.render(<App/>, document.getElementById('example'));
