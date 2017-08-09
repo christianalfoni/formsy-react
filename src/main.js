@@ -262,24 +262,11 @@ Formsy.Form = createReactClass({
     if (this.cachedValues[component.props.name] === value) {
       const isValid = component.isValid();
       const isRequired = component.showRequired();
-      const error = function(){
-        if (isValid && !isRequired) {
-          return emptyArray;
-        }
-        if (isRequired) {
-          return null;
-        }
-        if (component.props.validationError
-          && component.props.validationError !== '') {
-          return [component.props.validationError];
-        } else {
-          component.props.validationErrors
-        }
-      }();
+      const error = [component.getErrorMessage()];
       return new Promise(function (resolve, reject) {
         resolve({
-          isValid: component.isValid(),
-          isRequired: component.showRequired(),
+          isValid: isValid,
+          isRequired: isRequired,
           error: error,
         });
       });
