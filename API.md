@@ -37,6 +37,7 @@
   - [isFormSubmitted()](#isformsubmitted)
   - [validate](#validate)
   - [formNoValidate](#formnovalidate)
+- [Formsy.propTypes](#formsyproptypes)
 - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
 
@@ -237,6 +238,26 @@ export default Wrapper(MyInput);
 <MyInputComponent name="address.street"/>
 ```
 The name is required to register the form input component in the form. You can also use dot notation. This will result in the "form model" being a nested object. `{email: 'value', address: {street: 'value'}}`.
+
+
+#### <a name="innerRef">innerRef</a>
+
+Use an `innerRef` prop to get a reference to your DOM node.
+
+```jsx
+class MyForm extends React.Component {
+  componentDidMount() {
+    this.searchInput.focus()
+  }
+  render() {
+    return (
+      <Formsy.Form>
+        <MyInput name="search" innerRef={(c) => { this.searchInput = c; }} />
+      </Formsy.Form>
+    );
+  }
+}
+```
 
 #### <a name="value">value</a>
 ```jsx
@@ -559,22 +580,16 @@ class MyInput extends React.Component {
 }
 ```
 
-#### <a name="innerRef">innerRef</a>
-
-Use an `innerRef` prop to get a reference to your DOM node.
-
+### <a name="formsyproptypes">Formsy.propTypes</a>
+If you are using React's PropType typechecking, you can spread Formsy's propTypes into your local propTypes to avoid having to repeatedly add `Formsy.Wrapper`'s methods to your components.
 ```jsx
-class MyForm extends React.Component {
-  componentDidMount() {
-    this.searchInput.focus()
+class MyInput extends React.Component {
+  static propTypes = {
+    firstProp: PropTypes.string,
+    secondProp: PropTypes.object,
+    ...Formsy.propTypes
   }
-  render() {
-    return (
-      <Formsy.Form>
-        <MyInput name="search" innerRef={(c) => { this.searchInput = c; }} />
-      </Formsy.Form>
-    );
-  }
+  ...
 }
 ```
 
