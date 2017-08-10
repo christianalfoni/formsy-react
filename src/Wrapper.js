@@ -35,11 +35,11 @@ module.exports = function (Component) {
         static displayName = 'Formsy(' + getDisplayName(Component) + ')';
 
         state = {
-            _value: this.props.value,
+            _value: typeof this.props.value !== 'undefined' ? this.props.value : Component.defaultProps ? Component.defaultProps.value : undefined,
             _isRequired: false,
             _isValid: true,
             _isPristine: true,
-            _pristineValue: this.props.value,
+            _pristineValue: typeof this.props.value !== 'undefined' ? this.props.value : Component.defaultProps ? Component.defaultProps.value : undefined,
             _validationError: [],
             _externalError: null,
             _formSubmitted: false
