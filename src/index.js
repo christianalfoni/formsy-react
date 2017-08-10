@@ -4,11 +4,11 @@ var Formsy = {};
 var validationRules = require('./validationRules.js');
 var formDataToObject = require('form-data-to-object');
 var utils = require('./utils.js');
-var HOC = require('./HOC.js');
+var Wrapper = require('./Wrapper.js');
 var options = {};
 var emptyArray = [];
 
-Formsy.Wrapper = HOC;
+Formsy.Wrapper = Wrapper;
 Formsy.propTypes = {
     setValidations: PropTypes.func,
     setValue: PropTypes.func,
