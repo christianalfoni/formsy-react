@@ -1,27 +1,31 @@
 {
   "name": "formsy-react",
   "version": "1.0.0",
-  "description": "A form input builder and validator for React JS",
+  "description": "A form input builder and validator for React",
+  "keywords": [
+    "form",
+    "forms",
+    "formsy",
+    "react",
+    "react-component",
+    "validation"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/christianalfoni/formsy-react",
+  "bugs": "https://github.com/christianalfoni/formsy-react/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/christianalfoni/formsy-react.git"
   },
+  "author": "Christian Alfoni",
+  "files": ["lib"],
   "main": "lib/index.js",
   "scripts": {
     "build": "NODE_ENV=production webpack -p --config webpack.production.config.js && yarn run prepublish",
-    "test": "babel-node testrunner",
     "examples": "webpack-dev-server --config examples/webpack.config.js --content-base examples",
-    "prepublish": "rm -Rf ./lib && babel ./src/ -d ./lib/"
+    "prepublish": "rm -Rf ./lib && babel ./src/ -d ./lib/",
+    "test": "babel-node testrunner"
   },
-  "author": "Christian Alfoni",
-  "license": "MIT",
-  "keywords": [
-    "react",
-    "form",
-    "forms",
-    "validation",
-    "react-component"
-  ],
   "dependencies": {
     "form-data-to-object": "^0.2.0",
     "hoist-non-react-statics": "^2.2.1",
