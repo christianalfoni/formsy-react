@@ -335,7 +335,7 @@ class MyInput extends React.Component {
 ```
 Gets the current value of the form input component.
 
-#### <a name="setvalue">setValue(value)</a>
+#### <a name="setvalue">setValue(value[, validate = true])</a>
 ```jsx
 class MyInput extends React.Component {
   changeValue = (event) => {
@@ -349,6 +349,8 @@ class MyInput extends React.Component {
 }
 ```
 Sets the value of your form input component. Notice that it does not have to be a text input. Anything can set a value on the component. Think calendars, checkboxes, autocomplete stuff etc. Running this method will trigger a **setState()** on the component and do a render.
+
+You can also set the value without forcing an immediate validation by passing a second parameter of `false`. This is useful in cases where you want to only validate on blur / change / etc.
 
 #### <a name="resetvalue">resetValue()</a>
 ```jsx
