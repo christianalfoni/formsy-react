@@ -18,11 +18,14 @@
     "url": "https://github.com/christianalfoni/formsy-react.git"
   },
   "author": "Christian Alfoni",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "main": "lib/index.js",
   "scripts": {
     "build": "NODE_ENV=production webpack -p --config webpack.production.config.js && yarn run prepublish",
     "examples": "webpack-dev-server --config examples/webpack.config.js --content-base examples",
+    "lint": "eslint src/**/*.js",
     "prepublish": "rm -Rf ./lib && babel ./src/ -d ./lib/",
     "test": "babel-node testrunner"
   },
@@ -38,6 +41,11 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-2": "^6.5.0",
     "create-react-class": "^15.6.0",
+    "eslint": "^3.19.0 || ^4.3.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.1.0",
     "jsdom": "^6.5.1",
     "nodeunit": "^0.9.1",
     "prop-types": "^15.5.10",
