@@ -26,6 +26,33 @@ export default {
 
   },
 
+  'should only set the value and not validate when calling setValue(val, false)': function (test) {
+
+    const Input = Formsy.Wrapper(class TestInput extends React.Component {
+        updateValue = (event) => {
+            this.props.setValue(event.target.value, false);
+        }
+        render() {
+            return <input type="text" value={this.props.getValue()} onChange={this.updateValue}/>;
+        }
+    })
+    const form = TestUtils.renderIntoDocument(
+        <Formsy.Form>
+            <Input name="foo" value="foo" innerRef="comp" />
+        </Formsy.Form>
+    );
+    const inputComponent = TestUtils.findRenderedComponentWithType(form, Input);
+    const setStateSpy = sinon.spy(inputComponent, 'setState');
+    const inputElement = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+
+    test.equal(setStateSpy.called, false);
+    TestUtils.Simulate.change(inputElement, {target: {value: 'foobar'}});
+    test.equal(setStateSpy.calledOnce, true);
+    test.equal(setStateSpy.calledWithExactly({ _value: 'foobar' }), true);
+    test.done();
+
+  },
+
   'should set back to pristine value when running reset': function (test) {
 
     let reset = null;
@@ -316,7 +343,6 @@ export default {
     test.done();
 
   },
-
 
   'should override all error messages with error messages passed by form': function (test) {
 

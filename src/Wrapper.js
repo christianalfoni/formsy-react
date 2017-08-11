@@ -35,11 +35,11 @@ module.exports = function (Component) {
         static displayName = 'Formsy(' + getDisplayName(Component) + ')';
 
         state = {
-            _value: this.props.value,
+            _value: typeof this.props.value !== 'undefined' ? this.props.value : Component.defaultProps ? Component.defaultProps.value : undefined,
             _isRequired: false,
             _isValid: true,
             _isPristine: true,
-            _pristineValue: this.props.value,
+            _pristineValue: typeof this.props.value !== 'undefined' ? this.props.value : Component.defaultProps ? Component.defaultProps.value : undefined,
             _validationError: [],
             _externalError: null,
             _formSubmitted: false
@@ -100,15 +100,22 @@ module.exports = function (Component) {
             this._requiredValidations = required === true ? {isDefaultRequiredValue: true} : convertValidationsToObject(required);
         }
 
-        // We validate after the value has been set
-        setValue = (value) => {
-            this.setState({
-                _value: value,
-                _isPristine: false
-            }, () => {
-                this.context.formsy.validate(this);
-                //this.props._validate(this);
-            });
+        // By default, we validate after the value has been set.
+        // A user can override this and pass a second parameter of `false` to skip validation.
+        setValue = (value, validate = true) => {
+            if (!validate) {
+                this.setState({
+                    _value: value
+                });
+            } else {
+                this.setState({
+                    _value: value,
+                    _isPristine: false
+                }, () => {
+                    this.context.formsy.validate(this);
+                    //this.props._validate(this);
+                });
+            }
         }
 
         resetValue = () => {

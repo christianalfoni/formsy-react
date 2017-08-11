@@ -37,6 +37,7 @@
   - [isFormSubmitted()](#isformsubmitted)
   - [validate](#validate)
   - [formNoValidate](#formnovalidate)
+- [Formsy.propTypes](#formsyproptypes)
 - [Formsy.addValidationRule](#formsyaddvalidationrule)
 - [Validators](#validators)
 
@@ -238,6 +239,26 @@ export default Wrapper(MyInput);
 ```
 The name is required to register the form input component in the form. You can also use dot notation. This will result in the "form model" being a nested object. `{email: 'value', address: {street: 'value'}}`.
 
+
+#### <a name="innerRef">innerRef</a>
+
+Use an `innerRef` prop to get a reference to your DOM node.
+
+```jsx
+class MyForm extends React.Component {
+  componentDidMount() {
+    this.searchInput.focus()
+  }
+  render() {
+    return (
+      <Formsy.Form>
+        <MyInput name="search" innerRef={(c) => { this.searchInput = c; }} />
+      </Formsy.Form>
+    );
+  }
+}
+```
+
 #### <a name="value">value</a>
 ```jsx
 <MyInputComponent name="email" value="My initial value"/>
@@ -314,7 +335,7 @@ class MyInput extends React.Component {
 ```
 Gets the current value of the form input component.
 
-#### <a name="setvalue">setValue(value)</a>
+#### <a name="setvalue">setValue(value[, validate = true])</a>
 ```jsx
 class MyInput extends React.Component {
   changeValue = (event) => {
@@ -328,6 +349,8 @@ class MyInput extends React.Component {
 }
 ```
 Sets the value of your form input component. Notice that it does not have to be a text input. Anything can set a value on the component. Think calendars, checkboxes, autocomplete stuff etc. Running this method will trigger a **setState()** on the component and do a render.
+
+You can also set the value without forcing an immediate validation by passing a second parameter of `false`. This is useful in cases where you want to only validate on blur / change / etc.
 
 #### <a name="resetvalue">resetValue()</a>
 ```jsx
@@ -559,22 +582,16 @@ class MyInput extends React.Component {
 }
 ```
 
-#### <a name="innerRef">innerRef</a>
-
-Use an `innerRef` prop to get a reference to your DOM node.
-
+### <a name="formsyproptypes">Formsy.propTypes</a>
+If you are using React's PropType typechecking, you can spread Formsy's propTypes into your local propTypes to avoid having to repeatedly add `Formsy.Wrapper`'s methods to your components.
 ```jsx
-class MyForm extends React.Component {
-  componentDidMount() {
-    this.searchInput.focus()
+class MyInput extends React.Component {
+  static propTypes = {
+    firstProp: PropTypes.string,
+    secondProp: PropTypes.object,
+    ...Formsy.propTypes
   }
-  render() {
-    return (
-      <Formsy.Form>
-        <MyInput name="search" innerRef={(c) => { this.searchInput = c; }} />
-      </Formsy.Form>
-    );
-  }
+  ...
 }
 ```
 
