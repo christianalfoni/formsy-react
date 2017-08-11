@@ -1,5 +1,5 @@
 import React from 'react';
-import Formsy from './../..';
+import Formsy, { withFormsy } from './../..';
 
 class TestComponent extends React.Component {
     methodOnWrappedInstance = (param) => {
@@ -11,4 +11,4 @@ class TestComponent extends React.Component {
     }
 }
 
-export default Formsy.Wrapper(TestComponent);
+export default withFormsy(TestComponent);

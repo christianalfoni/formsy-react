@@ -1,5 +1,5 @@
 import React from 'react';
-import Formsy from './../..';
+import Formsy, { withFormsy } from './../..';
 
 class TestInput extends React.Component {
     static defaultProps = { type: 'text' };
@@ -19,7 +19,7 @@ export function InputFactory(methods) {
             TestInput.prototype[method] = methods[method];
         }
     }
-    return Formsy.Wrapper(TestInput);
+    return withFormsy(TestInput);
 }
 
-export default Formsy.Wrapper(TestInput);
+export default withFormsy(TestInput);

@@ -3,7 +3,7 @@ import TestUtils from 'react-dom/test-utils';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import sinon from 'sinon';
 
-import Formsy from './..';
+import Formsy, { withFormsy } from './..';
 import TestInput, { InputFactory } from './utils/TestInput';
 import immediate from './utils/immediate';
 
@@ -28,7 +28,7 @@ export default {
 
   'should only set the value and not validate when calling setValue(val, false)': function (test) {
 
-    const Input = Formsy.Wrapper(class TestInput extends React.Component {
+    const Input = withFormsy(class TestInput extends React.Component {
         updateValue = (event) => {
             this.props.setValue(event.target.value, false);
         }

@@ -1,7 +1,7 @@
 import React from 'react';
 import TestUtils from 'react-dom/test-utils';
 
-import Formsy from './..';
+import Formsy, { withFormsy } from './..';
 import { InputFactory } from './utils/TestInput';
 import immediate from './utils/immediate';
 import sinon from 'sinon';
@@ -17,7 +17,7 @@ class MyTest extends React.Component {
       return <input type={this.props.type} value={this.props.getValue()} onChange={this.handleChange}/>;
     }
 }
-const FormsyTest = Formsy.Wrapper(MyTest);
+const FormsyTest = withFormsy(MyTest);
 
 export default {
 
