@@ -8,7 +8,7 @@ var Wrapper = require('./Wrapper.js');
 var options = {};
 var emptyArray = [];
 
-Formsy.Wrapper = Wrapper;
+Formsy.withFormsy = Wrapper;
 Formsy.propTypes = {
     setValidations: PropTypes.func,
     setValue: PropTypes.func,
