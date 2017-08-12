@@ -44,7 +44,7 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
-    "jsdom": "^6.5.1",
+    "jsdom": "^11.1.0",
     "nodeunit": "^0.9.1",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
