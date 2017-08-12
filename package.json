@@ -31,8 +31,7 @@
   },
   "dependencies": {
     "form-data-to-object": "^0.2.0",
-    "hoist-non-react-statics": "^2.2.1",
-    "react": "^15.0.0"
+    "hoist-non-react-statics": "^2.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
@@ -49,12 +48,16 @@
     "jsdom": "^6.5.1",
     "nodeunit": "^0.9.1",
     "prop-types": "^15.5.10",
-    "react": "^15.0.0",
-    "react-addons-pure-render-mixin": "^15.0.0",
-    "react-addons-test-utils": "^15.0.0",
-    "react-dom": "^15.0.0",
+    "react": "^15.6.1",
+    "react-addons-pure-render-mixin": "^15.6.0",
+    "react-addons-test-utils": "^15.6.0",
+    "react-dom": "^15.6.1",
     "sinon": "^1.17.3",
     "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.1"
+  },
+  "peerDependencies": {
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   }
 }

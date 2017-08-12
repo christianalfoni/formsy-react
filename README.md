@@ -21,7 +21,7 @@ The main concept is that forms, inputs, and validation are done very differently
 
 ## Install
 
-`yarn add formsy-react` and use with webpack, browserify, etc.
+`yarn add formsy-react react react-dom` and use with webpack, browserify, etc.
 
 ## Quick Start
 
