@@ -52,8 +52,8 @@
     "react-addons-test-utils": "^15.6.0",
     "react-dom": "^15.6.1",
     "sinon": "^3.2.0",
-    "webpack": "^1.12.14",
-    "webpack-dev-server": "^1.14.1"
+    "webpack": "^3.5.4",
+    "webpack-dev-server": "^2.7.1"
   },
   "peerDependencies": {
     "react": "^15.6.1",
