@@ -1,5 +1,5 @@
 import React from 'react';
-import Formsy from 'formsy-react';
+import { withFormsy } from 'formsy-react';
 
 class MySelect extends React.Component {
   changeValue = (event) => {
@@ -29,4 +29,4 @@ class MySelect extends React.Component {
   }
 }
 
-export default Formsy.Wrapper(MySelect);
+export default withFormsy(MySelect);

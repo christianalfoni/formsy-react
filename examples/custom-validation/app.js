@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Formsy from 'formsy-react';
+import Formsy, { withFormsy } from 'formsy-react';
 
 import MyInput from './../components/Input';
 
@@ -75,7 +75,7 @@ class DynamicInput extends React.Component {
     );
   }
 }
-const FormsyDynamicInput = Formsy.Wrapper(DynamicInput);
+const FormsyDynamicInput = withFormsy(DynamicInput);
 
 class Validations extends React.Component {
   changeValidation = (e) => {

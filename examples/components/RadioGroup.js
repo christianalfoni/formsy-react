@@ -1,5 +1,5 @@
 import React from 'react';
-import Formsy from 'formsy-react';
+import { withFormsy } from 'formsy-react';
 
 class MyRadioGroup extends React.Component {
   state = {};
@@ -42,4 +42,4 @@ class MyRadioGroup extends React.Component {
   }
 }
 
-export default Formsy.Wrapper(MyRadioGroup);
+export default withFormsy(MyRadioGroup);

@@ -1,5 +1,5 @@
 import React from 'react';
-import Formsy from 'formsy-react';
+import { withFormsy } from 'formsy-react';
 
 class MyInput extends React.Component {
   // setValue() will set the value of the component, which in
@@ -37,4 +37,4 @@ class MyInput extends React.Component {
   }
 }
 
-export default Formsy.Wrapper(MyInput);
+export default withFormsy(MyInput);
