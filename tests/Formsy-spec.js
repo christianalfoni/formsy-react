@@ -15,14 +15,14 @@ export default {
         render() {
           return (
             <Formsy.Form>
-              <TestInputHoc name="name" innerRef={(c) => { this.name = c; }} />
+              <TestInputHoc name="name" ref="input" innerRef="name" />
             </Formsy.Form>
           );
         }
       }
 
       const form = TestUtils.renderIntoDocument(<TestForm/>);
-      const input = form.name;
+      const input = form.refs.input.refs.name;
       test.equal(input.methodOnWrappedInstance('foo'), 'foo');
 
       test.done();
