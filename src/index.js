@@ -260,8 +260,8 @@ Formsy.Form = class FormsyForm extends React.Component {
         var requiredResults = this.runRules(value, currentValues, component._requiredValidations);
 
         // the component defines an explicit validate function
-        if (typeof component.validate === "function") {
-            validationResults.failed = component.validate() ? [] : ['failed'];
+        if (component.childRef && typeof component.refs[component.childRef].validate === "function") {
+            validationResults.failed = component.refs[component.childRef].validate() ? [] : ['failed'];
         }
 
         var isRequired = Object.keys(component._requiredValidations).length ? !!requiredResults.success.length : false;

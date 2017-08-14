@@ -51,7 +51,8 @@ module.exports = function (Component) {
 
         static defaultProps = {
             validationError: '',
-            validationErrors: {}
+            validationErrors: {},
+            innerRef: 'comp'
         }
 
         componentWillMount() {
@@ -65,6 +66,8 @@ module.exports = function (Component) {
 
             if (!this.props.name) {
                 throw new Error('Form Input requires a name property when used');
+            } else if (typeof this.props.innerRef === 'function') {
+                throw new Error('Formsy `innerRef` prop can not be a function.');
             }
 
             configure();
@@ -200,9 +203,7 @@ module.exports = function (Component) {
                 ...this.props
             };
 
-            if (innerRef) {
-                propsForElement.ref = innerRef;
-            }
+            this.childRef = propsForElement.ref = innerRef;
 
             return <Component {...propsForElement} />
         }
