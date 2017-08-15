@@ -11,7 +11,8 @@ module.exports = {
     library: 'Formsy',
   },
   module: {
-    loaders: [{ test: /\.js$/,
+    loaders: [{
+      test: /\.jsx?$/,
       exclude: /node_modules/,
       loader: 'babel-loader',
     }, {

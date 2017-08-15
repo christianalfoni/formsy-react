@@ -406,8 +406,8 @@ export default {
               validations={{
                 isEmail: true
               }}
-              validationError="bar"
-              validationErrors={{foo: 'bar'}}
+              validationError="bar1"
+              validationErrors={{foo: 'bar2'}}
               value="foo"
             />
           </Formsy.Form>
@@ -417,7 +417,7 @@ export default {
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
-    test.equal(inputComponent.getErrorMessage(), 'bar');
+    test.equal(inputComponent.getErrorMessage(), 'bar1');
 
     test.done();
 
