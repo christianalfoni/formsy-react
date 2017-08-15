@@ -1,11 +1,10 @@
 import formDataToObject from 'form-data-to-object';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 import utils from './utils';
 import validationRules from './validationRules';
 import Wrapper from './Wrapper';
-
-const React = global.React || require('react');
 
 const emptyArray = [];
 const Formsy = {};
@@ -57,12 +56,6 @@ Formsy.Form = class FormsyForm extends React.Component {
     };
   }
 
-  // Add a map to store the inputs of the form, a model to store
-  // the values of the form and register child inputs
-  // componentWillMount() {
-  //   this.inputs = [];
-  // }
-
   componentDidMount() {
     this.validateForm();
   }
@@ -78,13 +71,104 @@ Formsy.Form = class FormsyForm extends React.Component {
       this.setInputValidationErrors(this.props.validationErrors);
     }
 
-    var newInputNames = this.inputs.map(component => component.props.name);
+    const newInputNames = this.inputs.map(component => component.props.name);
     if (utils.arraysDiffer(this.prevInputNames, newInputNames)) {
       this.validateForm();
     }
   }
 
-  // Allow resetting to specified data
+  getModel() {
+    const currentValues = this.getCurrentValues();
+    return this.mapModel(currentValues);
+  }
+
+  setInputValidationErrors(errors) {
+    this.inputs.forEach((component) => {
+      const name = component.props.name;
+      const args = [{
+        _isValid: !(name in errors),
+        _validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name],
+      }];
+      component.setState(...args);
+    });
+  }
+
+  getPristineValues() {
+    return this.inputs.reduce((data, component) => {
+      const name = component.props.name;
+      const dataCopy = Object.assign({}, data); // avoid param reassignment
+      dataCopy[name] = component.props.value;
+      return dataCopy;
+    }, {});
+  }
+
+  getCurrentValues() {
+    return this.inputs.reduce((data, component) => {
+      const name = component.props.name;
+      const dataCopy = Object.assign({}, data); // avoid param reassignment
+      dataCopy[name] = component.state.value;
+      return dataCopy;
+    }, {});
+  }
+
+  setFormPristine(isPristine) {
+    this.setState({
+      _formSubmitted: !isPristine,
+    });
+
+    // Iterate through each component and set it as pristine
+    // or "dirty".
+    this.inputs.forEach((component) => {
+      component.setState({
+        _formSubmitted: !isPristine,
+        _isPristine: isPristine,
+      });
+    });
+  }
+
+  // Checks if the values have changed from their initial value
+  isChanged() {
+    return !utils.isSame(this.getPristineValues(), this.getCurrentValues());
+  }
+
+  isFormDisabled() {
+    return this.props.disabled;
+  }
+
+  mapModel(model) {
+    console.log(model);
+    if (this.props.mapping) {
+      return this.props.mapping(model);
+    }
+
+    return formDataToObject.toObj(Object.keys(model).reduce((mappedModel, key) => {
+      const keyArray = key.split('.');
+      let base = mappedModel;
+      while (keyArray.length) {
+        const currentKey = keyArray.shift();
+        base = (base[currentKey] = (keyArray.length ? base[currentKey] || {} : model[key]));
+      }
+
+      console.log('-----------');
+      console.log(mappedModel);
+      console.log('\n\n\n\n\n');
+      return mappedModel;
+    }, {}));
+  }
+
+  // Reset each key in the model to the original / initial / specified value
+  resetModel(data) {
+    this.inputs.forEach(component => {
+      var name = component.props.name;
+      if (data && data.hasOwnProperty(name)) {
+        component.setValue(data[name]);
+      } else {
+        component.resetValue();
+      }
+    });
+    this.validateForm();
+  }
+
   reset(data) {
     this.setFormPristine(true);
     this.resetModel(data);
@@ -101,65 +185,6 @@ Formsy.Form = class FormsyForm extends React.Component {
     const model = this.getModel();
     this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
     this.state.isValid ? this.props.onValidSubmit(model, this.resetModel, this.updateInputsWithError) : this.props.onInvalidSubmit(model, this.resetModel, this.updateInputsWithError);
-  }
-
-  mapModel(model) {
-    if (this.props.mapping) {
-      return this.props.mapping(model)
-    } else {
-      return formDataToObject.toObj(Object.keys(model).reduce((mappedModel, key) => {
-        var keyArray = key.split('.');
-        var base = mappedModel;
-        while (keyArray.length) {
-          var currentKey = keyArray.shift();
-          base = (base[currentKey] = keyArray.length ? base[currentKey] || {} : model[key]);
-        }
-
-        return mappedModel;
-      }, {}));
-    }
-  }
-
-  getModel() {
-    var currentValues = this.getCurrentValues();
-    return this.mapModel(currentValues);
-  }
-
-  // Reset each key in the model to the original / initial / specified value
-  resetModel(data) {
-    this.inputs.forEach(component => {
-      var name = component.props.name;
-      if (data && data.hasOwnProperty(name)) {
-        component.setValue(data[name]);
-      } else {
-        component.resetValue();
-      }
-    });
-    this.validateForm();
-  }
-
-  setInputValidationErrors(errors) {
-    this.inputs.forEach(component => {
-      var name = component.props.name;
-      var args = [{
-        _isValid: !(name in errors),
-        _validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name]
-      }];
-      component.setState.apply(component, args);
-    });
-  }
-
-  // Checks if the values have changed from their initial value
-  isChanged() {
-    return !utils.isSame(this.getPristineValues(), this.getCurrentValues());
-  }
-
-  getPristineValues() {
-    return this.inputs.reduce((data, component) => {
-      var name = component.props.name;
-      data[name] = component.props.value;
-      return data;
-    }, {});
   }
 
   // Go through errors from server and grab the components
@@ -180,32 +205,13 @@ Formsy.Form = class FormsyForm extends React.Component {
     });
   }
 
-  isFormDisabled() {
-    return this.props.disabled;
-  }
 
-  getCurrentValues() {
-    return this.inputs.reduce((data, component) => {
-      var name = component.props.name;
-      data[name] = component.state._value;
-      return data;
-    }, {});
-  }
 
-  setFormPristine(isPristine) {
-    this.setState({
-        _formSubmitted: !isPristine
-    });
 
-    // Iterate through each component and set it as pristine
-    // or "dirty".
-    this.inputs.forEach((component, index) => {
-      component.setState({
-        _formSubmitted: !isPristine,
-        _isPristine: isPristine
-      });
-    });
-  }
+
+
+
+
 
   // Use the binded values and the actual input value to
   // validate the input and set its state. Then check the
@@ -232,7 +238,7 @@ Formsy.Form = class FormsyForm extends React.Component {
     const currentValues = this.getCurrentValues();
     const validationErrors = component.props.validationErrors;
     const validationError = component.props.validationError;
-    value = value ? value : component.state._value;
+    value = value ? value : component.state.value;
 
     const validationResults = this.runRules(value, currentValues, component._validations);
     const requiredResults = this.runRules(value, currentValues, component._requiredValidations);
@@ -444,6 +450,7 @@ Formsy.Form.displayName = 'Formsy.Form';
 
 Formsy.Form.defaultProps = {
   children: null,
+  disabled: false,
   getErrorMessage: () => {},
   getErrorMessages: () => {},
   getValue: () => {},
@@ -454,6 +461,7 @@ Formsy.Form.defaultProps = {
   isRequired: () => {},
   isValid: () => {},
   isValidValue: () => {},
+  mapping: null,
   onChange: () => {},
   onError: () => {},
   onInvalid: () => {},
@@ -472,6 +480,7 @@ Formsy.Form.defaultProps = {
 
 Formsy.Form.propTypes = {
   children: PropTypes.node,
+  disabled: PropTypes.bool,
   getErrorMessage: PropTypes.func,
   getErrorMessages: PropTypes.func,
   getValue: PropTypes.func,
@@ -482,11 +491,13 @@ Formsy.Form.propTypes = {
   isRequired: PropTypes.func,
   isValid: PropTypes.func,
   isValidValue: PropTypes.func,
+  mapping: PropTypes.object, // eslint-disable-line
   resetValue: PropTypes.func,
   setValidations: PropTypes.func,
   setValue: PropTypes.func,
   showError: PropTypes.func,
   showRequired: PropTypes.func,
+  validationErrors: PropTypes.object, // eslint-disable-line
 };
 
 Formsy.Form.childContextTypes = {

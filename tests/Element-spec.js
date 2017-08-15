@@ -48,7 +48,7 @@ export default {
     test.equal(setStateSpy.called, false);
     TestUtils.Simulate.change(inputElement, {target: {value: 'foobar'}});
     test.equal(setStateSpy.calledOnce, true);
-    test.equal(setStateSpy.calledWithExactly({ _value: 'foobar' }), true);
+    test.equal(setStateSpy.calledWithExactly({ value: 'foobar' }), true);
     test.done();
 
   },

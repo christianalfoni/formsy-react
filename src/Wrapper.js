@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
+import React from 'react';
 import utils from './utils';
-
-const React = global.React || require('react');
 
 const convertValidationsToObject = (validations) => {
   if (typeof validations === 'string') {
@@ -34,7 +33,7 @@ module.exports = (Component) => {
     constructor(props) {
       super(props);
       this.state = {
-        _value: typeof props.value !== 'undefined' ? props.value : Component.defaultProps ? Component.defaultProps.value : undefined,
+        value: typeof props.value !== 'undefined' ? props.value : Component.defaultProps ? Component.defaultProps.value : undefined,
         _isRequired: false,
         _isValid: true,
         _isPristine: true,
@@ -106,11 +105,11 @@ module.exports = (Component) => {
     setValue(value, validate = true) {
       if (!validate) {
         this.setState({
-          _value: value,
+          value: value,
         });
       } else {
         this.setState({
-          _value: value,
+          value: value,
           _isPristine: false,
         }, () => {
           this.context.formsy.validate(this);
@@ -121,7 +120,7 @@ module.exports = (Component) => {
 
     resetValue() {
       this.setState({
-        _value: this.state._pristineValue,
+        value: this.state._pristineValue,
         _isPristine: true,
       }, () => {
         this.context.formsy.validate(this);
@@ -130,11 +129,11 @@ module.exports = (Component) => {
     }
 
     getValue() {
-      return this.state._value;
+      return this.state.value;
     }
 
     hasValue() {
-      return this.state._value !== '';
+      return this.state.value !== '';
     }
 
     getErrorMessage() {
