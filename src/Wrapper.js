@@ -35,11 +35,11 @@ module.exports = (Component) => {
       this.state = {
         value: typeof props.value !== 'undefined' ? props.value : Component.defaultProps ? Component.defaultProps.value : undefined,
         _isRequired: false,
-        _isValid: true,
+        isValid: true,
         _isPristine: true,
         _pristineValue: typeof props.value !== 'undefined' ? props.value : Component.defaultProps ? Component.defaultProps.value : undefined,
         _validationError: [],
-        _externalError: null,
+        externalError: null,
         _formSubmitted: false,
       };
       this.getErrorMessage = this.getErrorMessage.bind(this);
@@ -96,8 +96,8 @@ module.exports = (Component) => {
 
     setValidations(validations, required) {
       // Add validations to the store itself as the props object can not be modified
-      this._validations = convertValidationsToObject(validations) || {};
-      this._requiredValidations = required === true ? {isDefaultRequiredValue: true} : convertValidationsToObject(required);
+      this.validations = convertValidationsToObject(validations) || {};
+      this.requiredValidations = required === true ? {isDefaultRequiredValue: true} : convertValidationsToObject(required);
     }
 
     // By default, we validate after the value has been set.
@@ -142,7 +142,7 @@ module.exports = (Component) => {
     }
 
     getErrorMessages() {
-      return !this.isValid() || this.showRequired() ? (this.state._externalError || this.state._validationError || []) : [];
+      return !this.isValid() || this.showRequired() ? (this.state.externalError || this.state._validationError || []) : [];
     }
 
     isFormDisabled() {
@@ -151,7 +151,7 @@ module.exports = (Component) => {
     }
 
     isValid() {
-      return this.state._isValid;
+      return this.state.isValid;
     }
 
     isPristine() {
@@ -176,7 +176,7 @@ module.exports = (Component) => {
 
     isValidValue(value) {
       return this.context.formsy.isValidValue.call(null, this, value);
-      // return this.props._isValidValue.call(null, this, value);
+      // return this.props.isValidValue.call(null, this, value);
     }
 
     render() {

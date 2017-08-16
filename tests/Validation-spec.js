@@ -123,7 +123,7 @@ export default {
 
   },
 
-  'should provide invalidate callback on onValiSubmit': function (test) {
+  'should provide invalidate callback on onValidSubmit': function (test) {
 
     class TestForm extends React.Component {
       render() {
