@@ -115,7 +115,7 @@ export default class App extends React.Component {
 }
 ```
 
-This code results in a form with a submit button that will run the `submit` method when the submit button is clicked with a valid email. The submit button is disabled as long as the input is empty ([required](/API.md#required)) and the value is not an email ([isEmail](/API.md#validators)). On validation error it will show the message: "This is not a valid email".
+This code results in a form with a submit button that will run the `submit` method when the form is submitted with a valid email. The submit button is disabled as long as the input is empty ([required](/API.md#required)) and the value is not an email ([isEmail](/API.md#validators)). On validation error it will show the message: "This is not a valid email".
 
 ## Contribute
 
