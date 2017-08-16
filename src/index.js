@@ -10,54 +10,6 @@ const emptyArray = [];
 const Formsy = {};
 let options = {};
 
-function runRules(value, currentValues, validations) {
-  const results = {
-    errors: [],
-    failed: [],
-    success: [],
-  };
-
-  if (Object.keys(validations).length) {
-    Object.keys(validations).forEach((validationMethod) => {
-      if (validationRules[validationMethod] && typeof validations[validationMethod] === 'function') {
-        throw new Error(`Formsy does not allow you to override default validations: ${validationMethod}`);
-      }
-
-      if (!validationRules[validationMethod] && typeof validations[validationMethod] !== 'function') {
-        throw new Error(`Formsy does not have the validation rule: ${validationMethod}`);
-      }
-
-      if (typeof validations[validationMethod] === 'function') {
-        const validation = validations[validationMethod](currentValues, value);
-        if (typeof validation === 'string') {
-          results.errors.push(validation);
-          results.failed.push(validationMethod);
-        } else if (!validation) {
-          results.failed.push(validationMethod);
-        }
-        return;
-      } else if (typeof validations[validationMethod] !== 'function') {
-        const validation = validationRules[validationMethod](
-          currentValues, value, validations[validationMethod],
-        );
-        if (typeof validation === 'string') {
-          results.errors.push(validation);
-          results.failed.push(validationMethod);
-        } else if (!validation) {
-          results.failed.push(validationMethod);
-        } else {
-          results.success.push(validationMethod);
-        }
-        return;
-      }
-
-      results.success.push(validationMethod);
-    });
-  }
-
-  return results;
-}
-
 Formsy.withFormsy = Wrapper;
 
 Formsy.defaults = (passedOptions) => {
@@ -279,8 +231,12 @@ Formsy.Form = class FormsyForm extends React.Component {
     const validationErrors = component.props.validationErrors;
     const validationError = component.props.validationError;
 
-    const validationResults = runRules(value, currentValues, component.validations);
-    const requiredResults = runRules(value, currentValues, component.requiredValidations);
+    const validationResults = utils.runRules(
+      value, currentValues, component.validations, validationRules,
+    );
+    const requiredResults = utils.runRules(
+      value, currentValues, component.requiredValidations, validationRules,
+    );
 
     // the component defines an explicit validate function
     if (typeof component.validate === 'function') {
