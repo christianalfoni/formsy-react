@@ -6,21 +6,7 @@ import utils from './utils';
 import validationRules from './validationRules';
 import Wrapper from './Wrapper';
 
-const emptyArray = [];
-const Formsy = {};
-let options = {};
-
-Formsy.withFormsy = Wrapper;
-
-Formsy.defaults = (passedOptions) => {
-  options = passedOptions;
-};
-
-Formsy.addValidationRule = (name, func) => {
-  validationRules[name] = func;
-};
-
-Formsy.Form = class FormsyForm extends React.Component {
+class Formsy extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -120,7 +106,7 @@ Formsy.Form = class FormsyForm extends React.Component {
     this.inputs.forEach((component) => {
       component.setState({
         formSubmitted: !isPristine,
-        isPristine: isPristine,
+        isPristine,
       });
     });
   }
@@ -253,7 +239,7 @@ Formsy.Form = class FormsyForm extends React.Component {
       isValid: isRequired ? false : isValid,
       error: (() => {
         if (isValid && !isRequired) {
-          return emptyArray;
+          return [];
         }
 
         if (validationResults.errors.length) {
@@ -391,11 +377,11 @@ Formsy.Form = class FormsyForm extends React.Component {
       this.props.children,
     );
   }
-};
+}
 
-Formsy.Form.displayName = 'Formsy.Form';
+Formsy.displayName = 'Formsy';
 
-Formsy.Form.defaultProps = {
+Formsy.defaultProps = {
   children: null,
   disabled: false,
   getErrorMessage: () => {},
@@ -425,7 +411,7 @@ Formsy.Form.defaultProps = {
   validationErrors: null,
 };
 
-Formsy.Form.propTypes = {
+Formsy.propTypes = {
   children: PropTypes.node,
   disabled: PropTypes.bool,
   getErrorMessage: PropTypes.func,
@@ -454,13 +440,20 @@ Formsy.Form.propTypes = {
   validationErrors: PropTypes.object, // eslint-disable-line
 };
 
-Formsy.Form.childContextTypes = {
+Formsy.childContextTypes = {
   formsy: PropTypes.object,
 };
 
+const addValidationRule = (name, func) => {
+  validationRules[name] = func;
+};
+const propTypes = Wrapper.propTypes;
+const withFormsy = Wrapper;
 
-if (!global.exports && !global.module && (!global.define || !global.define.amd)) {
-  global.Formsy = Formsy;
-}
+export {
+  addValidationRule,
+  propTypes,
+  withFormsy,
+};
 
-module.exports = Formsy;
+export default Formsy;

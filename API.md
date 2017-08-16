@@ -1,26 +1,26 @@
 # API
 
-- [Formsy.Form](#formsyform)
-  - [className](#classname)
+- [Formsy](#formsy)
+  - [className](#className)
   - [mapping](#mapping)
-  - [validationErrors](#validationerrors)
-  - [onSubmit()](#onsubmit)
-  - [onValid()](#onvalid)
-  - [onInvalid()](#oninvalid)
-  - [onValidSubmit()](#onvalidsubmit)
-  - [onInvalidSubmit()](#oninvalidsubmit)
-  - [onChange()](#onchange)
-  - [reset()](#resetform)
-  - [getModel()](#getmodel)
-  - [updateInputsWithError()](#updateinputswitherrorerrors)
-  - [preventExternalInvalidation](#preventexternalinvalidation)
-- [Formsy.Wrapper](#formsywrapper)
+  - [validationErrors](#validationErrors)
+  - [onSubmit()](#onSubmit)
+  - [onValid()](#onValid)
+  - [onInvalid()](#onInvalid)
+  - [onValidSubmit()](#onValidsubmit)
+  - [onInvalidSubmit()](#onInvalidsubmit)
+  - [onChange()](#onChange)
+  - [reset()](#resetForm)
+  - [getModel()](#getModel)
+  - [updateInputsWithError()](#updateInputsWithError)
+  - [preventExternalInvalidation](#preventExternalInvalidation)
+- [withFormsy](#withFormsy)
   - [name](#name)
   - [innerRef](#innerRef)
   - [value](#value)
   - [validations](#validations)
   - [validationError](#validationerror)
-  - [validationErrors](#validationerrors-1)
+  - [validationErrors](#validationErrors-1)
   - [required](#required)
   - [getValue()](#getvalue)
   - [setValue()](#setvalue)
@@ -37,15 +37,17 @@
   - [isFormSubmitted()](#isformsubmitted)
   - [validate](#validate)
   - [formNoValidate](#formnovalidate)
-- [Formsy.propTypes](#formsyproptypes)
-- [Formsy.addValidationRule](#formsyaddvalidationrule)
+- [propTypes](#propTypes)
+- [addValidationRule](#addValidationRule)
 - [Validators](#validators)
 
-### <a name="formsyform">Formsy.Form</a>
+### <a name="formsy">Formsy</a>
 
-#### <a name="classname">className</a>
+`import Formsy from 'react-formsy';`
+
+#### <a name="className">className</a>
 ```jsx
-<Formsy.Form className="my-class"></Formsy.Form>
+<Formsy className="my-class"></Formsy>
 ```
 Sets a class name on the form itself.
 
@@ -63,17 +65,17 @@ class MyForm extends React.Component {
   }
   render() {
     return (
-      <Formsy.Form onSubmit={this.submit} mapping={this.mapInputs}>
+      <Formsy onSubmit={this.submit} mapping={this.mapInputs}>
         <MyInput name="foo" value=""/>
         <MyInput name="bar" value=""/>
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }
 ```
 Use mapping to change the data structure of your input elements. This structure is passed to the submit hooks.
 
-#### <a name="validationerrors">validationErrors</a>
+#### <a name="validationErrors">validationErrors</a>
 You can manually pass down errors to your form. In combination with `onChange` you are able to validate using an external validator.
 
 ```jsx
@@ -94,53 +96,53 @@ class Form extends React.Component {
   }
   render() {
     return (
-      <Formsy.Form onChange={this.validateForm} validationErrors={this.state.validationErrors}>
+      <Formsy onChange={this.validateForm} validationErrors={this.state.validationErrors}>
         <MyFormElement name="foo"/>
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }
 ```
 
-#### <a name="onsubmit">onSubmit(data, resetForm, invalidateForm)</a>
+#### <a name="onSubmit">onSubmit(data, resetForm, invalidateForm)</a>
 ```jsx
-<Formsy.Form onSubmit={this.showFormLoader}></Formsy.Form>
+<Formsy onSubmit={this.showFormLoader}></Formsy>
 ```
 Takes a function to run when the submit button has been clicked.
 
 The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. This is useful for server side validation. E.g. `{email: "This email is taken"}`. Resetting or invalidating the form will cause **setState** to run on the form element component.
 
-#### <a name="onvalid">onValid()</a>
+#### <a name="onValid">onValid()</a>
 ```jsx
-<Formsy.Form onValid={this.enableSubmitButton}></Formsy.Form>
+<Formsy onValid={this.enableSubmitButton}></Formsy>
 ```
 Whenever the form becomes valid the "onValid" handler is called. Use it to change state of buttons or whatever your heart desires.
 
-#### <a name="oninvalid">onInvalid()</a>
+#### <a name="onInvalid">onInvalid()</a>
 ```jsx
-<Formsy.Form onInvalid={this.disableSubmitButton}></Formsy.Form>
+<Formsy onInvalid={this.disableSubmitButton}></Formsy>
 ```
 Whenever the form becomes invalid the "onInvalid" handler is called. Use it to for example revert "onValid" state.
 
-#### <a name="onvalidsubmit">onValidSubmit(model, resetForm, invalidateForm)</a>
+#### <a name="onValidsubmit">onValidSubmit(model, resetForm, invalidateForm)</a>
 ```jsx
-<Formsy.Form onValidSubmit={this.sendToServer}></Formsy.Form>
+<Formsy onValidSubmit={this.sendToServer}></Formsy>
 ```
 Triggers when form is submitted with a valid state. The arguments are the same as on `onSubmit`.
 
-#### <a name="oninvalidsubmit">onInvalidSubmit(model, resetForm, invalidateForm)</a>
+#### <a name="onInvalidsubmit">onInvalidSubmit(model, resetForm, invalidateForm)</a>
 ```jsx
-<Formsy.Form onInvalidSubmit={this.notifyFormError}></Formsy.Form>
+<Formsy onInvalidSubmit={this.notifyFormError}></Formsy>
 ```
 Triggers when form is submitted with an invalid state. The arguments are the same as on `onSubmit`.
 
-#### <a name="onchange">onChange(currentValues, isChanged)</a>
+#### <a name="onChange">onChange(currentValues, isChanged)</a>
 ```jsx
-<Formsy.Form onChange={this.saveCurrentValuesToLocalStorage}></Formsy.Form>
+<Formsy onChange={this.saveCurrentValuesToLocalStorage}></Formsy>
 ```
 "onChange" triggers when setValue is called on your form elements. It is also triggered when dynamic form elements have been added to the form. The "currentValues" is an object where the key is the name of the input and the value is the current value. The second argument states if the forms initial values actually has changed.
 
-#### <a name="resetform">reset(values)</a>
+#### <a name="resetForm">reset(values)</a>
 ```jsx
 class MyForm extends React.Component {
   resetForm = () => {
@@ -148,16 +150,16 @@ class MyForm extends React.Component {
   }
   render() {
     return (
-      <Formsy.Form ref="form">
+      <Formsy ref="form">
         ...
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }
 ```
 Manually reset the form to its pristine state. You can also pass an object that inserts new values into the inputs. Keys are name of input and value is of course the value.
 
-#### <a name="getmodel">getModel()</a>
+#### <a name="getModel">getModel()</a>
 ```jsx
 class MyForm extends React.Component {
   getMyData = () => {
@@ -165,9 +167,9 @@ class MyForm extends React.Component {
   }
   render() {
     return (
-      <Formsy.Form ref="form">
+      <Formsy ref="form">
         ...
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }
@@ -185,14 +187,14 @@ class MyForm extends React.Component {
   }
   render() {
     return (
-      <Formsy.Form ref="form">
+      <Formsy ref="form">
         ...
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }
 ```
-Manually invalidate the form by taking an object that maps to inputs. This is useful for server side validation. You can also use a third parameter to the [`onSubmit`](#onsubmitdata-resetform-invalidateform), [`onValidSubmit`](#onvalidsubmitmodel-resetform-invalidateform) or [`onInvalidSubmit`](#oninvalidsubmitmodel-resetform-invalidateform).
+Manually invalidate the form by taking an object that maps to inputs. This is useful for server side validation. You can also use a third parameter to the [`onSubmit`](#onSubmit), [`onValidSubmit`](#onValid) or [`onInvalidSubmit`](#onInvalid).
 
 #### <a name="preventExternalInvalidation">preventExternalInvalidation</a>
 ```jsx
@@ -204,21 +206,21 @@ class MyForm extends React.Component {
   }
   render() {
     return (
-      <Formsy.Form onSubmit={this.onSubmit} preventExternalInvalidation>
+      <Formsy onSubmit={this.onSubmit} preventExternalInvalidation>
         ...
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }
 ```
 With the `preventExternalInvalidation` the input will not be invalidated though it has an error.
 
-### <a name="formsymixin">Formsy.Wrapper</a>
+### <a name="withFormsy">`withFormsy`</a>
 
-All Formsy input components must be wrapped in the `Formsy.Wrapper` higher-order component, which provides the following properties and methods through `props`.
+All Formsy input components must be wrapped in the `withFormsy` higher-order component, which provides the following properties and methods through `props`.
 
 ```jsx
-import { Wrapper } from 'formsy-react';
+import { withFormsy } from 'formsy-react';
 
 class MyInput extends React.Component {
   render() {
@@ -229,7 +231,7 @@ class MyInput extends React.Component {
     );
   }
 }
-export default Wrapper(MyInput);
+export default withFormsy(MyInput);
 ```
 
 #### <a name="name">name</a>
@@ -251,9 +253,9 @@ class MyForm extends React.Component {
   }
   render() {
     return (
-      <Formsy.Form>
+      <Formsy>
         <MyInput name="search" innerRef={(c) => { this.searchInput = c; }} />
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }
@@ -295,7 +297,7 @@ Works just fine.
 ```
 The message that will show when the form input component is invalid. It will be used as a default error.
 
-#### <a name="validationerrors">validationErrors</a>
+#### <a name="validationErrors">validationErrors</a>
 ```jsx
 <MyInputComponent
   name="email"
@@ -429,9 +431,9 @@ class MyInput extends React.Component {
 class MyForm extends React.Component {
   render() {
     return (
-      <Formsy.Form>
+      <Formsy>
         <MyInput name="foo" validations="isEmail"/>
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }
@@ -512,7 +514,7 @@ class MyInput extends React.Component {
 ```
 By default all formsy input elements are pristine, which means they are not "touched". As soon as the [**setValue**](#setvaluevalue) method is run it will no longer be pristine.
 
-**note!** When the form is reset, using the resetForm callback function on for example [**onSubmit**](#onsubmitdata-resetform-invalidateform) the inputs are reset to their pristine state.
+**note!** When the form is reset, using the resetForm callback function on for example [**onSubmit**](#onSubmit) the inputs are reset to their pristine state.
 
 #### <a name="isformdisabled">isFormDisabled()</a>
 ```jsx
@@ -526,7 +528,7 @@ class MyInput extends React.Component {
   }
 }
 
-React.render(<Formy.Form disabled={true}/>);
+React.render(<Formsy disabled={true}/>);
 ```
 You can now disable the form itself with a prop and use **isFormDisabled()** inside form elements to verify this prop.
 
@@ -564,7 +566,7 @@ class MyInput extends React.Component {
   }
 }
 
-React.render(<Formy.Form disabled={true}/>);
+React.render(<Formsy disabled={true}/>);
 ```
 You can create custom validation inside a form element. The validate method defined will be run when you set new values to the form element. It will also be run when the form validates itself. This is an alternative to passing in validation rules as props.
 
@@ -582,23 +584,36 @@ class MyInput extends React.Component {
 }
 ```
 
-### <a name="formsyproptypes">Formsy.propTypes</a>
-If you are using React's PropType typechecking, you can spread Formsy's propTypes into your local propTypes to avoid having to repeatedly add `Formsy.Wrapper`'s methods to your components.
+### <a name="propTypes">`propTypes`</a>
+
+If you are using React's PropType type checking, you can spread Formsy’s propTypes into your local propTypes to avoid having to repeatedly add `withFormsy`’s methods to your components.
+
 ```jsx
+import PropTypes from 'prop-types';
+import { propTypes } from 'formsy-react';
+
 class MyInput extends React.Component {
   static propTypes = {
     firstProp: PropTypes.string,
     secondProp: PropTypes.object,
-    ...Formsy.propTypes
+    ...propTypes
   }
-  ...
 }
+
+MyInput.propTypes = {
+  firstProp: PropTypes.string,
+  secondProp: PropTypes.object,
+  ...propTypes,
+};
 ```
 
-### <a name="formsyaddvalidationrule">Formsy.addValidationRule(name, ruleFunc)</a>
+### <a name="addValidationRule">`addValidationRule(name, ruleFunc)`</a>
+
+`import { addValidationRule } from 'formsy-react';`
+
 An example:
 ```jsx
-Formsy.addValidationRule('isFruit', function (values, value) {
+addValidationRule('isFruit', function (values, value) {
   return ['apple', 'orange', 'pear'].indexOf(value) >= 0;
 });
 ```
@@ -607,7 +622,7 @@ Formsy.addValidationRule('isFruit', function (values, value) {
 ```
 Another example:
 ```jsx
-Formsy.addValidationRule('isIn', function (values, value, array) {
+addValidationRule('isIn', function (values, value, array) {
   return array.indexOf(value) >= 0;
 });
 ```
@@ -616,7 +631,7 @@ Formsy.addValidationRule('isIn', function (values, value, array) {
 ```
 Cross input validation:
 ```jsx
-Formsy.addValidationRule('isMoreThan', function (values, value, otherField) {
+addValidationRule('isMoreThan', function (values, value, otherField) {
   // The this context points to an object containing the values
   // {childAge: "", parentAge: "5"}
   // otherField argument is from the validations rule ("childAge")

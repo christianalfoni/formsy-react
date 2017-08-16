@@ -24,10 +24,10 @@ export default {
   'should reset only changed form element when external error is passed': function (test) {
 
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar', bar: 'foo' })}>
+      <Formsy onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar', bar: 'foo' })}>
         <FormsyTest name="foo"/>
         <FormsyTest name="bar"/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     const input = TestUtils.scryRenderedDOMComponentsWithTag(form, 'INPUT')[0];
@@ -49,9 +49,9 @@ export default {
   'should let normal validation take over when component with external error is changed': function (test) {
 
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
+      <Formsy onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
         <FormsyTest name="foo" validations="isEmail"/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     const input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
@@ -75,9 +75,9 @@ export default {
     const onInvalid = sinon.spy();
 
     TestUtils.renderIntoDocument(
-      <Formsy.Form onValid={onValid} onInvalid={onInvalid}>
+      <Formsy onValid={onValid} onInvalid={onInvalid}>
         <FormsyTest name="foo" value="bar" required/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     test.equal(onValid.called, true);
@@ -92,9 +92,9 @@ export default {
     const onInvalid = sinon.spy();
 
     TestUtils.renderIntoDocument(
-      <Formsy.Form onValid={onValid} onInvalid={onInvalid}>
+      <Formsy onValid={onValid} onInvalid={onInvalid}>
         <FormsyTest name="foo" required />
-      </Formsy.Form>
+      </Formsy>
     );
 
     test.equal(onValid.called, false);
@@ -112,9 +112,9 @@ export default {
       }
     });
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form>
+      <Formsy>
         <CustomInput name="foo" value="foo" required/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     const input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
@@ -128,9 +128,9 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form onValidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
+          <Formsy onValidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
             <FormsyTest name="foo" value="foo"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -150,9 +150,9 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form onInvalidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
+          <Formsy onInvalidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
             <FormsyTest name="foo" value="foo" validations="isEmail"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -172,11 +172,11 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form
+          <Formsy
             preventExternalInvalidation
             onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
             <FormsyTest name="foo" value="foo"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -195,9 +195,9 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
+          <Formsy onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
             <FormsyTest name="foo" value="foo"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }

@@ -30,7 +30,22 @@ const convertValidationsToObject = (validations) => {
   return validations || {};
 };
 
-module.exports = (Component) => {
+const propTypes = {
+  innerRef: PropTypes.func,
+  name: PropTypes.string.isRequired,
+  required: PropTypes.bool,
+  validations: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+  value: PropTypes.string, // eslint-disable-line
+};
+
+export {
+  propTypes,
+};
+
+export default (Component) => {
   class WrappedComponent extends React.Component {
     constructor(props) {
       super(props);
@@ -231,16 +246,7 @@ module.exports = (Component) => {
     value: Component.defaultValue,
   };
 
-  WrappedComponent.propTypes = {
-    innerRef: PropTypes.func,
-    name: PropTypes.string.isRequired,
-    required: PropTypes.bool,
-    validations: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.string,
-    ]),
-    value: PropTypes.string, // eslint-disable-line
-  };
+  WrappedComponent.propTypes = propTypes;
 
   return WrappedComponent;
 };

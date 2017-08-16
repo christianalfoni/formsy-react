@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Formsy, { withFormsy } from 'formsy-react';
+import Formsy, { withFormsy, addValidationRule } from 'formsy-react';
 
 import MyInput from './../components/Input';
 
@@ -21,7 +21,7 @@ const validators = {
   }
 };
 
-Formsy.addValidationRule('isYearOfBirth', (values, value) => {
+addValidationRule('isYearOfBirth', (values, value) => {
   value = parseInt(value);
   if (typeof value !== 'number') {
     return false;
@@ -35,11 +35,11 @@ class App extends React.Component {
   }
   render() {
     return (
-      <Formsy.Form onSubmit={this.submit} className="custom-validation">
+      <Formsy onSubmit={this.submit} className="custom-validation">
         <MyInput name="year" title="Year of Birth" type="number" validations="isYearOfBirth" validationError="Please type your year of birth" />
         <FormsyDynamicInput name="dynamic" title="..." />
         <button type="submit">Submit</button>
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }

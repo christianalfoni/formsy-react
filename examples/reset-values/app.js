@@ -20,7 +20,7 @@ class App extends React.Component {
   }
   render() {
     return (
-      <Formsy.Form ref="form" onSubmit={this.submit} className="form">
+      <Formsy ref="form" onSubmit={this.submit} className="form">
         <MyInput name="name" title="Name" value={user.name} />
         <MyInput name="free" title="Free to hire" type="checkbox" value={user.free} />
         <MySelect name="hair" title="Hair" value={user.hair}
@@ -36,7 +36,7 @@ class App extends React.Component {
           <button type="reset" onClick={this.resetForm}>Reset</button>
           <button type="submit">Submit</button>
         </div>
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }
