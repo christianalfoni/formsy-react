@@ -4,7 +4,7 @@ import utils from './utils';
 
 const convertValidationsToObject = (validations) => {
   if (typeof validations === 'string') {
-    return validations.split(/\,(?![^{\[]*[}\]])/g).reduce((validations, validation) => {
+    return validations.split(/,(?![^{[]*[}\]])/g).reduce((validationsAccumulator, validation) => {
       let args = validation.split(':');
       const validateMethod = args.shift();
 
@@ -20,8 +20,10 @@ const convertValidationsToObject = (validations) => {
         throw new Error('Formsy does not support multiple args on string validations. Use object format of validations instead.');
       }
 
-      validations[validateMethod] = args.length ? args[0] : true;
-      return validations;
+      // Avoid parameter reassignment
+      const validationsAccumulatorCopy = Object.assign({}, validationsAccumulator);
+      validationsAccumulatorCopy[validateMethod] = args.length ? args[0] : true;
+      return validationsAccumulatorCopy;
     }, {});
   }
 
@@ -33,14 +35,14 @@ module.exports = (Component) => {
     constructor(props) {
       super(props);
       this.state = {
-        value: typeof props.value !== 'undefined' ? props.value : Component.defaultProps ? Component.defaultProps.value : undefined,
-        _isRequired: false,
+        value: props.value,
+        isRequired: false,
         isValid: true,
-        _isPristine: true,
-        _pristineValue: typeof props.value !== 'undefined' ? props.value : Component.defaultProps ? Component.defaultProps.value : undefined,
-        _validationError: [],
+        isPristine: true,
+        pristineValue: props.value,
+        validationError: [],
         externalError: null,
-        _formSubmitted: false,
+        formSubmitted: false,
       };
       this.getErrorMessage = this.getErrorMessage.bind(this);
       this.getErrorMessages = this.getErrorMessages.bind(this);
@@ -60,7 +62,6 @@ module.exports = (Component) => {
 
         // Pass a function instead?
         this.context.formsy.attachToForm(this);
-        //this.props._attachToForm(this);
       };
 
       if (!this.props.name) {
@@ -83,7 +84,8 @@ module.exports = (Component) => {
       }
 
       // If validations or required is changed, run a new validation
-      if (!utils.isSame(this.props.validations, prevProps.validations) || !utils.isSame(this.props.required, prevProps.required)) {
+      if (!utils.isSame(this.props.validations, prevProps.validations) ||
+        !utils.isSame(this.props.required, prevProps.required)) {
         this.context.formsy.validate(this);
       }
     }
@@ -91,13 +93,13 @@ module.exports = (Component) => {
     // Detach it when component unmounts
     componentWillUnmount() {
       this.context.formsy.detachFromForm(this);
-      //this.props._detachFromForm(this);
     }
 
     setValidations(validations, required) {
       // Add validations to the store itself as the props object can not be modified
       this.validations = convertValidationsToObject(validations) || {};
-      this.requiredValidations = required === true ? {isDefaultRequiredValue: true} : convertValidationsToObject(required);
+      this.requiredValidations = required === true ? { isDefaultRequiredValue: true } :
+        convertValidationsToObject(required);
     }
 
     // By default, we validate after the value has been set.
@@ -105,35 +107,20 @@ module.exports = (Component) => {
     setValue(value, validate = true) {
       if (!validate) {
         this.setState({
-          value: value,
+          value,
         });
       } else {
         this.setState({
-          value: value,
-          _isPristine: false,
+          value,
+          isPristine: false,
         }, () => {
           this.context.formsy.validate(this);
-          // this.props._validate(this);
         });
       }
     }
 
-    resetValue() {
-      this.setState({
-        value: this.state._pristineValue,
-        _isPristine: true,
-      }, () => {
-        this.context.formsy.validate(this);
-        // this.props._validate(this);
-      });
-    }
-
     getValue() {
       return this.state.value;
-    }
-
-    hasValue() {
-      return this.state.value !== '';
     }
 
     getErrorMessage() {
@@ -142,12 +129,16 @@ module.exports = (Component) => {
     }
 
     getErrorMessages() {
-      return !this.isValid() || this.showRequired() ? (this.state.externalError || this.state._validationError || []) : [];
+      return !this.isValid() || this.showRequired() ?
+        (this.state.externalError || this.state.validationError || []) : [];
+    }
+
+    hasValue() {
+      return this.state.value !== '';
     }
 
     isFormDisabled() {
       return this.context.formsy.isFormDisabled();
-      //return this.props._isFormDisabled();
     }
 
     isValid() {
@@ -155,11 +146,11 @@ module.exports = (Component) => {
     }
 
     isPristine() {
-      return this.state._isPristine;
+      return this.state.isPristine;
     }
 
     isFormSubmitted() {
-      return this.state._formSubmitted;
+      return this.state.formSubmitted;
     }
 
     isRequired() {
@@ -167,7 +158,7 @@ module.exports = (Component) => {
     }
 
     showRequired() {
-      return this.state._isRequired;
+      return this.state.isRequired;
     }
 
     showError() {
@@ -177,6 +168,15 @@ module.exports = (Component) => {
     isValidValue(value) {
       return this.context.formsy.isValidValue.call(null, this, value);
       // return this.props.isValidValue.call(null, this, value);
+    }
+
+    resetValue() {
+      this.setState({
+        value: this.state.pristineValue,
+        isPristine: true,
+      }, () => {
+        this.context.formsy.validate(this);
+      });
     }
 
     render() {
@@ -224,12 +224,22 @@ module.exports = (Component) => {
 
   WrappedComponent.defaultProps = {
     innerRef: () => {},
+    required: false,
     validationError: '',
     validationErrors: {},
+    validations: null,
+    value: Component.defaultValue,
   };
 
   WrappedComponent.propTypes = {
     innerRef: PropTypes.func,
+    name: PropTypes.string.isRequired,
+    required: PropTypes.bool,
+    validations: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.string,
+    ]),
+    value: PropTypes.string, // eslint-disable-line
   };
 
   return WrappedComponent;

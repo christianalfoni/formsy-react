@@ -86,7 +86,7 @@ Formsy.Form = class FormsyForm extends React.Component {
       const name = component.props.name;
       const args = [{
         isValid: !(name in errors),
-        _validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name],
+        validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name],
       }];
       component.setState(...args);
     });
@@ -112,15 +112,15 @@ Formsy.Form = class FormsyForm extends React.Component {
 
   setFormPristine(isPristine) {
     this.setState({
-      _formSubmitted: !isPristine,
+      formSubmitted: !isPristine,
     });
 
     // Iterate through each component and set it as pristine
     // or "dirty".
     this.inputs.forEach((component) => {
       component.setState({
-        _formSubmitted: !isPristine,
-        _isPristine: isPristine,
+        formSubmitted: !isPristine,
+        isPristine: isPristine,
       });
     });
   }
@@ -219,8 +219,8 @@ Formsy.Form = class FormsyForm extends React.Component {
     // the validator IF there is a value or it is required
     component.setState({
       isValid: validation.isValid,
-      _isRequired: validation.isRequired,
-      _validationError: validation.error,
+      isRequired: validation.isRequired,
+      validationError: validation.error,
       externalError: null,
     }, this.validateForm);
   }
@@ -313,8 +313,8 @@ Formsy.Form = class FormsyForm extends React.Component {
       }
       component.setState({
         isValid: validation.isValid,
-        _isRequired: validation.isRequired,
-        _validationError: validation.error,
+        isRequired: validation.isRequired,
+        validationError: validation.error,
         externalError: !validation.isValid && component.state.externalError ?
           component.state.externalError : null,
       }, index === this.inputs.length - 1 ? onValidationComplete : null);
