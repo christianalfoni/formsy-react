@@ -1,10 +1,10 @@
 module.exports = {
-  arraysDiffer: function (a, b) {
-    var isDifferent = false;
+  arraysDiffer(a, b) {
+    let isDifferent = false;
     if (a.length !== b.length) {
       isDifferent = true;
     } else {
-      a.forEach(function (item, index) {
+      a.forEach((item, index) => {
         if (!this.isSame(item, b[index])) {
           isDifferent = true;
         }
@@ -13,12 +13,12 @@ module.exports = {
     return isDifferent;
   },
 
-  objectsDiffer: function (a, b) {
-    var isDifferent = false;
+  objectsDiffer(a, b) {
+    let isDifferent = false;
     if (Object.keys(a).length !== Object.keys(b).length) {
       isDifferent = true;
     } else {
-      Object.keys(a).forEach(function (key) {
+      Object.keys(a).forEach((key) => {
         if (!this.isSame(a[key], b[key])) {
           isDifferent = true;
         }
@@ -27,7 +27,7 @@ module.exports = {
     return isDifferent;
   },
 
-  isSame: function (a, b) {
+  isSame(a, b) {
     if (typeof a !== typeof b) {
       return false;
     } else if (Array.isArray(a) && Array.isArray(b)) {
@@ -41,9 +41,9 @@ module.exports = {
     return a === b;
   },
 
-  find: function (collection, fn) {
-    for (var i = 0, l = collection.length; i < l; i++) {
-      var item = collection[i];
+  find(collection, fn) {
+    for (let i = 0, l = collection.length; i < l; i += 1) {
+      const item = collection[i];
       if (fn(item)) {
         return item;
       }
@@ -51,7 +51,7 @@ module.exports = {
     return null;
   },
 
-  runRules: function (value, currentValues, validations, validationRules) {
+  runRules(value, currentValues, validations, validationRules) {
     const results = {
       errors: [],
       failed: [],
@@ -97,5 +97,5 @@ module.exports = {
     }
 
     return results;
-  }
+  },
 };
