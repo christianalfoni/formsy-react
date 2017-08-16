@@ -80,15 +80,14 @@ export default class App extends React.Component {
     super(props);
     this.disableButton = this.disableButton.bind(this);
     this.enableButton = this.enableButton.bind(this);
-    this.submit = this.submit.bind(this);
     this.state = { canSubmit: false };
   }
 
-  disableButton = () => {
+  disableButton() {
     this.setState({ canSubmit: false });
   }
 
-  enableButton = () => {
+  enableButton() {
     this.setState({ canSubmit: true });
   }
 
