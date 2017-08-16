@@ -36,7 +36,7 @@ module.exports = {
     return {
       _value: this.props.value,
       _isRequired: false,
-      _isValid: false,
+      _isValid: !this.props.required,
       _isPristine: true,
       _pristineValue: this.props.value,
       _validationError: [],
