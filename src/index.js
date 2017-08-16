@@ -4,7 +4,7 @@ import React from 'react';
 
 import utils from './utils';
 import validationRules from './validationRules';
-import Wrapper from './Wrapper';
+import Wrapper, { propTypes } from './Wrapper';
 
 class Formsy extends React.Component {
   constructor(props) {
@@ -62,29 +62,26 @@ class Formsy extends React.Component {
     }
   }
 
-  getModel() {
-    const currentValues = this.getCurrentValues();
-    return this.mapModel(currentValues);
+  // Method put on each input component to register
+  // itself to the form
+  attachToForm(component) {
+    if (this.inputs.indexOf(component) === -1) {
+      this.inputs.push(component);
+    }
+
+    this.validate(component);
   }
 
-  setInputValidationErrors(errors) {
-    this.inputs.forEach((component) => {
-      const name = component.props.name;
-      const args = [{
-        isValid: !(name in errors),
-        validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name],
-      }];
-      component.setState(...args);
-    });
-  }
+  // Method put on each input component to unregister
+  // itself from the form
+  detachFromForm(component) {
+    const componentPos = this.inputs.indexOf(component);
 
-  getPristineValues() {
-    return this.inputs.reduce((data, component) => {
-      const name = component.props.name;
-      const dataCopy = Object.assign({}, data); // avoid param reassignment
-      dataCopy[name] = component.props.value;
-      return dataCopy;
-    }, {});
+    if (componentPos !== -1) {
+      this.inputs = this.inputs.slice(0, componentPos).concat(this.inputs.slice(componentPos + 1));
+    }
+
+    this.validateForm();
   }
 
   getCurrentValues() {
@@ -96,19 +93,18 @@ class Formsy extends React.Component {
     }, {});
   }
 
-  setFormPristine(isPristine) {
-    this.setState({
-      formSubmitted: !isPristine,
-    });
+  getModel() {
+    const currentValues = this.getCurrentValues();
+    return this.mapModel(currentValues);
+  }
 
-    // Iterate through each component and set it as pristine
-    // or "dirty".
-    this.inputs.forEach((component) => {
-      component.setState({
-        formSubmitted: !isPristine,
-        isPristine,
-      });
-    });
+  getPristineValues() {
+    return this.inputs.reduce((data, component) => {
+      const name = component.props.name;
+      const dataCopy = Object.assign({}, data); // avoid param reassignment
+      dataCopy[name] = component.props.value;
+      return dataCopy;
+    }, {});
   }
 
   // Checks if the values have changed from their initial value
@@ -137,6 +133,11 @@ class Formsy extends React.Component {
     }, {}));
   }
 
+  reset(data) {
+    this.setFormPristine(true);
+    this.resetModel(data);
+  }
+
   // Reset each key in the model to the original / initial / specified value
   resetModel(data) {
     this.inputs.forEach((component) => {
@@ -150,9 +151,80 @@ class Formsy extends React.Component {
     this.validateForm();
   }
 
-  reset(data) {
-    this.setFormPristine(true);
-    this.resetModel(data);
+  // Checks validation on current value or a passed value
+  runValidation(component, value = component.state.value) {
+    const currentValues = this.getCurrentValues();
+    const validationErrors = component.props.validationErrors;
+    const validationError = component.props.validationError;
+
+    const validationResults = utils.runRules(
+      value, currentValues, component.validations, validationRules,
+    );
+    const requiredResults = utils.runRules(
+      value, currentValues, component.requiredValidations, validationRules,
+    );
+
+    const isRequired = Object.keys(component.requiredValidations).length ?
+      !!requiredResults.success.length : false;
+    const isValid = !validationResults.failed.length &&
+      !(this.props.validationErrors && this.props.validationErrors[component.props.name]);
+
+    return {
+      isRequired,
+      isValid: isRequired ? false : isValid,
+      error: (() => {
+        if (isValid && !isRequired) {
+          return [];
+        }
+
+        if (validationResults.errors.length) {
+          return validationResults.errors;
+        }
+
+        if (this.props.validationErrors && this.props.validationErrors[component.props.name]) {
+          return typeof this.props.validationErrors[component.props.name] === 'string' ? [this.props.validationErrors[component.props.name]] : this.props.validationErrors[component.props.name];
+        }
+
+        if (isRequired) {
+          const error = validationErrors[requiredResults.success[0]];
+          return error ? [error] : null;
+        }
+
+        if (validationResults.failed.length) {
+          return validationResults.failed.map(failed =>
+            (validationErrors[failed] ? validationErrors[failed] : validationError))
+            .filter((x, pos, arr) => arr.indexOf(x) === pos); // remove duplicates
+        }
+
+        return undefined;
+      })(),
+    };
+  }
+
+  setInputValidationErrors(errors) {
+    this.inputs.forEach((component) => {
+      const name = component.props.name;
+      const args = [{
+        isValid: !(name in errors),
+        validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name],
+      }];
+      component.setState(...args);
+    });
+  }
+
+  setFormPristine(isPristine) {
+    this.setState({
+      formSubmitted: !isPristine,
+    });
+
+    // Iterate through each component and set it as pristine
+    // or "dirty".
+    this.inputs.forEach((component) => {
+      component.setState({
+        formSubmitted: !isPristine,
+        isPristine,
+      });
+    });
   }
 
   // Update model, submit to url prop and send the model
@@ -211,61 +283,6 @@ class Formsy extends React.Component {
     }, this.validateForm);
   }
 
-  // Checks validation on current value or a passed value
-  runValidation(component, value = component.state.value) {
-    const currentValues = this.getCurrentValues();
-    const validationErrors = component.props.validationErrors;
-    const validationError = component.props.validationError;
-
-    const validationResults = utils.runRules(
-      value, currentValues, component.validations, validationRules,
-    );
-    const requiredResults = utils.runRules(
-      value, currentValues, component.requiredValidations, validationRules,
-    );
-
-    // the component defines an explicit validate function
-    if (typeof component.validate === 'function') {
-      validationResults.failed = component.validate() ? [] : ['failed'];
-    }
-
-    const isRequired = Object.keys(component.requiredValidations).length ?
-      !!requiredResults.success.length : false;
-    const isValid = !validationResults.failed.length &&
-      !(this.props.validationErrors && this.props.validationErrors[component.props.name]);
-
-    return {
-      isRequired,
-      isValid: isRequired ? false : isValid,
-      error: (() => {
-        if (isValid && !isRequired) {
-          return [];
-        }
-
-        if (validationResults.errors.length) {
-          return validationResults.errors;
-        }
-
-        if (this.props.validationErrors && this.props.validationErrors[component.props.name]) {
-          return typeof this.props.validationErrors[component.props.name] === 'string' ? [this.props.validationErrors[component.props.name]] : this.props.validationErrors[component.props.name];
-        }
-
-        if (isRequired) {
-          const error = validationErrors[requiredResults.success[0]];
-          return error ? [error] : null;
-        }
-
-        if (validationResults.failed.length) {
-          return validationResults.failed.map(failed =>
-            (validationErrors[failed] ? validationErrors[failed] : validationError))
-            .filter((x, pos, arr) => arr.indexOf(x) === pos); // remove duplicates
-        }
-
-        return undefined;
-      })(),
-    };
-  }
-
   // Validate the form by going through all child input components
   // and check their state
   validateForm() {
@@ -313,28 +330,6 @@ class Formsy extends React.Component {
         canChange: true,
       });
     }
-  }
-
-  // Method put on each input component to register
-  // itself to the form
-  attachToForm(component) {
-    if (this.inputs.indexOf(component) === -1) {
-      this.inputs.push(component);
-    }
-
-    this.validate(component);
-  }
-
-  // Method put on each input component to unregister
-  // itself from the form
-  detachFromForm(component) {
-    const componentPos = this.inputs.indexOf(component);
-
-    if (componentPos !== -1) {
-      this.inputs = this.inputs.slice(0, componentPos).concat(this.inputs.slice(componentPos + 1));
-    }
-
-    this.validateForm();
   }
 
   render() {
@@ -447,7 +442,7 @@ Formsy.childContextTypes = {
 const addValidationRule = (name, func) => {
   validationRules[name] = func;
 };
-const propTypes = Wrapper.propTypes;
+
 const withFormsy = Wrapper;
 
 export {

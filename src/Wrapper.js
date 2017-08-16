@@ -110,6 +110,58 @@ export default (Component) => {
       this.context.formsy.detachFromForm(this);
     }
 
+    getErrorMessage() {
+      const messages = this.getErrorMessages();
+      return messages.length ? messages[0] : null;
+    }
+
+    getErrorMessages() {
+      return !this.isValid() || this.showRequired() ?
+        (this.state.externalError || this.state.validationError || []) : [];
+    }
+
+    getValue() {
+      return this.state.value;
+    }
+
+    hasValue() {
+      return this.state.value !== '';
+    }
+
+    isFormDisabled() {
+      return this.context.formsy.isFormDisabled();
+    }
+
+    isFormSubmitted() {
+      return this.state.formSubmitted;
+    }
+
+    isPristine() {
+      return this.state.isPristine;
+    }
+
+    isRequired() {
+      return !!this.props.required;
+    }
+
+    isValid() {
+      return this.state.isValid;
+    }
+
+    isValidValue(value) {
+      return this.context.formsy.isValidValue.call(null, this, value);
+      // return this.props.isValidValue.call(null, this, value);
+    }
+
+    resetValue() {
+      this.setState({
+        value: this.state.pristineValue,
+        isPristine: true,
+      }, () => {
+        this.context.formsy.validate(this);
+      });
+    }
+
     setValidations(validations, required) {
       // Add validations to the store itself as the props object can not be modified
       this.validations = convertValidationsToObject(validations) || {};
@@ -134,64 +186,12 @@ export default (Component) => {
       }
     }
 
-    getValue() {
-      return this.state.value;
-    }
-
-    getErrorMessage() {
-      const messages = this.getErrorMessages();
-      return messages.length ? messages[0] : null;
-    }
-
-    getErrorMessages() {
-      return !this.isValid() || this.showRequired() ?
-        (this.state.externalError || this.state.validationError || []) : [];
-    }
-
-    hasValue() {
-      return this.state.value !== '';
-    }
-
-    isFormDisabled() {
-      return this.context.formsy.isFormDisabled();
-    }
-
-    isValid() {
-      return this.state.isValid;
-    }
-
-    isPristine() {
-      return this.state.isPristine;
-    }
-
-    isFormSubmitted() {
-      return this.state.formSubmitted;
-    }
-
-    isRequired() {
-      return !!this.props.required;
-    }
-
-    showRequired() {
-      return this.state.isRequired;
-    }
-
     showError() {
       return !this.showRequired() && !this.isValid();
     }
 
-    isValidValue(value) {
-      return this.context.formsy.isValidValue.call(null, this, value);
-      // return this.props.isValidValue.call(null, this, value);
-    }
-
-    resetValue() {
-      this.setState({
-        value: this.state.pristineValue,
-        isPristine: true,
-      }, () => {
-        this.context.formsy.validate(this);
-      });
+    showRequired() {
+      return this.state.isRequired;
     }
 
     render() {
