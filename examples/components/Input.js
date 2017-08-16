@@ -33,7 +33,7 @@ class MyInput extends React.Component {
           onChange={this.changeValue}
           name={this.props.name}
           type={this.props.type || 'text'}
-          value={this.props.getValue()}
+          value={this.props.getValue() || ''}
         />
         <span className='validation-error'>{errorMessage}</span>
       </div>

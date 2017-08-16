@@ -1,38 +1,39 @@
+import Formsy, { addValidationRule, propTypes, withFormsy } from 'formsy-react';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Formsy, { withFormsy, addValidationRule } from 'formsy-react';
 
 import MyInput from './../components/Input';
 
 const currentYear = new Date().getFullYear();
 
-const validators = {
-  time: {
-    regexp: /^(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?$/,
-    message: 'Not valid time'
-  },
-  decimal: {
-    regexp: /(^\d*\.?\d*[0-9]+\d*$)|(^[0-9]+\d*\.\d*$)/,
-    message: 'Please type decimal value'
-  },
-  binary: {
-    regexp: /^([0-1])*$/,
-    message: '10101000'
-  }
-};
-
+addValidationRule('time', (values, value) => {
+  return /^(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?$/.test(value);
+});
+addValidationRule('decimal', (values, value) => {
+  return /(^\d*\.?\d*[0-9]+\d*$)|(^[0-9]+\d*\.\d*$)/.test(value);
+});
+addValidationRule('binary', (values, value) => {
+  return /^([0-1])*$/.test(value);
+});
 addValidationRule('isYearOfBirth', (values, value) => {
-  value = parseInt(value);
-  if (typeof value !== 'number') {
+  const parsedValue = parseInt(value, 10);
+  if (typeof parsedValue !== 'number') {
     return false;
   }
-  return value < currentYear && value > currentYear - 130;
+  return parsedValue < currentYear && parsedValue > currentYear - 130;
 });
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.submit = this.submit.bind(this);
+  }
+
   submit(data) {
     alert(JSON.stringify(data, null, 4));
   }
+
   render() {
     return (
       <Formsy onSubmit={this.submit} className="custom-validation">
@@ -45,59 +46,79 @@ class App extends React.Component {
 }
 
 class DynamicInput extends React.Component {
-  state = { validationType: 'time' };
-  changeValue = (event) => {
-    this.props.setValue(event.currentTarget.value);
+  constructor(props) {
+    super(props);
+    this.state = { validationType: 'time' };
+    this.changeValidation = this.changeValidation.bind(this);
+    this.changeValue = this.changeValue.bind(this);
   }
-  changeValidation = (validationType) => {
+
+  changeValidation(validationType) {
     this.setState({ validationType: validationType });
     this.props.setValue(this.props.getValue());
   }
-  validate = () => {
-    const value = this.props.getValue();
-    console.log(value, this.state.validationType);
-    return value ? validators[this.state.validationType].regexp.test(value) : true;
+
+  changeValue(event) {
+    this.props.setValue(event.currentTarget.value);
   }
-  getCustomErrorMessage = () => {
-    return this.props.showError() ? validators[this.state.validationType].message : '';
-  }
+
   render() {
-    const className = 'form-group' + (this.props.className || ' ') + (this.props.showRequired() ? 'required' : this.props.showError() ? 'error' : null);
-    const errorMessage = this.getCustomErrorMessage();
+    const errorMessage = {
+      time: 'Not a valid time format',
+      decimal: "Not a valid decimal value",
+      binary: "Not a valid binary number"
+    }
 
     return (
-      <div className={className}>
+      <div>
         <label htmlFor={this.props.name}>{this.props.title}</label>
-        <input type='text' name={this.props.name} onChange={this.changeValue} value={this.props.getValue() || ''}/>
-        <span className='validation-error'>{errorMessage}</span>
-        <Validations validationType={this.state.validationType} changeValidation={this.changeValidation}/>
+        <MyInput validations={this.state.validationType} validationError={errorMessage[this.state.validationType]} type='text' name={this.props.name} onChange={this.changeValue} value={this.props.getValue() || ''} />
+        <Validations validationType={this.state.validationType} changeValidation={this.changeValidation} />
       </div>
     );
   }
 }
+
+DynamicInput.displayName = "dynamic input";
+
+DynamicInput.propTypes = {
+  ...propTypes,
+};
+
 const FormsyDynamicInput = withFormsy(DynamicInput);
 
 class Validations extends React.Component {
-  changeValidation = (e) => {
+  constructor(props) {
+    super(props);
+    this.changeValidation = this.changeValidation.bind(this);
+  }
+
+  changeValidation(e) {
     this.props.changeValidation(e.target.value);
   }
+
   render() {
     const { validationType } = this.props;
     return (
-      <fieldset onChange={this.changeValidation}>
+      <fieldset>
         <legend>Validation Type</legend>
         <div>
-          <input name='validationType' type='radio' value='time' defaultChecked={validationType === 'time'}/>Time
+          <input onChange={this.changeValidation} name='validationType' type='radio' value='time' checked={validationType === 'time'} />Time
         </div>
         <div>
-          <input name='validationType' type='radio' value='decimal' defaultChecked={validationType === 'decimal'}/>Decimal
+          <input onChange={this.changeValidation} name='validationType' type='radio' value='decimal' checked={validationType === 'decimal'} />Decimal
         </div>
         <div>
-          <input name='validationType' type='radio' value='binary' defaultChecked={validationType === 'binary'}/>Binary
+          <input onChange={this.changeValidation} name='validationType' type='radio' value='binary' checked={validationType === 'binary'} />Binary
         </div>
       </fieldset>
     );
   }
 }
 
-ReactDOM.render(<App/>, document.getElementById('example'));
+Validations.propTypes = {
+  changeValidation: PropTypes.func.isRequired,
+  validationType: PropTypes.string.isRequired,
+};
+
+ReactDOM.render(<App />, document.getElementById('example'));
