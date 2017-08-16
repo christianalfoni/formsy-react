@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   arraysDiffer(a, b) {
     let isDifferent = false;
     if (a.length !== b.length) {

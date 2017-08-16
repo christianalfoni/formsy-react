@@ -70,4 +70,4 @@ const validations = {
   },
 };
 
-module.exports = validations;
+export default validations;
