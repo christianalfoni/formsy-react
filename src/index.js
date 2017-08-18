@@ -22,6 +22,7 @@ class Formsy extends React.Component {
     this.isChanged = this.isChanged.bind(this);
     this.isFormDisabled = this.isFormDisabled.bind(this);
     this.reset = this.reset.bind(this);
+    this.resetInternal = this.resetInternal.bind(this);
     this.runValidation = this.runValidation.bind(this);
     this.submit = this.submit.bind(this);
     this.updateInputsWithError = this.updateInputsWithError.bind(this);
@@ -136,6 +137,14 @@ class Formsy extends React.Component {
   reset(data) {
     this.setFormPristine(true);
     this.resetModel(data);
+  }
+
+  resetInternal(event) {
+    event.preventDefault();
+    this.reset();
+    if (this.props.onReset) {
+      this.props.onReset();
+    }
   }
 
   // Reset each key in the model to the original / initial / specified value
@@ -349,6 +358,7 @@ class Formsy extends React.Component {
       // onError,
       onInvalidSubmit,
       onInvalid,
+      onReset,
       onSubmit,
       onValid,
       onValidSubmit,
@@ -366,6 +376,7 @@ class Formsy extends React.Component {
     return React.createElement(
       'form',
       {
+        onReset: this.resetInternal,
         onSubmit: this.submit,
         ...nonFormsyProps,
       },
@@ -394,6 +405,7 @@ Formsy.defaultProps = {
   onError: () => {},
   onInvalid: () => {},
   onInvalidSubmit: () => {},
+  onReset: () => {},
   onSubmit: () => {},
   onValid: () => {},
   onValidSubmit: () => {},
@@ -424,6 +436,7 @@ Formsy.propTypes = {
   onChange: PropTypes.func,
   onInvalid: PropTypes.func,
   onInvalidSubmit: PropTypes.func,
+  onReset: PropTypes.func,
   onSubmit: PropTypes.func,
   onValid: PropTypes.func,
   onValidSubmit: PropTypes.func,
