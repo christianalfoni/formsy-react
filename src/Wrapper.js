@@ -38,7 +38,10 @@ const propTypes = {
     PropTypes.object,
     PropTypes.string,
   ]),
-  value: PropTypes.string, // eslint-disable-line
+  value: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.string,
+  ]),
 };
 
 export {
