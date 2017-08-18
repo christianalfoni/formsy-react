@@ -9,7 +9,8 @@
 }
 
 .field {
-  overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
 .many-fields .form-group {
@@ -17,8 +18,5 @@
   float: left;
 }
 .many-fields .remove-field {
-  margin-top: 30px;
-  margin-left: 8px;
-  display: inline-block;
-  text-decoration: none;
+  max-height: 2rem;
 }
