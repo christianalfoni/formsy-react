@@ -155,11 +155,13 @@ Formsy.Form = createReactClass({
   setInputValidationErrors: function (errors) {
     this.inputs.forEach(component => {
       var name = component.props.name;
-      var args = [{
-        _isValid: !(name in errors),
-        _validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name]
-      }];
-      component.setState.apply(component, args);
+      if (errors[name]) {
+        var args = [{
+          _isValid: !(name in errors),
+          _validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name]
+        }];
+        component.setState.apply(component, args);
+      }
     });
   },
 
