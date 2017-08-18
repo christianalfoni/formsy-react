@@ -12,23 +12,39 @@ const user = {
   hair: 'brown'
 };
 
+const randomNames = ['Christian', 'Dmitry', 'Aesop'];
+const randomFree = [true, false];
+const randomHair = ['brown', 'black', 'blonde', 'red'];
+
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.resetForm = this.resetForm.bind(this);
+    this.randomize = this.randomize.bind(this);
+    this.submit = this.submit.bind(this);
+  }
+
+  randomize() {
+    const random = {
+      name: randomNames[Math.floor(Math.random()*randomNames.length)],
+      free: randomFree[Math.floor(Math.random()*randomFree.length)],
+      hair: randomHair[Math.floor(Math.random()*randomHair.length)],
+    };
+
+    this.form.reset(random);
   }
 
   submit(data) {
     alert(JSON.stringify(data, null, 4));
   }
 
-  resetForm() {
-    this.form.reset();
-  }
-
   render() {
     return (
-      <Formsy ref={(c) => this.form = c} onSubmit={this.submit} className="form">
+      <Formsy
+        ref={(c) => this.form = c}
+        onSubmit={this.submit}
+        onReset={this.reset}
+        className="form"
+      >
         <MyInput name="name" title="Name" value={user.name} />
         <MyCheckbox name="free" title="Free to hire" value={user.free} />
         <MySelect
@@ -44,7 +60,8 @@ class App extends React.Component {
         />
 
         <div className="buttons">
-          <button type="button" onClick={this.resetForm}>Reset</button>
+          <button type="reset">Reset</button>
+          <button type="button" onClick={this.randomize}>Randomize</button>
           <button type="submit">Submit</button>
         </div>
       </Formsy>
