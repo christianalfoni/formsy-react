@@ -9,7 +9,7 @@
     -   [onValidSubmit()](#onValidsubmit)
     -   [onInvalidSubmit()](#onInvalidsubmit)
     -   [onChange()](#onChange)
-    -   [reset()](#resetForm)
+    -   [reset()](#reset)
     -   [getModel()](#getModel)
     -   [updateInputsWithError()](#updateInputsWithError)
     -   [preventExternalInvalidation](#preventExternalInvalidation)
@@ -149,7 +149,7 @@ Triggers when form is submitted with an invalid state. The arguments are the sam
 
 "onChange" triggers when setValue is called on your form elements. It is also triggered when dynamic form elements have been added to the form. The "currentValues" is an object where the key is the name of the input and the value is the current value. The second argument states if the forms initial values actually has changed.
 
-#### <a id="resetForm">reset(values)</a>
+#### <a id="reset">reset(values)</a>
 
 ```jsx
 class MyForm extends React.Component {
@@ -559,9 +559,9 @@ class MyInput extends React.Component {
 }
 ```
 
-By default all formsy input elements are pristine, which means they are not "touched". As soon as the [**setValue**](#setValuevalue) method is run it will no longer be pristine.
+By default all Formsy input elements are pristine, which means they are not "touched". As soon as the [**setValue**](#setValue) method is run it will no longer be pristine.
 
-**note!** When the form is reset, using the resetForm callback function on for example [**onSubmit**](#onSubmit) the inputs are reset to their pristine state.
+**note!** When the form is reset (using `reset(...)`) the inputs are reset to their pristine state.
 
 #### <a id="isFormDisabled">isFormDisabled()</a>
 

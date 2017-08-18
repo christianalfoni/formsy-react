@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Form } from 'formsy-react';
+import Formsy from 'formsy-react';
 
+import MyCheckbox from './../components/Checkbox';
 import MyInput from './../components/Input';
 import MySelect from './../components/Select';
 
@@ -12,25 +13,35 @@ const user = {
 };
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.resetForm = this.resetForm.bind(this);
+  }
+
   submit(data) {
     alert(JSON.stringify(data, null, 4));
   }
-  resetForm = () => {
-    this.refs.form.reset();
+
+  resetForm() {
+    this.form.reset();
   }
+
   render() {
     return (
-      <Formsy ref="form" onSubmit={this.submit} className="form">
-        <MyInput name="name" title="Name" value={user.name} />
-        <MyInput name="free" title="Free to hire" type="checkbox" value={user.free} />
-        <MySelect name="hair" title="Hair" value={user.hair}
+      <Formsy ref={(c) => this.form = c} onSubmit={this.submit} className="form">
+        {/* <MyInput name="name" title="Name" value={user.name} /> */}
+        <MyCheckbox name="free" title="Free to hire" value={user.free} />
+        {/* <MySelect
+          name="hair"
+          title="Hair"
+          value={user.hair}
           options={[
             { value: "black", title: "Black" },
             { value: "brown", title: "Brown" },
             { value: "blonde", title: "Blonde" },
             { value: "red", title: "Red" }
           ]}
-        />
+        /> */}
 
         <div className="buttons">
           <button type="reset" onClick={this.resetForm}>Reset</button>
@@ -41,4 +52,4 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App/>, document.getElementById('example'));
+ReactDOM.render(<App />, document.getElementById('example'));
