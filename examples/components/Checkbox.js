@@ -10,18 +10,9 @@ class MyCheckbox extends React.Component {
     };
   }
 
-  componentDidMount() {
-    // setInterval(() => {
-    //   this.setState({
-    //     value: !this.state.value
-    //   })
-    // }, 3000)
-  }
-
   changeValue(event) {
     // setValue() will set the value of the component, which in
     // turn will validate it and the rest of the form
-    console.log(event.target.checked);
     this.props.setValue(event.target.checked)
   }
 
@@ -33,15 +24,10 @@ class MyCheckbox extends React.Component {
     // value typed is invalid
     const className = `form-group ${this.props.className} ${this.props.showRequired() ? 'required' : ''} ${this.props.showError() ? 'error' : ''}`;
     const value = this.props.getValue();
-    console.log('render getValue(): ', this.props.getValue());
     return (
       <div
         className={className}
       >
-        <pre>
-          {JSON.stringify(typeof value)}
-          {JSON.stringify(value)}
-        </pre>
         <label htmlFor={this.props.name}>{this.props.title}</label>
         <input
           onChange={this.changeValue}

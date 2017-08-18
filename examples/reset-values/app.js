@@ -29,9 +29,9 @@ class App extends React.Component {
   render() {
     return (
       <Formsy ref={(c) => this.form = c} onSubmit={this.submit} className="form">
-        {/* <MyInput name="name" title="Name" value={user.name} /> */}
+        <MyInput name="name" title="Name" value={user.name} />
         <MyCheckbox name="free" title="Free to hire" value={user.free} />
-        {/* <MySelect
+        <MySelect
           name="hair"
           title="Hair"
           value={user.hair}
@@ -41,10 +41,10 @@ class App extends React.Component {
             { value: "blonde", title: "Blonde" },
             { value: "red", title: "Red" }
           ]}
-        /> */}
+        />
 
         <div className="buttons">
-          <button type="reset" onClick={this.resetForm}>Reset</button>
+          <button type="button" onClick={this.resetForm}>Reset</button>
           <button type="submit">Submit</button>
         </div>
       </Formsy>
