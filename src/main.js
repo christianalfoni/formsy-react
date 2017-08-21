@@ -405,7 +405,7 @@ Formsy.Form = createReactClass({
 
     // Run validation again in case affected by other inputs. The
     // last component validated will run the onValidationComplete callback
-    this.inputs.forEach((component, index) => {
+    Promise.all(this.inputs.map((component, index) => {
       this.runValidation(component)
       .then(validation => {
         if (!validation) {
@@ -419,8 +419,11 @@ Formsy.Form = createReactClass({
           _isRequired: validation.isRequired,
           _validationError: validation.error,
           _externalError: !validation.isValid && component.state._externalError ? component.state._externalError : null
-        }, index === this.inputs.length - 1 ? onValidationComplete : null);
+        });
       })
+    }))
+    .then(() => {
+      onValidationComplete()
     });
 
     // If there are no inputs, set state where form is ready to trigger
