@@ -68,11 +68,16 @@ Formsy.Form = createReactClass({
   // the values of the form and register child inputs
   componentWillMount: function () {
     this.inputs = [];
+    this.canSetState = true;
     this.cachedValues = {};
   },
 
   componentDidMount: function () {
     this.validateForm();
+  },
+
+  componentWillUnmount () {
+    this.canSetState = false
   },
 
   componentWillUpdate: function () {
@@ -113,6 +118,24 @@ Formsy.Form = createReactClass({
     this.props.onSubmit(model, this.resetModel, this.updateInputsWithError);
     this.state.isValid ? this.props.onValidSubmit(model, this.resetModel, this.updateInputsWithError) : this.props.onInvalidSubmit(model, this.resetModel, this.updateInputsWithError);
 
+  },
+
+  componentIsAttached (component) {
+    return this.inputs.indexOf(component) >= 0
+  },
+
+  componentSetState (component, state, cb) {
+    if (this.componentIsAttached(component)) {
+      component.setState(state, cb)
+    } else {
+      cb()
+    }
+  },
+
+  formSetState (state, cb) {
+    if (this.canSetState) {
+      this.setState(state, cb)
+    }
   },
 
   mapModel: function (model) {
@@ -159,11 +182,11 @@ Formsy.Form = createReactClass({
       if (!(name in errors)) {
         return
       }
-      var args = [{
+      var state = {
         _isValid: errors[name] === null,
         _validationError: typeof errors[name] === 'string' ? [errors[name]] : errors[name],
-      }];
-      component.setState.apply(component, args);
+      };
+      this.componentSetState(component, state);
     });
   },
 
@@ -190,11 +213,11 @@ Formsy.Form = createReactClass({
         throw new Error('You are trying to update an input that does not exist. ' +
           'Verify errors object with input names. ' + JSON.stringify(errors));
       }
-      var args = [{
+      var state = {
         _isValid: this.props.preventExternalInvalidation || false,
         _externalError: typeof errors[name] === 'string' ? [errors[name]] : errors[name]
-      }];
-      component.setState.apply(component, args);
+      };
+      this.componentSetState(component, state);
     });
   },
 
@@ -211,14 +234,14 @@ Formsy.Form = createReactClass({
   },
 
   setFormPristine: function (isPristine) {
-    this.setState({
+    this.formSetState({
       _formSubmitted: !isPristine
     });
 
     // Iterate through each component and set it as pristine
     // or "dirty".
     this.inputs.forEach((component, index) => {
-      component.setState({
+      this.componentSetState(component, {
         _formSubmitted: !isPristine,
         _isPristine: isPristine
       });
@@ -229,6 +252,10 @@ Formsy.Form = createReactClass({
   // validate the input and set its state. Then check the
   // state of the form itself
   validate: function (component) {
+
+    if (this.canSetState) {
+      return
+    }
 
     // Trigger onChange
     if (this.state.canChange) {
@@ -242,7 +269,7 @@ Formsy.Form = createReactClass({
       }
       // Run through the validations, split them up and call
       // the validator IF there is a value or it is required
-      component.setState({
+      this.componentSetState(component, {
         _isValid: validation.isValid,
         _isRequired: validation.isRequired,
         _validationError: validation.error,
@@ -386,7 +413,7 @@ Formsy.Form = createReactClass({
         return component.state._isValid;
       });
 
-      this.setState({
+      this.formSetState({
         isValid: allIsValid
       });
 
@@ -397,7 +424,7 @@ Formsy.Form = createReactClass({
       }
 
       // Tell the form that it can start to trigger change events
-      this.setState({
+      this.formSetState({
         canChange: true
       });
 
@@ -414,7 +441,7 @@ Formsy.Form = createReactClass({
         if (validation.isValid && component.state._externalError) {
           validation.isValid = false;
         }
-        component.setState({
+        this.componentSetState(component, {
           _isValid: validation.isValid,
           _isRequired: validation.isRequired,
           _validationError: validation.error,
@@ -423,13 +450,15 @@ Formsy.Form = createReactClass({
       })
     }))
     .then(() => {
-      onValidationComplete()
+      if (this.canSetState) {
+        onValidationComplete()
+      }
     });
 
     // If there are no inputs, set state where form is ready to trigger
     // change event. New inputs might be added later
     if (!this.inputs.length) {
-      this.setState({
+      this.formSetState({
         canChange: true
       });
     }
