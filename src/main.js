@@ -253,10 +253,6 @@ Formsy.Form = createReactClass({
   // state of the form itself
   validate: function (component) {
 
-    if (this.canSetState) {
-      return
-    }
-
     // Trigger onChange
     if (this.state.canChange) {
       this.props.onChange(this.getModel(), this.isChanged());
