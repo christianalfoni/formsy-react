@@ -1,16 +1,19 @@
 import React from 'react';
 import { propTypes, withFormsy } from 'formsy-react';
 
-class MyInput extends React.Component {
+class MyCheckbox extends React.Component {
   constructor(props) {
     super(props);
     this.changeValue = this.changeValue.bind(this);
+    this.state = {
+      value: true,
+    };
   }
 
   changeValue(event) {
     // setValue() will set the value of the component, which in
     // turn will validate it and the rest of the form
-    this.props.setValue(event.currentTarget[this.props.type === 'checkbox' ? 'checked' : 'value']);
+    this.props.setValue(event.target.checked)
   }
 
   render() {
@@ -20,28 +23,26 @@ class MyInput extends React.Component {
     // passed to the input. showError() is true when the
     // value typed is invalid
     const className = `form-group ${this.props.className} ${this.props.showRequired() ? 'required' : ''} ${this.props.showError() ? 'error' : ''}`;
-
-    // An error message is returned ONLY if the component is invalid
-    // or the server has returned an error message
-    const errorMessage = this.props.getErrorMessage();
-
+    const value = this.props.getValue();
     return (
-      <div className={className}>
+      <div
+        className={className}
+      >
         <label htmlFor={this.props.name}>{this.props.title}</label>
         <input
           onChange={this.changeValue}
-          name={this.props.name}
-          type={this.props.type || 'text'}
-          value={this.props.getValue() || ''}
+          id={this.props.name}
+          type='checkbox'
+          checked={value}
+          data-checked={value}
         />
-        <span className='validation-error'>{errorMessage}</span>
       </div>
     );
   }
 }
 
-MyInput.propTypes = {
+MyCheckbox.propTypes = {
   ...propTypes,
 };
 
-export default withFormsy(MyInput);
+export default withFormsy(MyCheckbox);

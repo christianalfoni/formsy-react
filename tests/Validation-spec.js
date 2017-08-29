@@ -1,24 +1,37 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 
-import Formsy from './..';
-import TestInput, {InputFactory} from './utils/TestInput';
+import Formsy, { withFormsy } from './..';
+import { InputFactory } from './utils/TestInput';
 import immediate from './utils/immediate';
 import sinon from 'sinon';
+
+class MyTest extends React.Component {
+    static defaultProps = { type: 'text' };
+
+    handleChange = (event) => {
+        this.props.setValue(event.target.value);
+    }
+
+    render() {
+      return <input type={this.props.type} value={this.props.getValue()} onChange={this.handleChange}/>;
+    }
+}
+const FormsyTest = withFormsy(MyTest);
 
 export default {
 
   'should reset only changed form element when external error is passed': function (test) {
 
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar', bar: 'foo' })}>
-        <TestInput name="foo"/>
-        <TestInput name="bar"/>
-      </Formsy.Form>
+      <Formsy onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar', bar: 'foo' })}>
+        <FormsyTest name="foo"/>
+        <FormsyTest name="bar"/>
+      </Formsy>
     );
 
     const input = TestUtils.scryRenderedDOMComponentsWithTag(form, 'INPUT')[0];
-    const inputComponents = TestUtils.scryRenderedComponentsWithType(form, TestInput);
+    const inputComponents = TestUtils.scryRenderedComponentsWithType(form, FormsyTest);
 
     form.submit();
     test.equal(inputComponents[0].isValid(), false);
@@ -36,13 +49,13 @@ export default {
   'should let normal validation take over when component with external error is changed': function (test) {
 
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
-        <TestInput name="foo" validations="isEmail"/>
-      </Formsy.Form>
+      <Formsy onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
+        <FormsyTest name="foo" validations="isEmail"/>
+      </Formsy>
     );
 
     const input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
-    const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
+    const inputComponent = TestUtils.findRenderedComponentWithType(form, FormsyTest);
 
     form.submit();
     test.equal(inputComponent.isValid(), false);
@@ -62,9 +75,9 @@ export default {
     const onInvalid = sinon.spy();
 
     TestUtils.renderIntoDocument(
-      <Formsy.Form onValid={onValid} onInvalid={onInvalid}>
-        <TestInput name="foo" value="bar" required/>
-      </Formsy.Form>
+      <Formsy onValid={onValid} onInvalid={onInvalid}>
+        <FormsyTest name="foo" value="bar" required/>
+      </Formsy>
     );
 
     test.equal(onValid.called, true);
@@ -79,9 +92,9 @@ export default {
     const onInvalid = sinon.spy();
 
     TestUtils.renderIntoDocument(
-      <Formsy.Form onValid={onValid} onInvalid={onInvalid}>
-        <TestInput name="foo" required />
-      </Formsy.Form>
+      <Formsy onValid={onValid} onInvalid={onInvalid}>
+        <FormsyTest name="foo" required />
+      </Formsy>
     );
 
     test.equal(onValid.called, false);
@@ -94,14 +107,14 @@ export default {
 
     let isValid = false;
     const CustomInput = InputFactory({
-      componentDidMount() {
-        isValid = this.isValid();
+      componentDidMount: function() {
+        isValid = this.props.isValid();
       }
     });
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form>
+      <Formsy>
         <CustomInput name="foo" value="foo" required/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     const input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
@@ -110,22 +123,22 @@ export default {
 
   },
 
-  'should provide invalidate callback on onValiSubmit': function (test) {
+  'should provide invalidate callback on onValidSubmit': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form onValidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
-            <TestInput name="foo" value="foo"/>
-          </Formsy.Form>
+          <Formsy onValidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
+            <FormsyTest name="foo" value="foo"/>
+          </Formsy>
         );
       }
-    });
+    }
 
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
-    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    const input = TestUtils.findRenderedComponentWithType(form, FormsyTest);
     TestUtils.Simulate.submit(formEl);
     test.equal(input.isValid(), false);
     test.done();
@@ -134,19 +147,19 @@ export default {
 
   'should provide invalidate callback on onInvalidSubmit': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form onInvalidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
-            <TestInput name="foo" value="foo" validations="isEmail"/>
-          </Formsy.Form>
+          <Formsy onInvalidSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
+            <FormsyTest name="foo" value="foo" validations="isEmail"/>
+          </Formsy>
         );
       }
-    });
+    }
 
     const form = TestUtils.renderIntoDocument(<TestForm/>);
     const formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
-    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    const input = TestUtils.findRenderedComponentWithType(form, FormsyTest);
     TestUtils.Simulate.submit(formEl);
     test.equal(input.getErrorMessage(), 'bar');
 
@@ -156,21 +169,21 @@ export default {
 
   'should not invalidate inputs on external errors with preventExternalInvalidation prop': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form
+          <Formsy
             preventExternalInvalidation
             onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
-            <TestInput name="foo" value="foo"/>
-          </Formsy.Form>
+            <FormsyTest name="foo" value="foo"/>
+          </Formsy>
         );
       }
-    });
+    }
 
     const form = TestUtils.renderIntoDocument(<TestForm/>);
     const formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
-    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    const input = TestUtils.findRenderedComponentWithType(form, FormsyTest);
     TestUtils.Simulate.submit(formEl);
     test.equal(input.isValid(), true);
     test.done();
@@ -179,19 +192,19 @@ export default {
 
   'should invalidate inputs on external errors without preventExternalInvalidation prop': function (test) {
 
-    const TestForm = React.createClass({
+    class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
-            <TestInput name="foo" value="foo"/>
-          </Formsy.Form>
+          <Formsy onSubmit={(model, reset, invalidate) => invalidate({ foo: 'bar' })}>
+            <FormsyTest name="foo" value="foo"/>
+          </Formsy>
         );
       }
-    });
+    }
 
     const form = TestUtils.renderIntoDocument(<TestForm/>);
     const formEl = TestUtils.findRenderedDOMComponentWithTag(form, 'form');
-    const input = TestUtils.findRenderedComponentWithType(form, TestInput);
+    const input = TestUtils.findRenderedComponentWithType(form, FormsyTest);
     TestUtils.Simulate.submit(formEl);
     test.equal(input.isValid(), false);
     test.done();

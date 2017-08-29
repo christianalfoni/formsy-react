@@ -1,0 +1,10 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "react/jsx-filename-extension": 0,
+    "react/no-multi-comp": 0
+  }
+}

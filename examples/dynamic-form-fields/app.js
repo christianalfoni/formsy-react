@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Form } from 'formsy-react';
+import Formsy from 'formsy-react';
 
 import MyInput from './../components/Input';
 import MySelect from './../components/Select';
@@ -14,7 +14,7 @@ const Fields = props => {
       props.onRemove(pos);
     };
   }
-  const foo = 'required';
+
   return (
     <div className="fields">
       {props.data.map((field, i) => (
@@ -46,7 +46,7 @@ const Fields = props => {
               />
             )
           }
-          <a href="#" className="remove-field" onClick={onRemove(i)}>X</a>
+          <button className="remove-field" onClick={onRemove(i)}>X</button>
         </div>
       ))
     }
@@ -54,36 +54,49 @@ const Fields = props => {
   );
 };
 
-const App = React.createClass({
-  getInitialState() {
-    return { fields: [], canSubmit: false };
-  },
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { fields: [], canSubmit: false };
+    this.addField = this.addField.bind(this);
+    this.removeField = this.removeField.bind(this);
+    this.enableButton = this.enableButton.bind(this);
+    this.disableButton = this.disableButton.bind(this);
+  }
+
   submit(data) {
     alert(JSON.stringify(data, null, 4));
-  },
+  }
+
   addField(fieldData) {
     fieldData.validations = fieldData.validations.length ?
       fieldData.validations.reduce((a, b) => Object.assign({}, a, b)) :
       null;
     fieldData.id = Date.now();
     this.setState({ fields: this.state.fields.concat(fieldData) });
-  },
+  }
+
   removeField(pos) {
     const fields = this.state.fields;
     this.setState({ fields: fields.slice(0, pos).concat(fields.slice(pos+1)) })
-  },
+  }
+
   enableButton() {
     this.setState({ canSubmit: true });
-  },
+  }
+
   disableButton() {
     this.setState({ canSubmit: false });
-  },
+  }
+
   render() {
     const { fields, canSubmit } = this.state;
     return (
       <div>
-        <Form onSubmit={this.addField} className="many-fields-conf">
-          <MyMultiCheckboxSet name="validations" title="Validations"
+        <Formsy onSubmit={this.addField} className="many-fields-conf">
+          <MyMultiCheckboxSet
+            name="validations"
+            title="Validations"
             cmp={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
             items={[
               {isEmail: true},
@@ -95,19 +108,27 @@ const App = React.createClass({
               {maxLength: 7}
             ]}
           />
-          <MyRadioGroup name="required" value={false} title="Required"
-            items={[true, false]} />
-          <MyRadioGroup name="type" value="input" title="Type"
-            items={['input', 'select']} />
+          <MyRadioGroup
+            name="required"
+            value={false}
+            title="Required"
+            items={[true, false]}
+          />
+          <MyRadioGroup
+            name="type"
+            value="input"
+            title="Type"
+            items={['input', 'select']}
+          />
           <button type="submit">Add</button>
-        </Form>
-        <Form onSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton} className="many-fields">
+        </Formsy>
+        <Formsy onSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton} className="many-fields">
           <Fields data={fields} onRemove={this.removeField} />
           <button type="submit" disabled={!canSubmit}>Submit</button>
-        </Form>
+        </Formsy>
       </div>
     );
   }
-});
+}
 
-ReactDOM.render(<App/>, document.getElementById('example'));
+ReactDOM.render(<App />, document.getElementById('example'));

@@ -29,7 +29,7 @@ If it is not helped try update your node.js and npm.
 
 2. [**Custom Validation**](custom-validation)
 
-    One field with added validation rule (`Formsy.addValidationRule`) and one field with dynamically added validation and error messages.
+    One field with added validation rule (`addValidationRule`) and one field with dynamically added validation and error messages.
 
 3. [**Reset Values**](reset-values)
 

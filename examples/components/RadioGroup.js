@@ -1,24 +1,24 @@
 import React from 'react';
-import Formsy from 'formsy-react';
+import { withFormsy } from 'formsy-react';
 
-const MyRadioGroup = React.createClass({
-  mixins: [Formsy.Mixin],
+class MyRadioGroup extends React.Component {
+  state = {};
 
   componentDidMount() {
     const value = this.props.value;
-    this.setValue(value);
+    this.props.setValue(value);
     this.setState({ value });
-  },
+  }
 
-  changeValue(value) {
-    this.setValue(value);
+  changeValue = (value) => {
+    this.props.setValue(value);
     this.setState({ value });
-  },
+  }
 
   render() {
     const className = 'form-group' + (this.props.className || ' ') +
-      (this.showRequired() ? 'required' : this.showError() ? 'error' : '');
-    const errorMessage = this.getErrorMessage();
+      (this.props.showRequired() ? 'required' : this.props.showError() ? 'error' : '');
+    const errorMessage = this.props.getErrorMessage();
 
     const { name, title, items } = this.props;
     return (
@@ -40,7 +40,6 @@ const MyRadioGroup = React.createClass({
       </div>
     );
   }
+}
 
-});
-
-export default MyRadioGroup;
+export default withFormsy(MyRadioGroup);

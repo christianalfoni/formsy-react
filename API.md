@@ -1,90 +1,82 @@
 # API
 
-- [Formsy.Form](#formsyform)
-  - [className](#classname)
-  - [mapping](#mapping)
-  - [validationErrors](#validationerrors)
-  - [onSubmit()](#onsubmit)
-  - [onValid()](#onvalid)
-  - [onInvalid()](#oninvalid)
-  - [onValidSubmit()](#onvalidsubmit)
-  - [onInvalidSubmit()](#oninvalidsubmit)
-  - [onChange()](#onchange)
-  - [reset()](#resetform)
-  - [getModel()](#getmodel)
-  - [updateInputsWithError()](#updateinputswitherrorerrors)
-  - [preventExternalInvalidation](#preventexternalinvalidation)
-- [Formsy.Mixin](#formsymixin)
-  - [name](#name)
-  - [value](#value)
-  - [validations](#validations)
-  - [validationError](#validationerror)
-  - [validationErrors](#validationerrors-1)
-  - [required](#required)
-  - [getValue()](#getvalue)
-  - [setValue()](#setvalue)
-  - [resetValue()](#resetvalue)
-  - [getErrorMessage()](#geterrormessage)
-  - [getErrorMessages()](#geterrormessages)
-  - [isValid()](#isvalid)
-  - [isValidValue()](#isvalidvalue)
-  - [isRequired()](#isrequired)
-  - [showRequired()](#showrequired)
-  - [showError()](#showerror)
-  - [isPristine()](#ispristine)
-  - [isFormDisabled()](#isformdisabled)
-  - [isFormSubmitted()](#isformsubmitted)
-  - [validate](#validate)
-  - [formNoValidate](#formnovalidate)
-- [Formsy.HOC](#formsyhoc)
-  - [innerRef](#innerRef)
-- [Formsy.Decorator](#formsydecorator)
-- [Formsy.addValidationRule](#formsyaddvalidationrule)
-- [Validators](#validators)
+-   [Formsy](#formsy)
+    -   [mapping](#mapping)
+    -   [validationErrors](#validationErrors)
+    -   [onSubmit()](#onSubmit)
+    -   [onValid()](#onValid)
+    -   [onInvalid()](#onInvalid)
+    -   [onValidSubmit()](#onValidsubmit)
+    -   [onInvalidSubmit()](#onInvalidsubmit)
+    -   [onChange()](#onChange)
+    -   [reset()](#reset)
+    -   [getModel()](#getModel)
+    -   [updateInputsWithError()](#updateInputsWithError)
+    -   [preventExternalInvalidation](#preventExternalInvalidation)
+-   [withFormsy](#withFormsy)
+    -   [name](#name)
+    -   [innerRef](#innerRef)
+    -   [value](#value)
+    -   [validations](#validations)
+    -   [validationError](#validationError)
+    -   [validationErrors](#validationErrors)
+    -   [required](#required)
+    -   [getValue()](#getvalue)
+    -   [setValue()](#setValue)
+    -   [resetValue()](#resetValue)
+    -   [getErrorMessage()](#getErrorMessage)
+    -   [getErrorMessages()](#getErrorMessages)
+    -   [isValid()](#isValid)
+    -   [isValidValue()](#isValidValue)
+    -   [isRequired()](#isRequired)
+    -   [showRequired()](#showRequired)
+    -   [showError()](#showError)
+    -   [isPristine()](#isPristine)
+    -   [isFormDisabled()](#isFormDisabled)
+    -   [isFormSubmitted()](#isFormSubmitted)
+    -   [formNoValidate](#formNoValidate)
+-   [propTypes](#propTypes)
+-   [addValidationRule](#addValidationRule)
+-   [Validators](#validators)
 
-### <a name="formsyform">Formsy.Form</a>
+### <a id="formsy">Formsy</a>
 
-#### <a name="classname">className</a>
+`import Formsy from 'react-formsy';`
+
+#### <a id="mapping">mapping</a>
+
 ```jsx
-<Formsy.Form className="my-class"></Formsy.Form>
-```
-Sets a class name on the form itself.
-
-#### <a name="mapping">mapping</a>
-```jsx
-var MyForm = React.createClass({
-  mapInputs: function (inputs) {
+class MyForm extends React.Component {
+  mapInputs(inputs) {
     return {
       'field1': inputs.foo,
       'field2': inputs.bar
     };
-  },
-  submit: function (model) {
+  }
+  submit(model) {
     model; // {field1: '', field2: ''}
-  },
-  render: function () {
+  }
+  render() {
     return (
-      <Formsy.Form onSubmit={this.submit} mapping={this.mapInputs}>
+      <Formsy onSubmit={this.submit} mapping={this.mapInputs}>
         <MyInput name="foo" value=""/>
         <MyInput name="bar" value=""/>
-      </Formsy.Form>
+      </Formsy>
     );
   }
-})
+}
 ```
+
 Use mapping to change the data structure of your input elements. This structure is passed to the submit hooks.
 
-#### <a name="validationerrors">validationErrors</a>
+#### <a id="validationErrors">validationErrors</a>
+
 You can manually pass down errors to your form. In combination with `onChange` you are able to validate using an external validator.
 
 ```jsx
-var Form = React.createClass({
-  getInitialState: function () {
-    return {
-      validationErrors: {}
-    };
-  },
-  validateForm: function (values) {
+class Form extends React.Component {
+  state = { validationErrors: {} };
+  validateForm = (values) => {
     if (!values.foo) {
       this.setState({
         validationErrors: {
@@ -96,152 +88,213 @@ var Form = React.createClass({
         validationErrors: {}
       });
     }
-  },
-  render: function () {
+  }
+  render() {
     return (
-      <Formsy.Form onChange={this.validateForm} validationErrors={this.state.validationErrors}>
+      <Formsy onChange={this.validateForm} validationErrors={this.state.validationErrors}>
         <MyFormElement name="foo"/>
-      </Formsy.Form>
+      </Formsy>
     );
   }
-});
+}
 ```
 
-#### <a name="onsubmit">onSubmit(data, resetForm, invalidateForm)</a>
+#### <a id="onSubmit">onSubmit(data, resetForm, invalidateForm)</a>
+
 ```jsx
-<Formsy.Form onSubmit={this.showFormLoader}></Formsy.Form>
+<Formsy onSubmit={this.showFormLoader}></Formsy>
 ```
+
 Takes a function to run when the submit button has been clicked.
 
 The first argument is the data of the form. The second argument will reset the form. The third argument will invalidate the form by taking an object that maps to inputs. This is useful for server side validation. E.g. `{email: "This email is taken"}`. Resetting or invalidating the form will cause **setState** to run on the form element component.
 
-#### <a name="onvalid">onValid()</a>
+#### <a id="onValid">onValid()</a>
+
 ```jsx
-<Formsy.Form onValid={this.enableSubmitButton}></Formsy.Form>
+<Formsy onValid={this.enableSubmitButton}></Formsy>
 ```
+
 Whenever the form becomes valid the "onValid" handler is called. Use it to change state of buttons or whatever your heart desires.
 
-#### <a name="oninvalid">onInvalid()</a>
+#### <a id="onInvalid">onInvalid()</a>
+
 ```jsx
-<Formsy.Form onInvalid={this.disableSubmitButton}></Formsy.Form>
+<Formsy onInvalid={this.disableSubmitButton}></Formsy>
 ```
+
 Whenever the form becomes invalid the "onInvalid" handler is called. Use it to for example revert "onValid" state.
 
-#### <a name="onvalidsubmit">onValidSubmit(model, resetForm, invalidateForm)</a>
+#### <a id="onValidsubmit">onValidSubmit(model, resetForm, invalidateForm)</a>
+
 ```jsx
-<Formsy.Form onValidSubmit={this.sendToServer}></Formsy.Form>
+<Formsy onValidSubmit={this.sendToServer}></Formsy>
 ```
+
 Triggers when form is submitted with a valid state. The arguments are the same as on `onSubmit`.
 
-#### <a name="oninvalidsubmit">onInvalidSubmit(model, resetForm, invalidateForm)</a>
+#### <a id="onInvalidsubmit">onInvalidSubmit(model, resetForm, invalidateForm)</a>
+
 ```jsx
-<Formsy.Form onInvalidSubmit={this.notifyFormError}></Formsy.Form>
+<Formsy onInvalidSubmit={this.notifyFormError}></Formsy>
 ```
+
 Triggers when form is submitted with an invalid state. The arguments are the same as on `onSubmit`.
 
-#### <a name="onchange">onChange(currentValues, isChanged)</a>
+#### <a id="onChange">onChange(currentValues, isChanged)</a>
+
 ```jsx
-<Formsy.Form onChange={this.saveCurrentValuesToLocalStorage}></Formsy.Form>
+<Formsy onChange={this.saveCurrentValuesToLocalStorage}></Formsy>
 ```
+
 "onChange" triggers when setValue is called on your form elements. It is also triggered when dynamic form elements have been added to the form. The "currentValues" is an object where the key is the name of the input and the value is the current value. The second argument states if the forms initial values actually has changed.
 
-#### <a name="resetform">reset(values)</a>
+#### <a id="reset">reset(values)</a>
+
 ```jsx
-var MyForm = React.createClass({
-  resetForm: function () {
+class MyForm extends React.Component {
+  resetForm = () => {
     this.refs.form.reset();
-  },
-  render: function () {
+  }
+  render() {
     return (
-      <Formsy.Form ref="form">
+      <Formsy ref="form">
         ...
-      </Formsy.Form>
+      </Formsy>
     );
   }
-});
+}
 ```
+
 Manually reset the form to its pristine state. You can also pass an object that inserts new values into the inputs. Keys are name of input and value is of course the value.
 
-#### <a name="getmodel">getModel()</a>
+#### <a id="getModel">getModel()</a>
+
 ```jsx
-var MyForm = React.createClass({
-  getMyData: function () {
+class MyForm extends React.Component {
+  getMyData = () => {
     alert(this.refs.form.getModel());
-  },
-  render: function () {
+  }
+  render() {
     return (
-      <Formsy.Form ref="form">
+      <Formsy ref="form">
         ...
-      </Formsy.Form>
+      </Formsy>
     );
   }
-});
+}
 ```
+
 Manually get values from all registered components. Keys are name of input and value is of course the value.
 
-#### <a name="updateInputsWithError">updateInputsWithError(errors)</a>
+#### <a id="updateInputsWithError">updateInputsWithError(errors)</a>
+
 ```jsx
-var MyForm = React.createClass({
-  someFunction: function () {
+class MyForm extends React.Component {
+  someFunction = () => {
     this.refs.form.updateInputsWithError({
       email: 'This email is taken',
       'field[10]': 'Some error!'
     });
-  },
-  render: function () {
+  }
+  render() {
     return (
-      <Formsy.Form ref="form">
+      <Formsy ref="form">
         ...
-      </Formsy.Form>
+      </Formsy>
     );
   }
-});
+}
 ```
-Manually invalidate the form by taking an object that maps to inputs. This is useful for server side validation. You can also use a third parameter to the [`onSubmit`](#onsubmitdata-resetform-invalidateform), [`onValidSubmit`](#onvalidsubmitmodel-resetform-invalidateform) or [`onInvalidSubmit`](#oninvalidsubmitmodel-resetform-invalidateform).
 
-#### <a name="preventExternalInvalidation">preventExternalInvalidation</a>
+Manually invalidate the form by taking an object that maps to inputs. This is useful for server side validation. You can also use a third parameter to the [`onSubmit`](#onSubmit), [`onValidSubmit`](#onValid) or [`onInvalidSubmit`](#onInvalid).
+
+#### <a id="preventExternalInvalidation">preventExternalInvalidation</a>
+
 ```jsx
-var MyForm = React.createClass({
-  onSubmit: function (model, reset, invalidate) {
+class MyForm extends React.Component {
+  onSubmit(model, reset, invalidate) {
     invalidate({
       foo: 'Got some error'
     });
-  },
-  render: function () {
+  }
+  render() {
     return (
-      <Formsy.Form onSubmit={this.onSubmit} preventExternalInvalidation>
+      <Formsy onSubmit={this.onSubmit} preventExternalInvalidation>
         ...
-      </Formsy.Form>
+      </Formsy>
     );
   }
-});
+}
 ```
+
 With the `preventExternalInvalidation` the input will not be invalidated though it has an error.
 
-### <a name="formsymixin">Formsy.Mixin</a>
+### <a id="withFormsy">`withFormsy`</a>
 
-#### <a name="name">name</a>
+All Formsy input components must be wrapped in the `withFormsy` higher-order component, which provides the following properties and methods through `props`.
+
 ```jsx
-<MyInputComponent name="email"/>
-<MyInputComponent name="address.street"/>
+import { withFormsy } from 'formsy-react';
+
+class MyInput extends React.Component {
+  render() {
+    return (
+      <div>
+        <input value={this.props.getValue()} onChange={(e) => this.props.setValue(e.target.value)}/>
+      </div>
+    );
+  }
+}
+export default withFormsy(MyInput);
 ```
+
+#### <a id="name">name</a>
+
+```jsx
+<MyInput name="email"/>
+<MyInput name="address.street"/>
+```
+
 The name is required to register the form input component in the form. You can also use dot notation. This will result in the "form model" being a nested object. `{email: 'value', address: {street: 'value'}}`.
 
-#### <a name="value">value</a>
+#### <a id="innerRef">innerRef</a>
+
+Use an `innerRef` prop to get a reference to your DOM node.
+
 ```jsx
-<MyInputComponent name="email" value="My initial value"/>
+class MyForm extends React.Component {
+  componentDidMount() {
+    this.searchInput.focus()
+  }
+  render() {
+    return (
+      <Formsy>
+        <MyInput name="search" innerRef={(c) => { this.searchInput = c; }} />
+      </Formsy>
+    );
+  }
+}
 ```
+
+#### <a id="value">value</a>
+
+```jsx
+<MyInput name="email" value="My initial value"/>
+```
+
 You should always use the [**getValue()**](#getvalue) method inside your formsy form element. To pass an initial value, use the value attribute. This value will become the "pristine" value and any reset of the form will bring back this value.
 
-#### <a name="validations">validations</a>
+#### <a id="validations">validations</a>
+
 ```jsx
-<MyInputComponent name="email" validations="isEmail"/>
-<MyInputComponent name="number" validations="isNumeric,isLength:5"/>
-<MyInputComponent name="number" validations={{
+<MyInput name="email" validations="isEmail"/>
+<MyInput name="number" validations="isNumeric,isLength:5"/>
+<MyInput name="number" validations={{
   isNumeric: true,
   isLength: 5
 }}/>
-<MyInputComponent name="number" validations={{
+<MyInput name="number" validations={{
   myCustomIsFiveValidation: function (values, value) {
     values; // Other current values in form {foo: 'bar', 'number': 5}
     value; // 5
@@ -249,23 +302,28 @@ You should always use the [**getValue()**](#getvalue) method inside your formsy 
   }
 }}/>
 ```
+
 A comma separated list with validation rules. Take a look at [**Validators**](#validators) to see default rules. Use ":" to separate argument passed to the validator. The argument will go through a **JSON.parse** converting them into correct JavaScript types. Meaning:
 
 ```jsx
-<MyInputComponent name="fruit" validations="isIn:['apple', 'orange']"/>
-<MyInputComponent name="car" validations="mapsTo:{'bmw': true, 'vw': true}"/>
+<MyInput name="fruit" validations="isIn:['apple', 'orange']"/>
+<MyInput name="car" validations="mapsTo:{'bmw': true, 'vw': true}"/>
 ```
+
 Works just fine.
 
-#### <a name="validationerror">validationError</a>
+#### <a id="validationError">validationError</a>
+
 ```jsx
-<MyInputComponent name="email" validations="isEmail" validationError="This is not an email"/>
+<MyInput name="email" validations="isEmail" validationError="This is not an email"/>
 ```
+
 The message that will show when the form input component is invalid. It will be used as a default error.
 
-#### <a name="validationerrors">validationErrors</a>
+#### <a id="validationErrors">validationErrors</a>
+
 ```jsx
-<MyInputComponent
+<MyInput
   name="email"
   validations={{
     isEmail: true,
@@ -277,500 +335,517 @@ The message that will show when the form input component is invalid. It will be 
   }}
 />
 ```
+
 The message that will show when the form input component is invalid. You can combine this with `validationError`. Keys not found in `validationErrors` defaults to the general error message.
 
-#### <a name="required">required</a>
+#### <a id="required">required</a>
+
 ```jsx
-<MyInputComponent name="email" validations="isEmail" validationError="This is not an email" required/>
+<MyInput name="email" validations="isEmail" validationError="This is not an email" required/>
 ```
 
 A property that tells the form that the form input component value is required. By default it uses `isDefaultRequiredValue`, but you can define your own definition of what defined a required state.
 
 ```jsx
-<MyInputComponent name="email" required="isFalse"/>
+<MyInput name="email" required="isFalse"/>
 ```
+
 Would be typical for a checkbox type of form element that must be checked, e.g. agreeing to Terms of Service.
 
-#### <a name="getvalue">getValue()</a>
+#### <a id="getvalue">getValue()</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  render: function () {
+class MyInput extends React.Component {
+  render() {
     return (
-      <input type="text" onChange={this.changeValue} value={this.getValue()}/>
+      <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>
     );
   }
-});
+}
 ```
+
 Gets the current value of the form input component.
 
-#### <a name="setvalue">setValue(value)</a>
+#### <a id="setValue">setValue(value\[, validate = true])</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
-    this.setValue(event.currentTarget.value);
-  },
-  render: function () {
+class MyInput extends React.Component {
+  changeValue = (event) => {
+    this.props.setValue(event.currentTarget.value);
+  }
+  render() {
     return (
-      <input type="text" onChange={this.changeValue} value={this.getValue()}/>
+      <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>
     );
   }
-});
+}
 ```
+
 Sets the value of your form input component. Notice that it does not have to be a text input. Anything can set a value on the component. Think calendars, checkboxes, autocomplete stuff etc. Running this method will trigger a **setState()** on the component and do a render.
 
-#### <a name="resetvalue">resetValue()</a>
+You can also set the value without forcing an immediate validation by passing a second parameter of `false`. This is useful in cases where you want to only validate on blur / change / etc.
+
+#### <a id="resetValue">resetValue()</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
-    this.setValue(event.currentTarget.value);
-  },
-  render: function () {
+class MyInput extends React.Component {
+  changeValue = (event) => {
+    this.props.setValue(event.currentTarget.value);
+  }
+  render() {
     return (
       <div>
-        <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <button onClick={this.resetValue()}>Reset</button>
+        <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>
+        <button onClick={this.props.resetValue()}>Reset</button>
       </div>
     );
   }
-});
+}
 ```
+
 Resets to empty value. This will run a **setState()** on the component and do a render.
 
-#### <a name="geterrormessage">getErrorMessage()</a>
+#### <a id="getErrorMessage">getErrorMessage()</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
-    this.setValue(event.currentTarget.value);
-  },
-  render: function () {
+class MyInput extends React.Component {
+  changeValue = (event) => {
+    this.props.setValue(event.currentTarget.value);
+  }
+  render() {
     return (
       <div>
-        <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage()}</span>
+        <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>
+        <span>{this.props.getErrorMessage()}</span>
       </div>
     );
   }
-});
+}
 ```
+
 Will return the validation message set if the form input component is invalid. If form input component is valid it returns **null**.
 
-#### <a name="geterrormessages">getErrorMessages()</a>
+#### <a id="getErrorMessages">getErrorMessages()</a>
+
 Will return the validation messages set if the form input component is invalid. If form input component is valid it returns empty array.
 
-#### <a name="isvalid">isValid()</a>
+#### <a id="isValid">isValid()</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
-    this.setValue(event.currentTarget.value);
-  },
-  render: function () {
-    var face = this.isValid() ? ':-)' : ':-(';
+class MyInput extends React.Component {
+  changeValue = (event) => {
+    this.props.setValue(event.currentTarget.value);
+  }
+  render() {
+    var face = this.props.isValid() ? ':-)' : ':-(';
     return (
       <div>
         <span>{face}</span>
-        <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage()}</span>
+        <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>
+        <span>{this.props.getErrorMessage()}</span>
       </div>
     );
   }
-});
+}
 ```
+
 Returns the valid state of the form input component.
 
-#### <a name="isvalidvalue">isValidValue()</a>
+#### <a id="isValidValue">isValidValue()</a>
+
 You can pre-verify a value against the passed validators to the form element.
 
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
+class MyInput extends React.Component {
+  changeValue = (event) => {
     if (this.isValidValue(event.target.value)) {
-      this.setValue(event.target.value);
+      this.props.setValue(event.target.value);
     }
-  },
-  render: function () {
-    return <input type="text" onChange={this.changeValue} value={this.getValue()}/>;
+  }
+  render() {
+    return <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>;
   }
 });
 
-var MyForm = React.createClass({
-  render: function () {
+class MyForm extends React.Component {
+  render() {
     return (
-      <Formsy.Form>
+      <Formsy>
         <MyInput name="foo" validations="isEmail"/>
-      </Formsy.Form>
+      </Formsy>
     );
   }
-});
+}
 ```
 
-#### <a name="isrequired">isRequired()</a>
+#### <a id="isRequired">isRequired()</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
-    this.setValue(event.currentTarget.value);
-  },
-  render: function () {
+class MyInput extends React.Component {
+  changeValue = (event) => {
+    this.props.setValue(event.currentTarget.value);
+  }
+  render() {
     return (
       <div>
-        <span>{this.props.label} {this.isRequired() ? '*' : null}</span>
-        <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage()}</span>
+        <span>{this.props.label} {this.props.isRequired() ? '*' : null}</span>
+        <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>
+        <span>{this.props.getErrorMessage()}</span>
       </div>
     );
   }
-});
+}
 ```
+
 Returns true if the required property has been passed.
 
-#### <a name="showrequired">showRequired()</a>
+#### <a id="showRequired">showRequired()</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
-    this.setValue(event.currentTarget.value);
-  },
-  render: function () {
-    var className = this.showRequired() ? 'required' : '';
+class MyInput extends React.Component {
+  changeValue = (event) => {
+    this.props.setValue(event.currentTarget.value);
+  }
+  render() {
+    var className = this.props.showRequired() ? 'required' : '';
     return (
       <div className={className}>
-        <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage()}</span>
+        <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>
+        <span>{this.props.getErrorMessage()}</span>
       </div>
     );
   }
-});
+}
 ```
+
 Lets you check if the form input component should indicate if it is a required field. This happens when the form input component value is empty and the required prop has been passed.
 
-#### <a name="showerror">showError()</a>
+#### <a id="showError">showError()</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
-    this.setValue(event.currentTarget.value);
-  },
-  render: function () {
-    var className = this.showRequired() ? 'required' : this.showError() ? 'error' : '';
+class MyInput extends React.Component {
+  changeValue = (event) => {
+    this.props.setValue(event.currentTarget.value);
+  }
+  render() {
+    var className = this.props.showRequired() ? 'required' : this.props.showError() ? 'error' : '';
     return (
       <div className={className}>
-        <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.getErrorMessage()}</span>
+        <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>
+        <span>{this.props.getErrorMessage()}</span>
       </div>
     );
   }
-});
+}
 ```
+
 Lets you check if the form input component should indicate if there is an error. This happens if there is a form input component value and it is invalid or if a server error is received.
 
-#### <a name="ispristine">isPristine()</a>
+#### <a id="isPristine">isPristine()</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
-    this.setValue(event.currentTarget.value);
-  },
-  render: function () {
+class MyInput extends React.Component {
+  changeValue = (event) => {
+    this.props.setValue(event.currentTarget.value);
+  }
+  render() {
     return (
       <div>
-        <input type="text" onChange={this.changeValue} value={this.getValue()}/>
-        <span>{this.isPristine() ? 'You have not touched this yet' : ''}</span>
+        <input type="text" onChange={this.changeValue} value={this.props.getValue()}/>
+        <span>{this.props.isPristine() ? 'You have not touched this yet' : ''}</span>
       </div>
     );
   }
-});
+}
 ```
-By default all formsy input elements are pristine, which means they are not "touched". As soon as the [**setValue**](#setvaluevalue) method is run it will no longer be pristine.
 
-**note!** When the form is reset, using the resetForm callback function on for example [**onSubmit**](#onsubmitdata-resetform-invalidateform) the inputs are reset to their pristine state.
+By default all Formsy input elements are pristine, which means they are not "touched". As soon as the [**setValue**](#setValue) method is run it will no longer be pristine.
 
-#### <a name="isformdisabled">isFormDisabled()</a>
+**note!** When the form is reset (using `reset(...)`) the inputs are reset to their pristine state.
+
+#### <a id="isFormDisabled">isFormDisabled()</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  render: function () {
+class MyInput extends React.Component {
+  render() {
     return (
       <div>
-        <input type="text" value={this.getValue()} disabled={this.isFormDisabled()}/>
+        <input type="text" value={this.props.getValue()} disabled={this.props.isFormDisabled()}/>
       </div>
     );
   }
-});
+}
 
-React.render(<Formy.Form disabled={true}/>);
+React.render(<Formsy disabled={true}/>);
 ```
+
 You can now disable the form itself with a prop and use **isFormDisabled()** inside form elements to verify this prop.
 
-#### <a name="isformsubmitted">isFormSubmitted()</a>
+#### <a id="isFormSubmitted">isFormSubmitted()</a>
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  render: function () {
-    var error = this.isFormSubmitted() ? this.getErrorMessage() : null;
+class MyInput extends React.Component {
+  render() {
+    var error = this.props.isFormSubmitted() ? this.props.getErrorMessage() : null;
     return (
       <div>
-        <input type="text" value={this.getValue()}/>
+        <input type="text" value={this.props.getValue()}/>
         {error}
       </div>
     );
   }
-});
+}
 ```
+
 You can check if the form has been submitted.
 
-#### <a name="validate">validate</a>
-```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  changeValue: function (event) {
-    this.setValue(event.target.value);
-  },
-  validate: function () {
-    return !!this.getValue();
-  },
-  render: function () {
-    return (
-      <div>
-        <input type="text" value={this.getValue()} onChange={this.changeValue}/>
-      </div>
-    );
-  }
-});
+#### <a id="formNoValidate">formNoValidate</a>
 
-React.render(<Formy.Form disabled={true}/>);
-```
-You can create custom validation inside a form element. The validate method defined will be run when you set new values to the form element. It will also be run when the form validates itself. This is an alternative to passing in validation rules as props.
-
-#### <a name="formnovalidate">formNoValidate</a>
 To avoid native validation behavior on inputs, use the React `formNoValidate` property.
+
 ```jsx
-var MyInput = React.createClass({
-  mixins: [Formsy.Mixin],
-  render: function () {
+class MyInput extends React.Component {
+  render() {
     return (
       <div>
         <input formNoValidate type="number"/>
       </div>
     );
   }
-});
+}
 ```
 
-### <a name="formsyhoc">Formsy.HOC</a>
-The same methods as the mixin are exposed to the HOC version of the element component, though through the `props`, not on the instance.
-```jsx
-import {HOC} from 'formsy-react';
+### <a id="propTypes">`propTypes`</a>
 
-class MyInputHoc extends React.Component {
-  render() {
-    return (
-      <div>
-        <input value={this.props.getValue()} onChange={(e) => this.props.setValue(e.target.value)}/>
-      </div>
-    );
-  }
-};
-export default HOC(MyInputHoc);
-```
-
-#### <a name="innerRef">innerRef</a>
-
-Use an `innerRef` prop to get a reference to your DOM node.
+If you are using React's PropType type checking, you can spread Formsy’s propTypes into your local propTypes to avoid having to repeatedly add `withFormsy`’s methods to your components.
 
 ```jsx
-var MyForm = React.createClass({
-  componentDidMount() {
-    this.searchInput.focus()
-  },
-  render: function () {
-    return (
-      <Formsy.Form>
-        <MyInputHoc name="search" innerRef={(c) => { this.searchInput = c; }} />
-      </Formsy.Form>
-    );
-  }
-})
-```
+import PropTypes from 'prop-types';
+import { propTypes } from 'formsy-react';
 
-### <a name="formsydecorator">Formsy.Decorator</a>
-The same methods as the mixin are exposed to the decorator version of the element component, though through the `props`, not on the instance.
-```jsx
-import {Decorator as FormsyElement} from 'formsy-react';
-
-@FormsyElement()
 class MyInput extends React.Component {
-  render() {
-    return (
-      <div>
-        <input value={this.props.getValue()} onChange={(e) => this.props.setValue(e.target.value)}/>
-      </div>
-    );
+  static propTypes = {
+    firstProp: PropTypes.string,
+    secondProp: PropTypes.object,
+    ...propTypes
   }
+}
+
+MyInput.propTypes = {
+  firstProp: PropTypes.string,
+  secondProp: PropTypes.object,
+  ...propTypes,
 };
-export default MyInput
 ```
 
-### <a name="formsyaddvalidationrule">Formsy.addValidationRule(name, ruleFunc)</a>
+### <a id="addValidationRule">`addValidationRule(name, ruleFunc)`</a>
+
+`import { addValidationRule } from 'formsy-react';`
+
 An example:
+
 ```jsx
-Formsy.addValidationRule('isFruit', function (values, value) {
+addValidationRule('isFruit', function (values, value) {
   return ['apple', 'orange', 'pear'].indexOf(value) >= 0;
 });
 ```
+
 ```jsx
-<MyInputComponent name="fruit" validations="isFruit"/>
+<MyInput name="fruit" validations="isFruit"/>
 ```
+
 Another example:
+
 ```jsx
-Formsy.addValidationRule('isIn', function (values, value, array) {
+addValidationRule('isIn', function (values, value, array) {
   return array.indexOf(value) >= 0;
 });
 ```
+
 ```jsx
-<MyInputComponent name="fruit" validations="isIn:['apple', 'orange', 'pear']"/>
+<MyInput name="fruit" validations="isIn:['apple', 'orange', 'pear']"/>
 ```
+
 Cross input validation:
+
 ```jsx
-Formsy.addValidationRule('isMoreThan', function (values, value, otherField) {
+addValidationRule('isMoreThan', function (values, value, otherField) {
   // The this context points to an object containing the values
   // {childAge: "", parentAge: "5"}
   // otherField argument is from the validations rule ("childAge")
   return Number(value) > Number(values[otherField]);
 });
 ```
+
 ```jsx
-<MyInputComponent name="childAge"/>
-<MyInputComponent name="parentAge" validations="isMoreThan:childAge"/>
+<MyInput name="childAge"/>
+<MyInput name="parentAge" validations="isMoreThan:childAge"/>
 ```
-## <a name="validators">Validators</a>
+
+## <a id="validators">Validators</a>
+
 **matchRegexp**
+
 ```jsx
-<MyInputComponent name="foo" validations={{
+<MyInput name="foo" validations={{
   matchRegexp: /foo/
 }}/>
 ```
+
 Returns true if the value is thruthful
 
 _For more complicated regular expressions (emoji, international characters) you can use [xregexp](https://github.com/slevithan/xregexp). See [this comment](https://github.com/christianalfoni/formsy-react/issues/407#issuecomment-266306783) for an example._
 
 **isEmail**
+
 ```jsx
-<MyInputComponent name="foo" validations="isEmail"/>
+<MyInput name="foo" validations="isEmail"/>
 ```
+
 Return true if it is an email
 
 **isUrl**
+
 ```jsx
-<MyInputComponent name="foo" validations="isUrl"/>
+<MyInput name="foo" validations="isUrl"/>
 ```
+
 Return true if it is an url
 
 **isExisty**
+
 ```jsx
-<MyInputComponent name="foo" validations="isExisty"/>
+<MyInput name="foo" validations="isExisty"/>
 ```
+
 Returns true if the value is not undefined or null
 
 **isUndefined**
+
 ```jsx
-<MyInputComponent name="foo" validations="isUndefined"/>
+<MyInput name="foo" validations="isUndefined"/>
 ```
+
 Returns true if the value is the undefined
 
 **isEmptyString**
+
 ```jsx
-<MyInputComponent name="foo" validations="isEmptyString"/>
+<MyInput name="foo" validations="isEmptyString"/>
 ```
+
 Returns true if the value is an empty string
 
 **isTrue**
+
 ```jsx
-<MyInputComponent name="foo" validations="isTrue"/>
+<MyInput name="foo" validations="isTrue"/>
 ```
+
 Returns true if the value is the boolean true
 
 **isFalse**
+
 ```jsx
-<MyInputComponent name="foo" validations="isFalse"/>
+<MyInput name="foo" validations="isFalse"/>
 ```
+
 Returns true if the value is the boolean false
 
 **isAlpha**
+
 ```jsx
-<MyInputComponent name="foo" validations="isAlpha"/>
+<MyInput name="foo" validations="isAlpha"/>
 ```
+
 Returns true if string is only letters
 
 **isNumeric**
+
 ```jsx
-<MyInputComponent name="foo" validations="isNumeric"/>
+<MyInput name="foo" validations="isNumeric"/>
 ```
+
 Returns true if string only contains numbers. Examples: 42; -3.14
 
 **isAlphanumeric**
+
 ```jsx
-<MyInputComponent name="foo" validations="isAlphanumeric"/>
+<MyInput name="foo" validations="isAlphanumeric"/>
 ```
+
 Returns true if string only contains letters or numbers
 
 **isInt**
+
 ```jsx
-<MyInputComponent name="foo" validations="isInt"/>
+<MyInput name="foo" validations="isInt"/>
 ```
+
 Returns true if string represents integer value. Examples: 42; -12; 0
 
 **isFloat**
+
 ```jsx
-<MyInputComponent name="foo" validations="isFloat"/>
+<MyInput name="foo" validations="isFloat"/>
 ```
+
 Returns true if string represents float value. Examples: 42; -3.14; 1e3
 
 **isWords**
+
 ```jsx
-<MyInputComponent name="foo" validations="isWords"/>
+<MyInput name="foo" validations="isWords"/>
 ```
+
 Returns true if string is only letters, including spaces and tabs
 
 **isSpecialWords**
+
 ```jsx
-<MyInputComponent name="foo" validations="isSpecialWords"/>
+<MyInput name="foo" validations="isSpecialWords"/>
 ```
+
 Returns true if string is only letters, including special letters (a-z,ú,ø,æ,å)
 
 **equals:value**
+
 ```jsx
-<MyInputComponent name="foo" validations="equals:4"/>
+<MyInput name="foo" validations="equals:4"/>
 ```
+
 Return true if the value from input component matches value passed (==).
 
 **equalsField:fieldName**
+
 ```jsx
-<MyInputComponent name="password"/>
-<MyInputComponent name="repeated_password" validations="equalsField:password"/>
+<MyInput name="password"/>
+<MyInput name="repeated_password" validations="equalsField:password"/>
 ```
+
 Return true if the value from input component matches value passed (==).
 
 **isLength:length**
+
 ```jsx
-<MyInputComponent name="foo" validations="isLength:8"/>
+<MyInput name="foo" validations="isLength:8"/>
 ```
+
 Returns true if the value length is the equal.
 
 **minLength:length**
+
 ```jsx
-<MyInputComponent name="number" validations="minLength:1"/>
+<MyInput name="number" validations="minLength:1"/>
 ```
+
 Return true if the value is more or equal to argument.
 **Also returns true for an empty value.** If you want to get false, then you should use [`required`](#required) additionally.
 
 **maxLength:length**
+
 ```jsx
-<MyInputComponent name="number" validations="maxLength:5"/>
+<MyInput name="number" validations="maxLength:5"/>
 ```
+
 Return true if the value is less or equal to argument

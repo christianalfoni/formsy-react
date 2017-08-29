@@ -1,17 +1,15 @@
 import React from 'react';
-import Formsy from 'formsy-react';
+import { withFormsy } from 'formsy-react';
 
-const MySelect = React.createClass({
-  mixins: [Formsy.Mixin],
-
-  changeValue(event) {
-    this.setValue(event.currentTarget.value);
-  },
+class MySelect extends React.Component {
+  changeValue = (event) => {
+    this.props.setValue(event.currentTarget.value);
+  }
 
   render() {
     const className = 'form-group' + (this.props.className || ' ') +
-      (this.showRequired() ? 'required' : this.showError() ? 'error' : '');
-    const errorMessage = this.getErrorMessage();
+      (this.props.showRequired() ? 'required' : this.props.showError() ? 'error' : '');
+    const errorMessage = this.props.getErrorMessage();
 
     const options = this.props.options.map((option, i) => (
       <option key={option.title+option.value} value={option.value}>
@@ -22,14 +20,13 @@ const MySelect = React.createClass({
     return (
       <div className={className}>
         <label htmlFor={this.props.name}>{this.props.title}</label>
-        <select name={this.props.name} onChange={this.changeValue} value={this.getValue()}>
+        <select name={this.props.name} onChange={this.changeValue} value={this.props.getValue()}>
           {options}
         </select>
         <span className='validation-error'>{errorMessage}</span>
       </div>
     );
   }
+}
 
-});
-
-export default MySelect;
+export default withFormsy(MySelect);

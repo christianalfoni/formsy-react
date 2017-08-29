@@ -1,3 +1,3 @@
 export default function (fn) {
-  setTimeout(fn, 0);
+    setTimeout(fn, 0);
 }

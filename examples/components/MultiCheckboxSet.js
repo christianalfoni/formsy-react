@@ -1,5 +1,5 @@
 import React from 'react';
-import Formsy from 'formsy-react';
+import { withFormsy } from 'formsy-react';
 
 function contains(container, item, cmp) {
   for (const it of container) {
@@ -10,18 +10,16 @@ function contains(container, item, cmp) {
   return false;
 }
 
-const MyRadioGroup = React.createClass({
-  mixins: [Formsy.Mixin],
-  getInitialState() {
-    return { value: [], cmp: (a, b) => a === b };
-  },
+class MyRadioGroup extends React.Component {
+  state = { value: [], cmp: (a, b) => a === b };
+
   componentDidMount() {
     const value = this.props.value || [];
-    this.setValue(value);
+    this.props.setValue(value);
     this.setState({ value: value, cmp: this.props.cmp || this.state.cmp });
-  },
+  }
 
-  changeValue(value, event) {
+  changeValue = (value, event) => {
     const checked = event.currentTarget.checked;
 
     let newValue = [];
@@ -31,14 +29,14 @@ const MyRadioGroup = React.createClass({
       newValue = this.state.value.filter(it => !this.state.cmp(it, value));
     }
 
-    this.setValue(newValue);
+    this.props.setValue(newValue);
     this.setState({ value: newValue });
-  },
+  }
 
   render() {
     const className = 'form-group' + (this.props.className || ' ') +
-      (this.showRequired() ? 'required' : this.showError() ? 'error' : '');
-    const errorMessage = this.getErrorMessage();
+      (this.props.showRequired() ? 'required' : this.props.showError() ? 'error' : '');
+    const errorMessage = this.props.getErrorMessage();
 
     const { name, title, items } = this.props;
     return (
@@ -61,6 +59,6 @@ const MyRadioGroup = React.createClass({
     );
   }
 
-});
+}
 
-export default MyRadioGroup;
+export default withFormsy(MyRadioGroup);

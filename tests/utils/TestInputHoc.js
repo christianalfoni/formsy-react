@@ -1,13 +1,14 @@
 import React from 'react';
-import { HOC as formsyHoc } from './../..';
+import Formsy, { withFormsy } from './../..';
 
-const defaultProps = {
-  methodOnWrappedInstance(param) {
-    return param;
-  },
-  render() {
-    return (<input />);
-  },
-};
+class TestComponent extends React.Component {
+    methodOnWrappedInstance = (param) => {
+        return param;
+    }
 
-export default formsyHoc(React.createClass(defaultProps));
+    render() {
+        return (<input />);
+    }
+}
+
+export default withFormsy(TestComponent);
