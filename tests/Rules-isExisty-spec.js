@@ -13,9 +13,9 @@ const TestInput = InputFactory({
 class TestForm extends React.Component {
   render() {
     return (
-      <Formsy.Form>
+      <Formsy>
         <TestInput name="foo" validations="isExisty" value={this.props.inputValue}/>
-      </Formsy.Form>
+      </Formsy>
     );
   }
 }

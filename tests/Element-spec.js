@@ -3,7 +3,7 @@ import TestUtils from 'react-dom/test-utils';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import sinon from 'sinon';
 
-import Formsy from './..';
+import Formsy, { withFormsy } from './..';
 import TestInput, { InputFactory } from './utils/TestInput';
 import immediate from './utils/immediate';
 
@@ -12,9 +12,9 @@ export default {
   'should return passed and setValue() value when using getValue()': function (test) {
 
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form>
+      <Formsy>
         <TestInput name="foo" value="foo"/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     const input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
@@ -28,7 +28,7 @@ export default {
 
   'should only set the value and not validate when calling setValue(val, false)': function (test) {
 
-    const Input = Formsy.Wrapper(class TestInput extends React.Component {
+    const Input = withFormsy(class TestInput extends React.Component {
         updateValue = (event) => {
             this.props.setValue(event.target.value, false);
         }
@@ -37,9 +37,9 @@ export default {
         }
     })
     const form = TestUtils.renderIntoDocument(
-        <Formsy.Form>
+        <Formsy>
             <Input name="foo" value="foo" innerRef="comp" />
-        </Formsy.Form>
+        </Formsy>
     );
     const inputComponent = TestUtils.findRenderedComponentWithType(form, Input);
     const setStateSpy = sinon.spy(inputComponent, 'setState');
@@ -48,7 +48,7 @@ export default {
     test.equal(setStateSpy.called, false);
     TestUtils.Simulate.change(inputElement, {target: {value: 'foobar'}});
     test.equal(setStateSpy.calledOnce, true);
-    test.equal(setStateSpy.calledWithExactly({ _value: 'foobar' }), true);
+    test.equal(setStateSpy.calledWithExactly({ value: 'foobar' }), true);
     test.done();
 
   },
@@ -62,9 +62,9 @@ export default {
       }
     });
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form>
+      <Formsy>
         <Input name="foo" value="foo"/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     const input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
@@ -85,9 +85,9 @@ export default {
       }
     });
     TestUtils.renderIntoDocument(
-      <Formsy.Form>
+      <Formsy>
         <Input name="foo" value="foo" validations="isEmail" validationError="Has to be email"/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     test.equal(getErrorMessage(), 'Has to be email');
@@ -105,9 +105,9 @@ export default {
       }
     });
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form action="/users">
+      <Formsy action="/users">
         <Input name="foo" value="foo" validations="isEmail"/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     test.equal(isValid(), false);
@@ -128,11 +128,11 @@ export default {
       }
     });
     TestUtils.renderIntoDocument(
-      <Formsy.Form action="/users">
+      <Formsy action="/users">
         <Input name="foo" value=""/>
         <Input name="foo" value="" required/>
         <Input name="foo" value="foo" required="isLength:3"/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     test.equal(isRequireds[0](), false);
@@ -152,11 +152,11 @@ export default {
       }
     });
     TestUtils.renderIntoDocument(
-      <Formsy.Form action="/users">
+      <Formsy action="/users">
         <Input name="A" value="foo"/>
         <Input name="B" value="" required/>
         <Input name="C" value=""/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     test.equal(showRequireds[0](), false);
@@ -176,9 +176,9 @@ export default {
       }
     });
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form action="/users">
+      <Formsy action="/users">
         <Input name="A" value="foo"/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     test.equal(isPristine(), true);
@@ -201,9 +201,9 @@ export default {
       }
       render() {
         return (
-          <Formsy.Form action="/users">
+          <Formsy action="/users">
             <TestInput name="A" value={this.state.value} />
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -223,9 +223,9 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form>
+          <Formsy>
             <TestInput name="A" validations="isEmail"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -243,11 +243,11 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form>
+          <Formsy>
             <TestInput name="A" validations={{
               isEmail: true
             }}/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -266,11 +266,11 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form>
+          <Formsy>
             <TestInput name="A" validations={{
               matchRegexp: /foo/
             }} value="foo"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -297,14 +297,14 @@ export default {
       }
       render() {
         return (
-          <Formsy.Form>
+          <Formsy>
             <TestInput name="A" validations={{
               custom: this.customValidationA
             }} value="foo"/>
             <TestInput name="B" validations={{
               custom: this.customValidationB
             }} value="foo"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -327,11 +327,11 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form validationErrors={{}}>
+          <Formsy validationErrors={{}}>
             <TestInput name="A" validations={{
               isEmail: true
             }} validationError="bar2" validationErrors={{isEmail: 'bar3'}} value="foo"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -349,11 +349,11 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form validationErrors={{A: 'bar'}}>
+          <Formsy validationErrors={{A: 'bar'}}>
             <TestInput name="A" validations={{
               isEmail: true
             }} validationError="bar2" validationErrors={{isEmail: 'bar3'}} value="foo"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -371,7 +371,7 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form>
+          <Formsy>
             <TestInput name="A"
               validations={{
                 isEmail: true
@@ -383,7 +383,7 @@ export default {
                 isLength: 1
               }}
             />
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -401,23 +401,23 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form>
+          <Formsy>
             <TestInput name="A"
               validations={{
                 isEmail: true
               }}
-              validationError="bar"
-              validationErrors={{foo: 'bar'}}
+              validationError="bar1"
+              validationErrors={{foo: 'bar2'}}
               value="foo"
             />
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
 
     const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
-    test.equal(inputComponent.getErrorMessage(), 'bar');
+    test.equal(inputComponent.getErrorMessage(), 'bar1');
 
     test.done();
 
@@ -428,11 +428,11 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form>
+          <Formsy>
             <TestInput name="A"
             required
             />
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -454,10 +454,10 @@ export default {
       }
       render() {
         return (
-          <Formsy.Form>
+          <Formsy>
             <TestInput name="foo" value={this.state.foo}/>
             <TestInput name="bar" value={this.state.bar}/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -487,12 +487,12 @@ export default {
       }
       render() {
         return (
-          <Formsy.Form disabled={this.state.bool}>
+          <Formsy disabled={this.state.bool}>
             {this.state.bool ?
               <TestInput name="foo" /> :
               <TestInput name="bar" />
             }
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -515,10 +515,10 @@ export default {
       }
       render() {
         return (
-          <Formsy.Form onSubmit={this.onSubmit}>
+          <Formsy onSubmit={this.onSubmit}>
             <TestInput name="foo.bar" value="foo"/>
             <TestInput name="foo.test" value="test"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -541,10 +541,10 @@ export default {
       }
       render() {
         return (
-          <Formsy.Form onSubmit={this.onSubmit}>
+          <Formsy onSubmit={this.onSubmit}>
             <TestInput name="foo[0]" value="foo"/>
             <TestInput name="foo[1]" value="bar"/>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
@@ -572,9 +572,9 @@ export default {
     });
 
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form>
+      <Formsy>
         <Input name="foo" value="foo"/>
-      </Formsy.Form>
+      </Formsy>
     );
 
     test.equal(renderSpy.calledOnce, true);

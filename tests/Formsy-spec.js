@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import Formsy from './..';
+import Formsy, { addValidationRule } from './..';
 import TestInput from './utils/TestInput';
 import TestInputHoc from './utils/TestInputHoc';
 import immediate from './utils/immediate';
@@ -14,9 +14,9 @@ export default {
       class TestForm extends React.Component {
         render() {
           return (
-            <Formsy.Form>
+            <Formsy>
               <TestInputHoc name="name" innerRef={(c) => { this.name = c; }} />
-            </Formsy.Form>
+            </Formsy>
           );
         }
       }
@@ -30,7 +30,7 @@ export default {
 
     'should render a form into the document': function (test) {
 
-      const form = TestUtils.renderIntoDocument(<Formsy.Form></Formsy.Form>);
+      const form = TestUtils.renderIntoDocument(<Formsy></Formsy>);
       test.equal(ReactDOM.findDOMNode(form).tagName, 'FORM');
 
       test.done();
@@ -39,7 +39,7 @@ export default {
 
     'should set a class name if passed': function (test) {
 
-      const form = TestUtils.renderIntoDocument( <Formsy.Form className="foo"></Formsy.Form>);
+      const form = TestUtils.renderIntoDocument( <Formsy className="foo"></Formsy>);
       test.equal(ReactDOM.findDOMNode(form).className, 'foo');
 
       test.done();
@@ -52,12 +52,12 @@ export default {
       class TestForm extends React.Component {
         render() {
           return (
-            <Formsy.Form onSubmit={(formModel) => (model = formModel)}>
+            <Formsy onSubmit={(formModel) => (model = formModel)}>
               <h1>Test</h1>
               { null }
               { undefined }
               <TestInput name="name" value={ 'foo' } />
-            </Formsy.Form>
+            </Formsy>
           );
         }
       }
@@ -82,9 +82,9 @@ export default {
         }
         render() {
           return (
-            <Formsy.Form onSubmit={(formModel) => (model = formModel)}>
+            <Formsy onSubmit={(formModel) => (model = formModel)}>
               {inputs}
-            </Formsy.Form>);
+            </Formsy>);
         }
       }
       const form = TestUtils.renderIntoDocument(<TestForm/>);
@@ -118,9 +118,9 @@ export default {
         }
         render() {
           return (
-            <Formsy.Form onSubmit={(formModel) => (model = formModel)}>
+            <Formsy onSubmit={(formModel) => (model = formModel)}>
               {inputs}
-            </Formsy.Form>);
+            </Formsy>);
         }
       }
       const form = TestUtils.renderIntoDocument(<TestForm/>);
@@ -158,9 +158,9 @@ export default {
           const input = <TestInput name="test" value={this.props.value} />;
 
           return (
-            <Formsy.Form onSubmit={(formModel) => (model = formModel)}>
+            <Formsy onSubmit={(formModel) => (model = formModel)}>
               {input}
-            </Formsy.Form>);
+            </Formsy>);
         }
       }
       let form = TestUtils.renderIntoDocument(<TestForm value="foo"/>);
@@ -192,13 +192,13 @@ export default {
       const runRule = sinon.spy();
       const notRunRule = sinon.spy();
 
-      Formsy.addValidationRule('runRule', runRule);
-      Formsy.addValidationRule('notRunRule', notRunRule);
+      addValidationRule('runRule', runRule);
+      addValidationRule('notRunRule', notRunRule);
 
       const form = TestUtils.renderIntoDocument(
-        <Formsy.Form>
+        <Formsy>
           <TestInput name="one" validations="runRule" value="foo"/>
-        </Formsy.Form>
+        </Formsy>
       );
 
       const input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
@@ -214,8 +214,8 @@ export default {
 
       const ruleA = sinon.spy();
       const ruleB = sinon.spy();
-      Formsy.addValidationRule('ruleA', ruleA);
-      Formsy.addValidationRule('ruleB', ruleB);
+      addValidationRule('ruleA', ruleA);
+      addValidationRule('ruleB', ruleB);
 
       class TestForm extends React.Component {
         constructor(props) {
@@ -229,9 +229,9 @@ export default {
         }
         render() {
           return (
-            <Formsy.Form>
+            <Formsy>
               <TestInput name="one" validations={this.state.rule} value="foo"/>
-            </Formsy.Form>
+            </Formsy>
           );
         }
       }
@@ -262,7 +262,7 @@ export default {
         }
         render() {
           return (
-            <Formsy.Form ref="formsy" onInvalid={isInValidSpy}>
+            <Formsy ref="formsy" onInvalid={isInValidSpy}>
               <TestInput name="one" validations="isEmail" value="foo@bar.com"/>
               {
                 this.state.showSecondInput ?
@@ -270,7 +270,7 @@ export default {
                 :
                   null
               }
-            </Formsy.Form>
+            </Formsy>
           );
         }
       }
@@ -303,7 +303,7 @@ export default {
         }
         render() {
           return (
-            <Formsy.Form ref="formsy" onValid={isValidSpy}>
+            <Formsy ref="formsy" onValid={isValidSpy}>
               <TestInput name="one" validations="isEmail" value="foo@bar.com"/>
               {
                 this.state.showSecondInput ?
@@ -311,7 +311,7 @@ export default {
                 :
                   null
               }
-            </Formsy.Form>
+            </Formsy>
           );
         }
       }
@@ -333,13 +333,13 @@ export default {
 
       const ruleA = sinon.spy();
       const ruleB = sinon.spy();
-      Formsy.addValidationRule('ruleA', ruleA);
-      Formsy.addValidationRule('ruleB', ruleB);
+      addValidationRule('ruleA', ruleA);
+      addValidationRule('ruleB', ruleB);
 
       const form = TestUtils.renderIntoDocument(
-        <Formsy.Form>
+        <Formsy>
           <TestInput name="one" validations="ruleA,ruleB" value="foo" />
-        </Formsy.Form>
+        </Formsy>
       );
 
       const input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
@@ -358,7 +358,7 @@ export default {
     const hasChanged = sinon.spy();
     class TestForm extends React.Component {
       render() {
-        return <Formsy.Form onChange={hasChanged}></Formsy.Form>;
+        return <Formsy onChange={hasChanged}></Formsy>;
       }
     }
     TestUtils.renderIntoDocument(<TestForm/>);
@@ -371,9 +371,9 @@ export default {
 
     const hasChanged = sinon.spy();
     const form = TestUtils.renderIntoDocument(
-      <Formsy.Form onChange={hasChanged}>
+      <Formsy onChange={hasChanged}>
         <TestInput name="foo"/>
-      </Formsy.Form>
+      </Formsy>
     );
     TestUtils.Simulate.change(TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT'), {target: {value: 'bar'}});
     test.equal(hasChanged.calledOnce, true);
@@ -395,14 +395,14 @@ export default {
       }
       render() {
         return (
-          <Formsy.Form onChange={hasChanged}>
+          <Formsy onChange={hasChanged}>
             {
               this.state.showInput ?
                 <TestInput name="test"/>
               :
                 null
             }
-          </Formsy.Form>);
+          </Formsy>);
       }
     }
 
@@ -424,9 +424,9 @@ export default {
         enableForm() { this.setState({ disabled: false }); }
         render() {
           return (
-            <Formsy.Form disabled={this.state.disabled}>
+            <Formsy disabled={this.state.disabled}>
               <TestInput name="foo"/>
-            </Formsy.Form>);
+            </Formsy>);
         }
       }
 
@@ -451,9 +451,9 @@ export default {
         }
         render() {
           return (
-            <Formsy.Form onChange={this.onChange} validationErrors={this.state.validationErrors}>
+            <Formsy onChange={this.onChange} validationErrors={this.state.validationErrors}>
               <TestInput name="foo"/>
-            </Formsy.Form>);
+            </Formsy>);
         }
       }
       const form = TestUtils.renderIntoDocument(<TestForm/>);
@@ -479,9 +479,9 @@ export default {
       class TestForm extends React.Component {
         render() {
           return (
-            <Formsy.Form onValidSubmit={isCalled}>
+            <Formsy onValidSubmit={isCalled}>
               <TestInput name="foo" validations="isEmail" value="foo@bar.com"/>
-            </Formsy.Form>);
+            </Formsy>);
         }
       }
       const form = TestUtils.renderIntoDocument(<TestForm/>);
@@ -498,9 +498,9 @@ export default {
       class TestForm extends React.Component {
         render() {
           return (
-            <Formsy.Form onInvalidSubmit={isCalled}>
+            <Formsy onInvalidSubmit={isCalled}>
               <TestInput name="foo" validations="isEmail" value="foo@bar"/>
-            </Formsy.Form>);
+            </Formsy>);
         }
       }
       const form = TestUtils.renderIntoDocument(<TestForm/>);
@@ -523,10 +523,10 @@ export default {
       class TestForm extends React.Component {
         render() {
           return (
-            <Formsy.Form onSubmit={onSubmit}>
+            <Formsy onSubmit={onSubmit}>
               <TestInput name="foo" value={false} type="checkbox" />
               <button type="submit">Save</button>
-            </Formsy.Form>
+            </Formsy>
           );
         }
       }
@@ -552,10 +552,10 @@ export default {
         }
         render() {
           return (
-            <Formsy.Form onSubmit={onSubmit}>
+            <Formsy onSubmit={onSubmit}>
               <TestInput name="foo" value={this.state.value} type="checkbox" />
               <button type="submit">Save</button>
-            </Formsy.Form>
+            </Formsy>
           );
         }
       }
@@ -573,10 +573,10 @@ export default {
       class TestForm extends React.Component {
         render() {
           return (
-            <Formsy.Form>
+            <Formsy>
               <TestInput name="foo" value={true} type="checkbox" />
               <button type="submit">Save</button>
-            </Formsy.Form>
+            </Formsy>
           );
         }
       }
@@ -602,16 +602,16 @@ export default {
         }
         render() {
           return (
-            <Formsy.Form>
+            <Formsy>
               <TestInput name="foo" value={this.state.value} type="checkbox" />
               <button type="submit">Save</button>
-            </Formsy.Form>
+            </Formsy>
           );
         }
       }
       const form = TestUtils.renderIntoDocument(<TestForm/>);
       const input = TestUtils.findRenderedComponentWithType(form, TestInput);
-      const formsyForm = TestUtils.findRenderedComponentWithType(form, Formsy.Form);
+      const formsyForm = TestUtils.findRenderedComponentWithType(form, Formsy);
       test.equal(input.getValue(), true);
       form.changeValue();
       test.equal(input.getValue(), false);
@@ -635,16 +635,16 @@ export default {
         }
         render() {
           return (
-            <Formsy.Form>
+            <Formsy>
               <TestInput name="foo" value={this.state.value} type="checkbox" />
               <button type="submit">Save</button>
-            </Formsy.Form>
+            </Formsy>
           );
         }
       }
       const form = TestUtils.renderIntoDocument(<TestForm/>);
       const input = TestUtils.findRenderedComponentWithType(form, TestInput);
-      const formsyForm = TestUtils.findRenderedComponentWithType(form, Formsy.Form);
+      const formsyForm = TestUtils.findRenderedComponentWithType(form, Formsy);
 
       test.equal(input.getValue(), true);
       form.changeValue();
@@ -664,16 +664,16 @@ export default {
     class TestForm extends React.Component {
       render() {
         return (
-          <Formsy.Form>
+          <Formsy>
             <TestInput name="foo" value="42" type="checkbox" />
             <button type="submit">Save</button>
-          </Formsy.Form>
+          </Formsy>
         );
       }
     }
     const form = TestUtils.renderIntoDocument(<TestForm/>);
     const input = TestUtils.findRenderedComponentWithType(form, TestInput);
-    const formsyForm = TestUtils.findRenderedComponentWithType(form, Formsy.Form);
+    const formsyForm = TestUtils.findRenderedComponentWithType(form, Formsy);
 
     formsyForm.reset({
       foo: ''
@@ -689,9 +689,9 @@ export default {
 
       const hasOnChanged = sinon.spy();
       const form = TestUtils.renderIntoDocument(
-        <Formsy.Form onChange={hasOnChanged}>
+        <Formsy onChange={hasOnChanged}>
           <TestInput name="one" value="foo" />
-        </Formsy.Form>
+        </Formsy>
       );
       test.equal(form.isChanged(), false);
       test.equal(hasOnChanged.called, false);
@@ -703,9 +703,9 @@ export default {
 
       const hasOnChanged = sinon.spy();
       const form = TestUtils.renderIntoDocument(
-        <Formsy.Form onChange={hasOnChanged}>
+        <Formsy onChange={hasOnChanged}>
           <TestInput name="one" value="foo" />
-        </Formsy.Form>
+        </Formsy>
       );
       const input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
       TestUtils.Simulate.change(ReactDOM.findDOMNode(input), {target: {value: 'bar'}});
@@ -719,9 +719,9 @@ export default {
 
       const hasOnChanged = sinon.spy();
       const form = TestUtils.renderIntoDocument(
-        <Formsy.Form onChange={hasOnChanged}>
+        <Formsy onChange={hasOnChanged}>
           <TestInput name="one" value="foo" />
-        </Formsy.Form>
+        </Formsy>
       );
       const input = TestUtils.findRenderedDOMComponentWithTag(form, 'input');
       TestUtils.Simulate.change(ReactDOM.findDOMNode(input), {target: {value: 'bar'}});
