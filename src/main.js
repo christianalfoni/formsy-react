@@ -94,6 +94,10 @@ Formsy.Form = createReactClass({
 
   },
 
+  shouldCache: function () {
+    return this.props.cacheValues;
+  },
+
   // Allow resetting to specified data
   reset: function (data) {
     this.setFormPristine(true);
