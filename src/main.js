@@ -259,7 +259,7 @@ Formsy.Form = createReactClass({
     var validationError = component.props.validationError;
     value = arguments.length === 2 ? value : component.state._value;
 
-    if (this.cachedValues[component.props.name] === value) {
+    if (this.shouldCache() && this.cachedValues[component.props.name] === value) {
       const isValid = component.isValid();
       const isRequired = component.showRequired();
       const error = [component.getErrorMessage()];

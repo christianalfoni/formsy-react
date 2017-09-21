@@ -177,5 +177,8 @@ module.exports = {
   isValidValue: function (value) {
     return this.context.formsy.isValidValue.call(null, this, value);
     //return this.props._isValidValue.call(null, this, value);
+  },
+  shouldCache: function () {
+    return this.props.cacheValues;
   }
 };
