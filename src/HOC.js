@@ -1,7 +1,8 @@
 var React = global.React || require('react');
+var createReactClass = require('create-react-class');
 var Mixin = require('./Mixin.js');
 module.exports = function (Component) {
-  return React.createClass({
+  return createReactClass({
     displayName: 'Formsy(' + getDisplayName(Component) + ')',
     mixins: [Mixin],
 
