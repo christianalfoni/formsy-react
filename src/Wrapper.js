@@ -39,9 +39,7 @@ const propTypes = {
     PropTypes.string,
   ]),
   value: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.bool,
-    PropTypes.string,
+    PropTypes.any,
   ]),
 };
 
