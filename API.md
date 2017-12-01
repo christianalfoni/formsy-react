@@ -14,6 +14,7 @@
   - [getModel()](#getmodel)
   - [updateInputsWithError()](#updateinputswitherrorerrors)
   - [preventExternalInvalidation](#preventexternalinvalidation)
+  - [validateOnMount](#validateOnMount)
 - [Formsy.Mixin](#formsymixin)
   - [name](#name)
   - [value](#value)
@@ -217,6 +218,12 @@ var MyForm = React.createClass({
 });
 ```
 With the `preventExternalInvalidation` the input will not be invalidated though it has an error.
+
+#### <a name="validateOnMount">validateOnMount</a>
+```html
+<Formsy.Form validateOnMount={true|false}></Formsy.Form>
+```
+`validateOnMount` indicates that whether Formsy.Form validates all its inputs immediately after the initial rendering occurs (e.g componentDidMount). By default it's `true` e.g validate on componentDidMount
 
 ### <a name="formsymixin">Formsy.Mixin</a>
 
