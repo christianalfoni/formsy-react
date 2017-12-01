@@ -43,6 +43,7 @@ Formsy.Form = createReactClass({
       onInvalid: function () {},
       onChange: function () {},
       validationErrors: null,
+      preventExternalSubmit: true,
       preventExternalInvalidation: false
     };
   },
@@ -102,7 +103,7 @@ Formsy.Form = createReactClass({
   // Update model, submit to url prop and send the model
   submit: function (event) {
 
-    event && event.preventDefault();
+    this.props.preventExternalSubmit && event && event.preventDefault();
 
     // Trigger form as not pristine.
     // If any inputs have not been touched yet this will make them dirty
@@ -436,6 +437,7 @@ Formsy.Form = createReactClass({
       onChange,
       reset,
       preventExternalInvalidation,
+      preventExternalSubmit,
       onSuccess,
       onError,
       ...nonFormsyProps
