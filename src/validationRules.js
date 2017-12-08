@@ -14,7 +14,7 @@ var validations = {
     return isExisty(value);
   },
   matchRegexp: function (values, value, regexp) {
-    return !isExisty(value) || isEmpty(value) || regexp.test(value);
+    return !isExisty(value) || isEmpty(value) || (new RegExp(regexp)).test(value);
   },
   isUndefined: function (values, value) {
     return value === undefined;
