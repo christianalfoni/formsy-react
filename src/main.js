@@ -1,5 +1,6 @@
 var PropTypes = require('prop-types');
 var React = global.React || require('react');
+var PropTypes = require('prop-types');
 var createReactClass = require('create-react-class');
 var Formsy = {};
 var validationRules = require('./validationRules.js');
