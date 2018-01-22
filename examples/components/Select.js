@@ -22,7 +22,7 @@ const MySelect = React.createClass({
     return (
       <div className={className}>
         <label htmlFor={this.props.name}>{this.props.title}</label>
-        <select name={this.props.name} onChange={this.changeValue} value={this.getValue()}>
+        <select name={this.props.name} onChange={this.changeValue} value={this.getValue() || ''}>
           {options}
         </select>
         <span className='validation-error'>{errorMessage}</span>
