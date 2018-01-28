@@ -90,18 +90,26 @@ This code results in a form with a submit button that will run the `submit` meth
 
 #### Building a form element (required)
 ```jsx
-  import Formsy from 'formsy-react';
+  import React from 'react';
+  import Formsy, { HOC as FormsyWrapper } from 'formsy-react';
 
-  const MyOwnInput = React.createClass({
+  class MyOwnInput extends React.Component { 
+  
+    constructor() {
+      super();
+      this.changeValue = this.changeValue.bind(this);
+    }
 
-    // Add the Formsy Mixin
-    mixins: [Formsy.Mixin],
+    static propTypes = {
+       setValue: React.propTypes.func,
+       showError: React.propTypes.func,
+       showRequired: React.propTypes.func,
+       getErrorMessage: React.propTypes.func
+    };
 
-    // setValue() will set the value of the component, which in
-    // turn will validate it and the rest of the form
     changeValue(event) {
       this.setValue(event.currentTarget.value);
-    },
+    }
 
     render() {
       // Set a specific className based on the validation
@@ -117,12 +125,16 @@ This code results in a form with a submit button that will run the `submit` meth
 
       return (
         <div className={className}>
-          <input type="text" onChange={this.changeValue} value={this.getValue()}/>
+          <input
+            type="text"
+            onChange={this.changeValue}
+            value={this.getValue()}
+          />
           <span>{errorMessage}</span>
         </div>
       );
-    }
-  });
+  }
+  export default FormsyWrapper(MyOwnInput);
 ```
 The form element component is what gives the form validation functionality to whatever you want to put inside this wrapper. You do not have to use traditional inputs, it can be anything you want and the value of the form element can also be anything you want. As you can see it is very flexible, you just have a small API to help you identify the state of the component and set its value.
 
