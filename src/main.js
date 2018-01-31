@@ -256,7 +256,13 @@ Formsy.Form = createReactClass({
 
     // the component defines an explicit validate function
     if (typeof component.validate === "function") {
-      validationResults.failed = component.validate() ? [] : ['failed'];
+      var validation = component.validate(value);
+      if (typeof validation === 'string') {
+        validationResults.errors.push(validation);
+        validationResults.failed.push(component.validate);
+      } else if (!validation) {
+        validationResults.failed.push(component.validate);
+      }
     }
 
     var isRequired = Object.keys(component._requiredValidations).length ? !!requiredResults.success.length : false;
