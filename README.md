@@ -129,6 +129,7 @@ The form element component is what gives the form validation functionality to wh
 ## Related projects
 - [formsy-material-ui](https://github.com/mbrookes/formsy-material-ui) - A formsy-react compatibility wrapper for [Material-UI](http://material-ui.com/) form components.
 - [formsy-react-components](https://github.com/twisty/formsy-react-components) - A set of React JS components for use in a formsy-react form.
+- [formsy-semantic-ui-react](https://github.com/zabute/formsy-semantic-ui-react) - A formsy-react compatibility wrapper for [Semantic UI React](https://react.semantic-ui.com/introduction).
 - ...
 - Send PR for adding your project to this list!
 
