@@ -256,7 +256,7 @@ Formsy.Form = createReactClass({
 
     // the component defines an explicit validate function
     if (typeof component.validate === "function") {
-      validationResults.failed = component.validate() ? [] : ['failed'];
+      validationResults.failed = component.validate() ? [] : [{ method: 'failed' }];
     }
 
     var isRequired = Object.keys(component._requiredValidations).length ? !!requiredResults.success.length : false;
@@ -286,7 +286,13 @@ Formsy.Form = createReactClass({
 
         if (validationResults.failed.length) {
           return validationResults.failed.map(function(failed) {
-            return validationErrors[failed] ? validationErrors[failed] : validationError;
+            var errorMessage = validationErrors[failed.method] ? validationErrors[failed.method] : validationError;
+
+            failed.args && [].concat(failed.args).forEach((arg, i) => {
+              errorMessage = errorMessage.replace(new RegExp('\\{' + i + '\\}', 'g'), arg);
+            });
+
+            return errorMessage;
           }).filter(function(x, pos, arr) {
             // Remove duplicates
             return arr.indexOf(x) === pos;
@@ -320,9 +326,9 @@ Formsy.Form = createReactClass({
           var validation = validations[validationMethod](currentValues, value);
           if (typeof validation === 'string') {
             results.errors.push(validation);
-            results.failed.push(validationMethod);
+            results.failed.push({ method: validationMethod });
           } else if (!validation) {
-            results.failed.push(validationMethod);
+            results.failed.push({ method: validationMethod });
           }
           return;
 
@@ -330,9 +336,9 @@ Formsy.Form = createReactClass({
           var validation = validationRules[validationMethod](currentValues, value, validations[validationMethod]);
           if (typeof validation === 'string') {
             results.errors.push(validation);
-            results.failed.push(validationMethod);
+            results.failed.push({ method: validationMethod, args: validations[validationMethod] });
           } else if (!validation) {
-            results.failed.push(validationMethod);
+            results.failed.push({ method: validationMethod, args: validations[validationMethod] });
           } else {
             results.success.push(validationMethod);
           }

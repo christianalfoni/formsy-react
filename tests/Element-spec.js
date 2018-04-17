@@ -399,6 +399,39 @@ export default {
 
   },
 
+  'should validation parameters passed to validation errors messages': function (test) {
+
+    const TestForm = React.createClass({
+      render() {
+        return (
+          <Formsy.Form>
+            <TestInput name="A"
+              validations={{
+                'minLength': 3,
+                'maxLength': 5
+              }}
+              validationErrors={{
+                'minLength': 'The field must be at least {0} characters in length',
+                'maxLength': 'The field must not exceed {0} characters in length'
+              }}
+            />
+          </Formsy.Form>
+        );
+      }
+    });
+    const form = TestUtils.renderIntoDocument(<TestForm/>);
+
+    const inputComponent = TestUtils.findRenderedComponentWithType(form, TestInput);
+    const input = TestUtils.findRenderedDOMComponentWithTag(form, 'INPUT');
+    TestUtils.Simulate.change(input, {target: {value: 'xx'}});
+    test.equal(inputComponent.getErrorMessage(), 'The field must be at least 3 characters in length');
+    TestUtils.Simulate.change(input, {target: {value: 'xxxxxx'}});
+    test.equal(inputComponent.getErrorMessage(), 'The field must not exceed 5 characters in length');
+
+    test.done();
+
+  },
+
   'should not be valid if it is required and required rule is true': function (test) {
 
     const TestForm = React.createClass({

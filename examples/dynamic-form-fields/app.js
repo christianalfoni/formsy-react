@@ -7,6 +7,15 @@ import MySelect from './../components/Select';
 import MyRadioGroup from './../components/RadioGroup';
 import MyMultiCheckboxSet from './../components/MultiCheckboxSet';
 
+const validationErrors = {
+  'isEmail': 'The field must contain a valid email address',
+  'isNumeric': 'The field must contain only numbers',
+  'isAlphanumeric': 'The field must only contain alpha-numeric characters',
+  'equals': 'The field must be equal to {0}',
+  'minLength': 'The field must be at least {0} characters in length',
+  'maxLength': 'The field must not exceed {0} characters in length'
+};
+
 const Fields = props => {
   function onRemove(pos) {
     return event => {
@@ -28,6 +37,7 @@ const Fields = props => {
                 title={field.validations ? JSON.stringify(field.validations) : 'No validations'}
                 required={field.required}
                 validations={field.validations}
+                validationErrors={validationErrors}
               />
             ) :
             (
@@ -36,6 +46,7 @@ const Fields = props => {
                 title={field.validations ? JSON.stringify(field.validations) : 'No validations'}
                 required={field.required}
                 validations={field.validations}
+                validationErrors={validationErrors}
                 options={[
                   {title: '123', value: '123'},
                   {title: 'some long text', value: 'some long text'},
@@ -87,7 +98,6 @@ const App = React.createClass({
             cmp={(a, b) => JSON.stringify(a) === JSON.stringify(b)}
             items={[
               {isEmail: true},
-              {isEmptyString: true},
               {isNumeric: true},
               {isAlphanumeric: true},
               {equals: 5},
