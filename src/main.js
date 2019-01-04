@@ -102,7 +102,9 @@ Formsy.Form = createReactClass({
   // updates all inputs and their _pristineValues to specified data
   update: function(data) {
     this.setFormPristine(true);
-    this.updateModel(data);
+    this.setState({canChange: false}, () => {
+      this.updateModel(data)
+    });
   },
 
   // Update model, submit to url prop and send the model
