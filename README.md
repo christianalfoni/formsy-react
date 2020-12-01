@@ -1,12 +1,11 @@
-# Moved!
-
-This project has moved. Starting from 1.0.0 onward, develeopment will continue
-at https://github.com/formsy/formsy-react/
+This project has moved to [formsy/formsy-react](https://github.com/formsy/formsy-react/).
+============
 
 ---
 
-formsy-react  [![GitHub release](https://img.shields.io/github/release/christianalfoni/formsy-react.svg)](https://github.com/christianalfoni/formsy-react/releases) [![Build Status](https://travis-ci.org/christianalfoni/formsy-react.svg?branch=master)](https://travis-ci.org/christianalfoni/formsy-react)
-============
+### Below is an archive of the pre-1.0 README
+
+**formsy-react**  [![GitHub release](https://img.shields.io/github/release/christianalfoni/formsy-react.svg)](https://github.com/christianalfoni/formsy-react/releases) [![Build Status](https://travis-ci.org/christianalfoni/formsy-react.svg?branch=master)](https://travis-ci.org/christianalfoni/formsy-react)
 
 A form input builder and validator for React JS
 
