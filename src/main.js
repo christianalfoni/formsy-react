@@ -284,6 +284,10 @@ Formsy.Form = createReactClass({
 
     this.cachedValues[component.props.name] = value
 
+    if (Object.keys(component._validations).length === 0 && Object.keys(component._requiredValidations).length === 0) {
+      return Promise.resolve()
+    }
+
     return Promise.all([
       this.runRules(value, currentValues, component._validations),
       this.runRules(value, currentValues, component._requiredValidations)
