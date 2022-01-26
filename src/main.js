@@ -66,7 +66,7 @@ Formsy.Form = createReactClass({
 
   // Add a map to store the inputs of the form, a model to store
   // the values of the form and register child inputs
-  componentWillMount: function () {
+  UNSAFE_componentWillMount: function () {
     this.inputs = [];
     this.canSetState = true;
     this.cachedValues = {};
