@@ -54,7 +54,7 @@ module.exports = {
     };
   },
 
-  componentWillMount: function () {
+  UNSAFE_componentWillMount: function () {
     this.canSetValue = true
     var configure = function () {
       this.setValidations(this.props.validations, this.props.required);
