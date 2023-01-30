@@ -12,6 +12,8 @@ export default {
     const objF = undefined;
     const objG = null;
     const objH = null;
+    const objI = NaN;
+    const objJ = NaN;
 
     test.equal(utils.isSame(objA, objB), true);
     test.equal(utils.isSame(objC, objD), true);
@@ -25,6 +27,11 @@ export default {
     test.equal(utils.isSame(objA, objH), false);
     test.equal(utils.isSame(objC, objH), false);
     test.equal(utils.isSame(objG, objA), false);
+
+    test.equal(utils.isSame(objI, objJ), true);
+    test.equal(utils.isSame(objA, objJ), false);
+    test.equal(utils.isSame(objC, objJ), false);
+    test.equal(utils.isSame(objI, objA), false);
 
     test.equal(utils.isSame(() => {}, () => {}), true);
     test.equal(utils.isSame(objA, () => {}), false);
